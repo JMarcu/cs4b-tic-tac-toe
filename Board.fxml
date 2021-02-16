@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.Board_Controller">
+   <children>
+      <GridPane layoutX="2.0" layoutY="2.0" prefHeight="389.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.39996337890625" minWidth="10.0" prefWidth="199.79998779296875" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.39996337890625" minWidth="10.0" prefWidth="199.79998779296875" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.39996337890625" minWidth="10.0" prefWidth="199.79998779296875" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="258.40000915527344" minHeight="10.0" prefHeight="103.99998779296874" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="152.2000030517578" minHeight="10.0" prefHeight="101.60001220703128" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="122.5999816894531" minHeight="10.0" prefHeight="102.59995117187498" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <StackPane fx:id="leftTop" onMouseClicked="#handleLeftTop" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" />
+            <StackPane fx:id="centerTop" onMouseClicked="#handleCenterTop" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1" />
+            <StackPane fx:id="rightTop" onMouseClicked="#handleRightTop" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2" />
+            <StackPane fx:id="leftMid" onMouseClicked="#handleLeftMid" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.rowIndex="1" />
+            <StackPane fx:id="centerMid" onMouseClicked="#handleCenterMid" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <StackPane fx:id="rightMid" onMouseClicked="#handleRightMid" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <StackPane fx:id="leftBtm" onMouseClicked="#handleLeftBtm" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.rowIndex="2" />
+            <StackPane fx:id="centerBtm" onMouseClicked="#handleCenterBtm" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <StackPane fx:id="rightBtm" onMouseClicked="#handleRightBtm" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
