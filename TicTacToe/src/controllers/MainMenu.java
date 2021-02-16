@@ -134,8 +134,8 @@ public class MainMenu {
     }
 
     @FXML
-    void onPlayerTwoKeyTyped(ActionEvent event) {
-        this.playerOne.setName(this.playerTwoNameTF.getText());
+    void onPlayerTwoKeyTyped(KeyEvent event) {
+        this.playerTwo.setName(this.playerTwoNameTF.getText());
     }
 
     @FXML
