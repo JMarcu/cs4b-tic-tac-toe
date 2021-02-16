@@ -1,7 +1,9 @@
 import java.util.UUID;
 
+import controllers.GameBoard;
 import controllers.MainMenu;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,6 +16,8 @@ import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
 
 public class App extends Application implements LaunchGameCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback {
+    
+    private Stage windowStage;
 
     public static void main(String[] args) {
         launch(args);
@@ -34,29 +38,41 @@ public class App extends Application implements LaunchGameCallback, LaunchOption
             primaryStage.setScene(scene);
             primaryStage.show();
             
-            mainMenu.TEMPORARY_GET_PLAYER_FOR_TESTING().setShape(MarkerShape.CHECKMARK);
+            windowStage = primaryStage;
+
+            //mainMenu.TEMPORARY_GET_PLAYER_FOR_TESTING().setShape(MarkerShape.CHECKMARK);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
+    @FXML
     @Override
     public void launchGame(boolean singlePlayer, GameMode gameMode, Player playerOne, Player playerTwo, int secondaryOption) {
-        System.out.println("App.launchgame");
-        final StringBuilder sb = new StringBuilder();
-        sb.append("LaunchGame(");
-        sb.append(singlePlayer);
-        sb.append(", ");
-        sb.append(gameMode);
-        sb.append(", ");
-        sb.append(playerOne.getName());
-        sb.append(", ");
-        sb.append(playerTwo.getName());
-        sb.append(", ");
-        sb.append(secondaryOption);
-        sb.append(")");
-        System.out.println(sb);
+    
+        try {
+            FXMLLoader FXMLLoader = new FXMLLoader(getClass().getResource("/views/game-board.fxml"));
+            Parent root = (Parent) FXMLLoader.load();
+            Scene scene = new Scene(root);
+            GameBoard gameBoard = FXMLLoader.getController();
+
+            gameBoard.setShapePickerCB(this);
+            gameBoard.setOptionsMenuCB(this);
+
+            gameBoard.loadData(singlePlayer, gameMode, playerOne, playerTwo, secondaryOption);
+            windowStage.setScene(scene);
+
+            final StringBuilder sb = new StringBuilder();
+            sb.append(gameMode);
+
+            windowStage.setTitle(sb.toString());
+            windowStage.show();
+
+            gameBoard.TEMPORARY_GET_PLAYER_FOR_TESTING().setShape(MarkerShape.c);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -69,3 +85,19 @@ public class App extends Application implements LaunchGameCallback, LaunchOption
         System.out.println("Launch Shape Picker");
     }
 }
+
+
+// System.out.println("App.launchgame");
+        // final StringBuilder sb = new StringBuilder();
+        // sb.append("LaunchGame(");
+        // sb.append(singlePlayer);
+        // sb.append(", ");
+        // sb.append(gameMode);
+        // sb.append(", ");
+        // sb.append(playerOne.getName());
+        // sb.append(", ");
+        // sb.append(playerTwo.getName());
+        // sb.append(", ");
+        // sb.append(secondaryOption);
+        // sb.append(")");
+        // System.out.println(sb);
