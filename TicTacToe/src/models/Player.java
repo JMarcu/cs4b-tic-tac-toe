@@ -26,6 +26,7 @@ public class Player implements Publisher<NullType> {
     public UUID getUuid() {return this.id;}
     public String getName() {return this.name;}
     public MarkerShape getShape() {return this.shape;}
+    public boolean getIsAI() {return false;}
 
     public void setColor(Color color){
         this.color = color;

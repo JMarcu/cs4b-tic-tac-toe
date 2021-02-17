@@ -5,8 +5,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import models.Player;
 
 public class Board{
+    private final String ASSETS_DIRECTORY = "/assets/images/";
+    Player player;
     @FXML
     private StackPane leftTop;
     @FXML
@@ -29,76 +32,73 @@ public class Board{
 
     @FXML
     private void handleLeftTop(MouseEvent e) {
-        // Image i = new Image("x.jpg");
-        Image i = new Image("assets\\images/"); //FIXING
-        ImageView iv = new ImageView(i);
+        final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());//UNTESTED
+        ImageView iv = new ImageView(new Image(newUrl));
         leftTop.getChildren().add(iv);
     }
 
     @FXML
     private void handlecenterTop(MouseEvent e) {
-        // Image i = new Image("x.jpg");
-        Image i = new Image("X.png");
-        ImageView iv = new ImageView(i);
+        final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());//UNTESTED
+        ImageView iv = new ImageView(new Image(newUrl));
         centerTop.getChildren().add(iv);
     }
 
     @FXML
     private void handleRightTop(MouseEvent e) {
-        // Image i = new Image("x.jpg");
-        Image i = new Image("X.png");
-        ImageView iv = new ImageView(i);
+        final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());//UNTESTED
+        ImageView iv = new ImageView(new Image(newUrl));
         rightTop.getChildren().add(iv);
     }
 
     @FXML
     private void handleLeftMid(MouseEvent e) {
-        // Image i = new Image("x.jpg");
-        Image i = new Image("X.png");
-        ImageView iv = new ImageView(i);
+        final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());//UNTESTED
+        ImageView iv = new ImageView(new Image(newUrl));
         leftMid.getChildren().add(iv);
     }
 
     @FXML
     private void handleCenterMid(MouseEvent e) {
-        // Image i = new Image("x.jpg");
-        Image i = new Image("X.png");
-        ImageView iv = new ImageView(i);
+        final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());//UNTESTED
+        ImageView iv = new ImageView(new Image(newUrl));
         centerMid.getChildren().add(iv);
     }
 
     @FXML
     private void handleRightMid(MouseEvent e) {
-        // Image i = new Image("x.jpg");
-        Image i = new Image("X.png");
-        ImageView iv = new ImageView(i);
+        final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());//UNTESTED
+        ImageView iv = new ImageView(new Image(newUrl));
         rightMid.getChildren().add(iv);
     }
 
     @FXML
     private void handleLeftBtm(MouseEvent e) {
-        // Image i = new Image("x.jpg");
-        Image i = new Image("X.png");
-        ImageView iv = new ImageView(i);
+        final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());//UNTESTED
+        ImageView iv = new ImageView(new Image(newUrl));
         leftBtm.getChildren().add(iv);
     }
 
     @FXML
     private void handleCenterBtm(MouseEvent e) {
-        // Image i = new Image("x.jpg");
-        Image i = new Image("X.png");
-        ImageView iv = new ImageView(i);
+        final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());//UNTESTED
+        ImageView iv = new ImageView(new Image(newUrl));
         centerBtm.getChildren().add(iv);
     }
 
     @FXML
     private void handleRightBtm(MouseEvent e) {
-        // Image i = new Image("x.jpg");
-        Image i = new Image("X.png");
-        ImageView iv = new ImageView(i);
+        final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());//UNTESTED
+        ImageView iv = new ImageView(new Image(newUrl));
         rightBtm.getChildren().add(iv);
     }
 
-	//set PlayerObject
-    //wrap logic in if statement, check isAI
+    @FXML
+    private void setPlayerObject(Player p) {
+        if(!p.getIsAI()){
+            player.setColor(p.getColor());
+            player.setName(p.getName());
+            player.setShape(p.getShape());
+        }
+    }
 }
