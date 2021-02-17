@@ -16,8 +16,9 @@ import models.SceneCallback.LaunchGameCallback;
 import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
+import models.SceneCallback.LaunchScoreBoardCallback;
 
-public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback {
+public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback, LaunchScoreBoardCallback {
 
     private FXMLLoader gameBoardFXML;
     private Scene      gameBoardScene;
@@ -106,5 +107,10 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         } catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void launchScoreBoard(UUID playerId){
+        System.out.println("Launch Score Board");
     }
 }
