@@ -82,7 +82,29 @@ public class App extends Application implements LaunchGameCallback, LaunchOption
 
     @Override
     public void launchShapePicker(Player player) {
-        System.out.println("Launch Shape Picker");
+        //System.out.println("Launch Shape Picker");
+        try {
+            FXMLLoader FXMLLoader = new FXMLLoader(getClass().getResource("/views/ShapeColorPicker.fxml"));
+            Parent root = (Parent) FXMLLoader.load();
+            Scene scene = new Scene(root);
+            
+            ShapeColorController shapeColor = FXMLLoader.getController();
+
+            //gameBoard.setShapePickerCB(this);
+            //gameBoard.setOptionsMenuCB(this);
+
+            shapeColor.acceptPlayer(player);
+            windowStage.setScene(scene);
+
+            //final StringBuilder sb = new StringBuilder();
+            //sb.append(gameMode);
+
+            windowStage.setTitle("Shapes and Colors");
+            windowStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     }
 }
 
