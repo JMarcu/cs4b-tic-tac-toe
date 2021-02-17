@@ -1,9 +1,11 @@
 package models;
 
 public enum TTTScene {
+    GAME_BOARD ("game-board"),
     MAIN_MENU ("main-menu"),
-    OPTIONS_MENU ("options-menu"),
-    SHAPE_PICKER ("shape-picker");
+    OPTIONS_MENU ("OptionsMenu"),
+    SHAPE_PICKER ("ShapeColorPicker"),
+    TIC_TAC_TOE_BOARD ("Board");
 
     private final String name;
     

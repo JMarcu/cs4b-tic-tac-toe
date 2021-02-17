@@ -1,4 +1,7 @@
 import java.util.UUID;
+import java.util.function.Function;
+
+import javax.lang.model.type.NullType;
 
 import controllers.GameBoard;
 import controllers.MainMenu;
@@ -10,8 +13,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import models.Color;
 import models.GameMode;
+import models.GameState;
 import models.MarkerShape;
 import models.Player;
+import models.TTTScene;
 import models.SceneCallback.LaunchGameCallback;
 import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
@@ -74,12 +79,12 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
 
     @Override
     public void launchGame(boolean singlePlayer, GameMode gameMode, Player playerOne, Player playerTwo, int secondaryOption) {
-    
         try {
             GameBoard gameBoard = gameBoardFXML.getController();
             gameBoard.loadData(singlePlayer, gameMode, playerOne, playerTwo, secondaryOption);
             gameBoard.setShapePickerCB(this);
             gameBoard.setOptionsMenuCB(this);
+            gameBoard.setScoreBoardCB(this);
 
             primaryStage.setScene(gameBoardScene);
         } catch (Exception e) {
@@ -88,9 +93,11 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     }
 
     @Override
-    public void launchOptionsMenu(UUID playerId) {
+    public void launchOptionsMenu(UUID playerId, TTTScene returnTo, GameState gameState) {
         try{
             OptionsController optionsMenu = optionsMenuFXML.getController();
+            optionsMenu.setMainMenuCB(this);
+            optionsMenu.setReturnToCB(() -> {loadScene(returnTo, gameState);});
             primaryStage.setScene(optionsMenuScene);
         } catch(Exception e){
             e.printStackTrace();
@@ -98,11 +105,11 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     }
 
     @Override
-    public void launchShapePicker(Player player) {
-
+    public void launchShapePicker(Player player, TTTScene returnTo, GameState gameState) {
         try{
             ShapeColorController markerMenu = markerPickerFXML.getController();
             markerMenu.acceptPlayer(player);
+            markerMenu.setReturnCB(() -> {loadScene(returnTo, gameState);});
             primaryStage.setScene(markerPickerScene);
         } catch(Exception e){
             e.printStackTrace();
@@ -112,5 +119,25 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     @Override
     public void launchScoreBoard(UUID playerId){
         System.out.println("Launch Score Board");
+    }
+
+    private void loadScene(TTTScene scene, GameState gameState){
+        switch(scene){
+            case GAME_BOARD: 
+                if(gameState != null){
+                    launchGame(
+                        gameState.singlePlayer,
+                        gameState.gameMode,
+                        gameState.playerOne,
+                        gameState.playerTwo,
+                        gameState.secondaryOption
+                    );
+                }
+                break;
+            case MAIN_MENU:
+                this.launchMainMenu();
+                break;
+            default:
+        }
     }
 }
