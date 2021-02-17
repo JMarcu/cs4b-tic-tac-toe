@@ -13,7 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 
 import javafx.event.ActionEvent;
-
+import models.Color;
 import models.GameMode;
 import models.Player;
 
@@ -55,6 +55,8 @@ public class GameBoard{
     @FXML
     private ImageView playerTwoShapeIV;
 
+    @FXML
+    private Board boardController;
     
     public GameBoard(){
         this.singlePlayer = false;
@@ -82,12 +84,12 @@ public class GameBoard{
 
         updateImage(playerOneShapeIV, playerOne);
         updateImage(playerTwoShapeIV, playerTwo);
+
+        boardController.setPlayer(playerOne);
     }
     
     @FXML 
-    private void initialize(){
-        System.out.println("initialize");
-    }
+    private void initialize(){ }
 
     @FXML //Sets Playerone's name on the textfield for the gameboard
     private void onPlayerOneTF(KeyEvent event){
@@ -128,6 +130,7 @@ public class GameBoard{
             final Image newImage = new Image(newUrl);
             iv.setImage(newImage);
         }
+        Color.adjustImageColor(iv, player.getColor());
     }
 
 

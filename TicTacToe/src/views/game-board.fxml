@@ -38,12 +38,14 @@
       <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="60.0" BorderPane.alignment="CENTER" />
    </left>
    <center>
-      <AnchorPane BorderPane.alignment="CENTER" />
+      <AnchorPane BorderPane.alignment="CENTER">
+         <fx:include fx:id='board' source="Board.fxml" />
+      </AnchorPane>
    </center>
    <right>
       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="60.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="scoreButton" contentDisplay="CENTER" layoutX="9.0" layoutY="-68.0" mnemonicParsing="false" onAction="#onScoreBoard" prefHeight="650.0" prefWidth="51.0" text="ScoreBoard" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Button fx:id="scoreButton" contentDisplay="CENTER" layoutX="9.0" layoutY="-68.0" mnemonicParsing="false" onAction="#onScoreBoard" prefHeight="650.0" prefWidth="51.0" text="Score Board" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
          </children></AnchorPane>
    </right>
    <top>

@@ -80,6 +80,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             gameBoard.loadData(singlePlayer, gameMode, playerOne, playerTwo, secondaryOption);
             gameBoard.setShapePickerCB(this);
             gameBoard.setOptionsMenuCB(this);
+            gameBoard.setScoreBoardCB(this);
 
             primaryStage.setScene(gameBoardScene);
         } catch (Exception e) {
