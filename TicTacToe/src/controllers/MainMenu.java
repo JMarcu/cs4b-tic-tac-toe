@@ -106,7 +106,7 @@ public class MainMenu {
 
     @FXML
     void onOptions(ActionEvent event) {
-        this.optionsMenuCB.launchOptionsMenu(this.playerOne.getUuid());
+        this.optionsMenuCB.launchOptionsMenu(this.playerOne.getUuid(), TTTScene.MAIN_MENU, null);
     }
 
     @FXML

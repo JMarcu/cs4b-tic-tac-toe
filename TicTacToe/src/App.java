@@ -93,9 +93,11 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     }
 
     @Override
-    public void launchOptionsMenu(UUID playerId) {
+    public void launchOptionsMenu(UUID playerId, TTTScene returnTo, GameState gameState) {
         try{
             OptionsController optionsMenu = optionsMenuFXML.getController();
+            optionsMenu.setMainMenuCB(this);
+            optionsMenu.setReturnToCB(() -> {loadScene(returnTo, gameState);});
             primaryStage.setScene(optionsMenuScene);
         } catch(Exception e){
             e.printStackTrace();

@@ -115,7 +115,7 @@ public class GameBoard{
     @FXML //Allows playerone to use the options menu by pressing the gear button
     private void onOption(ActionEvent event){
       // System.out.println("onOption");
-        this.optionsMenuCB.launchOptionsMenu(this.playerOne.getUuid());
+        this.optionsMenuCB.launchOptionsMenu(this.playerOne.getUuid(), TTTScene.GAME_BOARD, this.generateGameState());
     }
 
     @FXML //Allows playerone to access the scoreboard by pressing the scoreboard button
@@ -133,7 +133,6 @@ public class GameBoard{
         }
         Color.adjustImageColor(iv, player.getColor());
     }
-
 
     //Binds the player to their chosen image/shape
     private void bindPlayers(ImageView iv, Player player){
