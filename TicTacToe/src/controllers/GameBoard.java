@@ -19,6 +19,7 @@ import models.Player;
 
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
+import models.SceneCallback.LaunchScoreBoardCallback;
 
 
 public class GameBoard{
@@ -31,12 +32,16 @@ public class GameBoard{
 
     private LaunchOptionsMenuCallback optionsMenuCB;
     private LaunchShapePickerCallback shapePickerCB;
+    private LaunchScoreBoardCallback scoreBoardCB;
     private ArrayList<Subscription> subscriptions;
 
     private final String ASSETS_DIRECTORY = "/assets/images/";
     
     @FXML
     private Button optionButton;
+
+    @FXML
+    private Button scoreButton;
     
     @FXML
     private TextField playerOneTF;
@@ -60,6 +65,7 @@ public class GameBoard{
         this.subscriptions = new ArrayList<>();
     }
 
+    //Loads data from launchGame
     public void loadData(boolean singlePlayer, GameMode gameMode, Player playerOne, Player playerTwo, int secondaryOption){
 
         this.singlePlayer = singlePlayer;
@@ -71,8 +77,6 @@ public class GameBoard{
         playerOneTF.setText(playerOne.getName());
         playerTwoTF.setText(playerTwo.getName());
 
-
-
         bindPlayers(playerOneShapeIV, playerOne);
         bindPlayers(playerTwoShapeIV, playerTwo);
 
@@ -80,38 +84,44 @@ public class GameBoard{
         updateImage(playerTwoShapeIV, playerTwo);
     }
     
-    @FXML
+    @FXML 
     private void initialize(){
         System.out.println("initialize");
     }
 
-    @FXML
+    @FXML //Sets Playerone's name on the textfield for the gameboard
     private void onPlayerOneTF(KeyEvent event){
         this.playerOne.setName(this.playerOneTF.getText());
     }
 
-    @FXML
+    @FXML //Sets Playertwo's name on the textfield for the gameboard
     private void onPlayerTwoTF(KeyEvent event){
         this.playerTwo.setName(this.playerTwoTF.getText());
     }
 
-    @FXML
+    @FXML //Allows playerone to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerOneShapeAction(ActionEvent event) {
         this.shapePickerCB.launchShapePicker(this.playerOne);
     }
 
-    @FXML
+    @FXML //Allows playertwo to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerTwoShapeAction(ActionEvent event) {
         this.shapePickerCB.launchShapePicker(this.playerTwo);
     }
 
-    @FXML
+    @FXML //Allows playerone to use the options menu by pressing the gear button
     private void onOption(ActionEvent event){
-        System.out.println("onOption");
+      // System.out.println("onOption");
         this.optionsMenuCB.launchOptionsMenu(this.playerOne.getUuid());
     }
 
-    @FXML
+    @FXML //Allows playerone to access the scoreboard by pressing the scoreboard button
+    private void onScoreBoard(ActionEvent event){
+        System.out.println("onScoreBoard");
+        this.scoreBoardCB.launchScoreBoard(this.playerOne.getUuid());
+    }
+
+    @FXML //Checks whetheer or not the image is already in use or null and sets it if both ar false
     private void updateImage(ImageView iv, Player player){
         final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());
         if(iv.getImage() == null || !iv.getImage().getUrl().equals(newUrl)){
@@ -120,6 +130,8 @@ public class GameBoard{
         }
     }
 
+
+    //Binds the player to their chosen image/shape
     private void bindPlayers(ImageView iv, Player player){
         player.subscribe(new Subscriber<NullType>(){
 			@Override
@@ -142,6 +154,7 @@ public class GameBoard{
 
     public void setShapePickerCB(LaunchShapePickerCallback shapePickerCB){this.shapePickerCB = shapePickerCB;}
     public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB){this.optionsMenuCB = optionsMenuCB;}
+    public void setScoreBoardCB(LaunchScoreBoardCallback scoreBoardCB){this.scoreBoardCB = scoreBoardCB;}
     
     public Player TEMPORARY_GET_PLAYER_FOR_TESTING(){return this.playerOne;}
 }

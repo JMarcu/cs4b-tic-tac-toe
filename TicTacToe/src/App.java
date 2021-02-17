@@ -14,8 +14,9 @@ import models.Player;
 import models.SceneCallback.LaunchGameCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
+import models.SceneCallback.LaunchScoreBoardCallback;
 
-public class App extends Application implements LaunchGameCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback {
+public class App extends Application implements LaunchGameCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback, LaunchScoreBoardCallback {
     
     private Stage windowStage;
 
@@ -68,7 +69,7 @@ public class App extends Application implements LaunchGameCallback, LaunchOption
             windowStage.setTitle(sb.toString());
             windowStage.show();
 
-            gameBoard.TEMPORARY_GET_PLAYER_FOR_TESTING().setShape(MarkerShape.c);
+            gameBoard.TEMPORARY_GET_PLAYER_FOR_TESTING().setShape(MarkerShape.X);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,6 +84,11 @@ public class App extends Application implements LaunchGameCallback, LaunchOption
     @Override
     public void launchShapePicker(Player player) {
         System.out.println("Launch Shape Picker");
+    }
+
+    @Override
+    public void launchScoreBoard(UUID playerId){
+        System.out.println("Launch Score Board");
     }
 }
 

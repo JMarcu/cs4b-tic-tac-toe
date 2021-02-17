@@ -8,16 +8,9 @@
             "type": "java",
             "name": "Launch App",
             "request": "launch",
-            "vmArgs": "--module-path /home/james/Java_Libraries/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml",
+            "vmArgs": "--module-path C:/Users/Grant/Desktop/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml",
             "mainClass": "App",
-            "projectName": "TicTacToe_4cd924ca"
-        },
-        {
-            "type": "java",
-            "name": "Launch Current File",
-            "request": "launch",
-            "vmArgs": "--module-path /home/james/Java_Libraries/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml",
-            "mainClass": "${file}"
+            "projectName": "cs4b-tic-tac-toe_aecc234a"
         }
     ]
 }
