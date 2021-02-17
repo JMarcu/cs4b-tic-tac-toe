@@ -2,22 +2,34 @@ import java.util.UUID;
 
 import controllers.GameBoard;
 import controllers.MainMenu;
+import controllers.OptionsController;
+import controllers.ShapeColorController;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import models.Color;
 import models.GameMode;
 import models.MarkerShape;
 import models.Player;
 import models.SceneCallback.LaunchGameCallback;
+import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
 
-public class App extends Application implements LaunchGameCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback {
-    
-    private Stage windowStage;
+public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback {
+
+    private FXMLLoader gameBoardFXML;
+    private Scene      gameBoardScene;
+    private FXMLLoader mainMenuFXML;
+    private Scene      mainMenuScene;
+    private FXMLLoader markerPickerFXML;
+    private Scene      markerPickerScene;
+    private FXMLLoader optionsMenuFXML;
+    private Scene      optionsMenuScene;
+    private Player     playerOne;
+    private Player     playerTwo;
+    private Stage      primaryStage;
 
     public static void main(String[] args) {
         launch(args);
@@ -26,50 +38,49 @@ public class App extends Application implements LaunchGameCallback, LaunchOption
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader FXMLLoader = new FXMLLoader(getClass().getResource("/views/main-menu.fxml"));
-            Parent root = (Parent) FXMLLoader.load();
-            Scene scene = new Scene(root);
-            MainMenu mainMenu = FXMLLoader.getController();
-            mainMenu.setLaunchGameCB(this);
-            mainMenu.setOptionsMenuCB(this);
-            mainMenu.setShapePickerCB(this);
+            gameBoardFXML = new FXMLLoader(getClass().getResource("/views/game-board.fxml"));
+            mainMenuFXML = new FXMLLoader(getClass().getResource("/views/main-menu.fxml"));
+            markerPickerFXML = new FXMLLoader(getClass().getResource("/views/ShapeColorPicker.fxml"));
+            optionsMenuFXML = new FXMLLoader(getClass().getResource("/views/OptionsMenu.fxml"));
 
+            gameBoardScene = new Scene(gameBoardFXML.load());
+            mainMenuScene = new Scene(mainMenuFXML.load());
+            markerPickerScene = new Scene(markerPickerFXML.load());
+            optionsMenuScene = new Scene(optionsMenuFXML.load());
+
+            playerOne = new Player(Color.BLACK, UUID.randomUUID(), "Player 1", MarkerShape.X);
+            playerTwo = new Player(Color.BLACK, UUID.randomUUID(), "Player 2", MarkerShape.O);
+
+            this.primaryStage = primaryStage;
             primaryStage.setTitle("Tic Tac Toe");
-            primaryStage.setScene(scene);
+            launchMainMenu();
             primaryStage.show();
-            
-            windowStage = primaryStage;
-
-            //mainMenu.TEMPORARY_GET_PLAYER_FOR_TESTING().setShape(MarkerShape.CHECKMARK);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @FXML
+    @Override
+    public void launchMainMenu() {
+        MainMenu mainMenu = mainMenuFXML.getController();
+        mainMenu.setLaunchGameCB(this);
+        mainMenu.setOptionsMenuCB(this);
+        mainMenu.setShapePickerCB(this);
+        mainMenu.setPlayers(playerOne, playerTwo);
+
+        primaryStage.setScene(mainMenuScene);
+    }
+
     @Override
     public void launchGame(boolean singlePlayer, GameMode gameMode, Player playerOne, Player playerTwo, int secondaryOption) {
     
         try {
-            FXMLLoader FXMLLoader = new FXMLLoader(getClass().getResource("/views/game-board.fxml"));
-            Parent root = (Parent) FXMLLoader.load();
-            Scene scene = new Scene(root);
-            GameBoard gameBoard = FXMLLoader.getController();
-
+            GameBoard gameBoard = gameBoardFXML.getController();
+            gameBoard.loadData(singlePlayer, gameMode, playerOne, playerTwo, secondaryOption);
             gameBoard.setShapePickerCB(this);
             gameBoard.setOptionsMenuCB(this);
 
-            gameBoard.loadData(singlePlayer, gameMode, playerOne, playerTwo, secondaryOption);
-            windowStage.setScene(scene);
-
-            final StringBuilder sb = new StringBuilder();
-            sb.append(gameMode);
-
-            windowStage.setTitle(sb.toString());
-            windowStage.show();
-
-            gameBoard.TEMPORARY_GET_PLAYER_FOR_TESTING().setShape(MarkerShape.c);
-
+            primaryStage.setScene(gameBoardScene);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,49 +88,23 @@ public class App extends Application implements LaunchGameCallback, LaunchOption
 
     @Override
     public void launchOptionsMenu(UUID playerId) {
-        System.out.println("Launch Options Menu");
+        try{
+            OptionsController optionsMenu = optionsMenuFXML.getController();
+            primaryStage.setScene(optionsMenuScene);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void launchShapePicker(Player player) {
-        //System.out.println("Launch Shape Picker");
-        try {
-            FXMLLoader FXMLLoader = new FXMLLoader(getClass().getResource("/views/ShapeColorPicker.fxml"));
-            Parent root = (Parent) FXMLLoader.load();
-            Scene scene = new Scene(root);
-            
-            ShapeColorController shapeColor = FXMLLoader.getController();
 
-            //gameBoard.setShapePickerCB(this);
-            //gameBoard.setOptionsMenuCB(this);
-
-            shapeColor.acceptPlayer(player);
-            windowStage.setScene(scene);
-
-            //final StringBuilder sb = new StringBuilder();
-            //sb.append(gameMode);
-
-            windowStage.setTitle("Shapes and Colors");
-            windowStage.show();
-        } catch (Exception e) {
+        try{
+            ShapeColorController markerMenu = markerPickerFXML.getController();
+            markerMenu.acceptPlayer(player);
+            primaryStage.setScene(markerPickerScene);
+        } catch(Exception e){
             e.printStackTrace();
         }
     }
-    }
 }
-
-
-// System.out.println("App.launchgame");
-        // final StringBuilder sb = new StringBuilder();
-        // sb.append("LaunchGame(");
-        // sb.append(singlePlayer);
-        // sb.append(", ");
-        // sb.append(gameMode);
-        // sb.append(", ");
-        // sb.append(playerOne.getName());
-        // sb.append(", ");
-        // sb.append(playerTwo.getName());
-        // sb.append(", ");
-        // sb.append(secondaryOption);
-        // sb.append(")");
-        // System.out.println(sb);
