@@ -8,13 +8,13 @@ import java.util.concurrent.Flow.Subscriber;
 import javax.lang.model.type.NullType;
 
 public class Player implements Publisher<NullType> {
-    private String color;
+    private Color color;
     private UUID id;
     private String name;
     private MarkerShape shape;
     private ArrayList<Subscriber<? super NullType>> subscribers;
 
-    public Player(String color, UUID id, String name, MarkerShape shape) {
+    public Player(Color color, UUID id, String name, MarkerShape shape) {
         this.color = color;
         this.id = id;
         this.name = name;
@@ -22,12 +22,12 @@ public class Player implements Publisher<NullType> {
         this.subscribers = new ArrayList<Subscriber<? super NullType>>();
     }
 
-    public String getColor() {return this.color;}
+    public Color getColor() {return this.color;}
     public UUID getUuid() {return this.id;}
     public String getName() {return this.name;}
     public MarkerShape getShape() {return this.shape;}
 
-    public void setColor(String color){
+    public void setColor(Color color){
         this.color = color;
         this.notifySubscribers();
     }

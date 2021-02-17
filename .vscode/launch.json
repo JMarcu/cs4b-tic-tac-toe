@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch MyLauncher",
+            "request": "launch",
+            "mainClass": "MyLauncher",
+            "projectName": "cs4b-tic-tac-toe_bf451900"
+        },
+        {
+            "type": "java",
             "name": "Launch App",
             "request": "launch",
             "vmArgs": "--module-path C:/Users/Grant/Desktop/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml",
