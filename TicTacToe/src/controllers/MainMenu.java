@@ -20,6 +20,7 @@ import models.Color;
 import models.GameMode;
 import models.MarkerShape;
 import models.Player;
+import models.TTTScene;
 import models.SceneCallback.LaunchGameCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
@@ -127,7 +128,7 @@ public class MainMenu {
 
     @FXML
     void onPlayerOneShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(this.playerOne);
+        this.shapePickerCB.launchShapePicker(this.playerOne, TTTScene.MAIN_MENU, null);
     }
 
     @FXML
@@ -137,7 +138,7 @@ public class MainMenu {
 
     @FXML
     void onPlayerTwoShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(this.playerTwo);
+        this.shapePickerCB.launchShapePicker(this.playerTwo, TTTScene.MAIN_MENU, null);
     }
 
     @FXML
@@ -183,8 +184,8 @@ public class MainMenu {
     }
 
     private void setMarker(ImageView iv, Player player){
-        final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());
-        if(iv.getImage() != null){
+        if(iv.getImage() != null && player != null){
+            final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());
             if(!iv.getImage().getUrl().equals(newUrl)){
                 final Image newImage = new Image(newUrl);
                 iv.setImage(newImage);

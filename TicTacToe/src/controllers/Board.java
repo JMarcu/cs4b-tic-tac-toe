@@ -145,6 +145,7 @@ public class Board{
 
 			@Override
 			public void onNext(NullType item) {
+                System.out.println("PlayerToSet: " + playerToSet == null ? "null" : playerToSet.getName());
                 views.get(playerToSet.getUuid()).forEach((ImageView iv) -> {
                     updateImage(iv, playerToSet);
                 });

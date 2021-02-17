@@ -15,8 +15,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.event.ActionEvent;
 import models.Color;
 import models.GameMode;
+import models.GameState;
 import models.Player;
-
+import models.TTTScene;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
 import models.SceneCallback.LaunchScoreBoardCallback;
@@ -103,12 +104,12 @@ public class GameBoard{
 
     @FXML //Allows playerone to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerOneShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(this.playerOne);
+        this.shapePickerCB.launchShapePicker(this.playerOne, TTTScene.GAME_BOARD, this.generateGameState());
     }
 
     @FXML //Allows playertwo to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerTwoShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(this.playerTwo);
+        this.shapePickerCB.launchShapePicker(this.playerTwo, TTTScene.GAME_BOARD, this.generateGameState());
     }
 
     @FXML //Allows playerone to use the options menu by pressing the gear button
@@ -153,6 +154,16 @@ public class GameBoard{
 			@Override
 			public void onComplete() { }
         });
+    }
+
+    private GameState generateGameState(){
+        final GameState gameState = new GameState();
+        gameState.gameMode = gameMode;
+        gameState.playerOne = playerOne;
+        gameState.playerTwo = playerTwo;
+        gameState.secondaryOption = secondaryOption;
+        gameState.singlePlayer = singlePlayer;
+        return gameState;
     }
 
     public void setShapePickerCB(LaunchShapePickerCallback shapePickerCB){this.shapePickerCB = shapePickerCB;}
