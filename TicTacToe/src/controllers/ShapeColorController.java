@@ -5,20 +5,19 @@ import models.Player;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.image.*;
+import models.MarkerShape;
 
 public class ShapeColorController {
     @FXML
     private ImageView CurrentPlayerImage;
     private Color currentColor;
+    private MarkerShape myShape;
 
     public void acceptPlayer(Player player)
     {
-        //CurrentPlayerImage = "assets/images/" + player.shape;
-        //String currentColor = player.color;
-
-        //Change player to have an image instead of a shape and color?
-
-        //fix when getting them to communicate
+        CurrentPlayerImage.setImage(new Image("assets/images/" + player.getShape().getFilename()));
+        currentColor = player.getColor();
+        Color.adjustImageColor(CurrentPlayerImage, currentColor);
     }
 
     @FXML protected void ReturnButtonClicked(ActionEvent event) {
