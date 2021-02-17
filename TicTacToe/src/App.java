@@ -98,6 +98,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
 
     @Override
     public void launchShapePicker(Player player) {
+
         try{
             ShapeColorController markerMenu = markerPickerFXML.getController();
             markerMenu.acceptPlayer(player);
