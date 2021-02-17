@@ -5,12 +5,14 @@ import models.Player;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.image.*;
+import models.MarkerShape;
 
 public class ShapeColorController {
     @FXML
     private ImageView CurrentPlayerImage;
 
     private Color currentColor;
+    private MarkerShape myShape;
 
 
     public ShapeColorController()
@@ -20,88 +22,8 @@ public class ShapeColorController {
     public void acceptPlayer(Player player)
     {
         CurrentPlayerImage.setImage(new Image("assets/images/" + player.getShape().getFilename()));
-        String currentColor = player.getColor();
-
-        switch(currentColor)
-        {
-            case "yellow":
-                ColorAdjust yellow = new ColorAdjust();
-                yellow.setContrast(1);     
-                yellow.setBrightness(0);  
-                yellow.setSaturation(1);
-                yellow.setHue(.33);
-                CurrentPlayerImage.setEffect(yellow);
-                currentColor = "yellow";
-                break;
-            case "blue":
-                ColorAdjust blue = new ColorAdjust();
-                blue.setContrast(1);     
-                blue.setBrightness(0);  
-                blue.setSaturation(1);
-                blue.setHue(-.7);
-                CurrentPlayerImage.setEffect(blue);
-                currentColor = "blue";
-                break;
-            case "red":
-                ColorAdjust red = new ColorAdjust();
-                red.setContrast(1);     
-                red.setBrightness(0);  
-                red.setSaturation(1);
-                red.setHue(0);
-                CurrentPlayerImage.setEffect(red);
-                currentColor = "red";
-                break;
-            case "green":
-                ColorAdjust green = new ColorAdjust();
-                green.setContrast(1);     
-                green.setBrightness(0);  
-                green.setSaturation(1);
-                green.setHue(.66);
-                CurrentPlayerImage.setEffect(green);
-                currentColor = "green";
-                break;
-            case "pink":
-                ColorAdjust pink = new ColorAdjust();
-                pink.setContrast(1);     
-                pink.setBrightness(0);  
-                pink.setSaturation(1);
-                pink.setHue(-.22);
-                CurrentPlayerImage.setEffect(pink);
-                currentColor = "pink";
-            break;
-            case "purple":
-                ColorAdjust purple = new ColorAdjust();
-                purple.setContrast(1);     
-                purple.setBrightness(0);  
-                purple.setSaturation(1);
-                purple.setHue(-.45);
-                CurrentPlayerImage.setEffect(purple);
-                currentColor = "purple";
-                break;
-            case "orange":
-                ColorAdjust orange = new ColorAdjust();
-                orange.setContrast(1);     
-                orange.setBrightness(0);  
-                orange.setSaturation(1);
-                orange.setHue(.17);
-                CurrentPlayerImage.setEffect(orange);
-                currentColor = "orange";
-                break;
-            case "teal":
-                ColorAdjust teal = new ColorAdjust();
-                teal.setContrast(1);     
-                teal.setBrightness(0);  
-                teal.setSaturation(1);
-                teal.setHue(1);
-                CurrentPlayerImage.setEffect(teal);
-                currentColor = "teal";
-                break;
-            default:
-                ColorAdjust black = new ColorAdjust();
-                black.setBrightness(-1);  
-                CurrentPlayerImage.setEffect(black);
-                currentColor = "black";
-        }
+        currentColor = player.getColor();
+        Color.adjustImageColor(CurrentPlayerImage, currentColor);
     }
 
     @FXML protected void ReturnButtonClicked(ActionEvent event) {
