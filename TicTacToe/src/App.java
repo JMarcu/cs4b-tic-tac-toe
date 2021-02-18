@@ -4,6 +4,7 @@ import java.util.function.Function;
 import javax.lang.model.type.NullType;
 
 import controllers.GameBoard;
+import controllers.ScoreBoard;
 import controllers.MainMenu;
 import controllers.OptionsController;
 import controllers.ShapeColorController;
@@ -27,6 +28,8 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
 
     private FXMLLoader gameBoardFXML;
     private Scene      gameBoardScene;
+    private FXMLLoader scoreboardFXML;
+    private Scene      scoreboardScene; 
     private FXMLLoader mainMenuFXML;
     private Scene      mainMenuScene;
     private FXMLLoader markerPickerFXML;
@@ -48,11 +51,13 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             mainMenuFXML = new FXMLLoader(getClass().getResource("/views/main-menu.fxml"));
             markerPickerFXML = new FXMLLoader(getClass().getResource("/views/ShapeColorPicker.fxml"));
             optionsMenuFXML = new FXMLLoader(getClass().getResource("/views/OptionsMenu.fxml"));
+            scoreboardFXML = new FXMLLoader(getClass().getResource("/views/Scoreboard.fxml"));
 
             gameBoardScene = new Scene(gameBoardFXML.load());
             mainMenuScene = new Scene(mainMenuFXML.load());
             markerPickerScene = new Scene(markerPickerFXML.load());
             optionsMenuScene = new Scene(optionsMenuFXML.load());
+            scoreboardScene = new Scene(scoreboardFXML.load());
 
             playerOne = new Player(Color.BLACK, UUID.randomUUID(), "Player 1", MarkerShape.X);
             playerTwo = new Player(Color.BLACK, UUID.randomUUID(), "Player 2", MarkerShape.O);
@@ -117,10 +122,17 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     }
 
     @Override
-    public void launchScoreBoard(UUID playerId){
-        System.out.println("Launch Score Board");
+    public void launchScoreBoard(UUID topCandidate, TTTScene returnTo, GameState gameState){
+        try{
+            ScoreBoard scoreboard = new ScoreBoard();
+            scoreboard = scoreboardFXML.getController();
+            // scoreboard.addPlayer();
+            scoreboard.setReturnCB(() -> {loadScene(returnTo, gameState);});
+            primaryStage.setScene(scoreboardScene);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
-
     private void loadScene(TTTScene scene, GameState gameState){
         switch(scene){
             case GAME_BOARD: 

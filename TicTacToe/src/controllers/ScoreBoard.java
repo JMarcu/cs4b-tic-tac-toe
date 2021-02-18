@@ -2,37 +2,39 @@ package controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
-// import javafx.scene.control.Button;
-// import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Button;
+import javafx.event.ActionEvent;
+
 import models.Player;
+import models.ReturnToCallback;
+
 import java.time.Duration;
 import java.time.Instant;
 
 public class ScoreBoard {
 
-    private Player[] topPlayer = new Player[4];
+    private String[] topPlayer = new String[4];
     private char[] WDL = {' ',' ',' ',' '};
-    private Duration[] topTime = new Duration[4];
+    private long[] topTime = new long[4];
     private String display;
 
     @FXML 
-    private Text scoreDisplay;
+    private Text scoreDisplay = new Text();
+    private ReturnToCallback returnCB;
+    private Button Return;
+    // private Button Reset;
 
     // @FXML 
-    // private Button Reset = new Button("Reset");
-    // @FXML 
-    // private Button Return = new Button("Return");
-    // @FXML 
-    // protected void ResetButtonClicked(MouseEvent event) {
+    // protected void ResetButtonClicked(ActionEvent event) {
     //     //Reset the ScoreBoard
     // }
-    // @FXML 
-    // protected void ReturnButtonClicked(MouseEvent event) {
-    //     //Return to the Main Menu
-    // }
+    @FXML 
+    protected void ReturnButtonClicked(ActionEvent event) {
+        returnCB.returnToCB();
+    }
 
     public ScoreBoard(){
-        display = String.format("\t\t\t\tScore Board\n\n1. %15s   %c   %10d seconds\n2. %15s   %c   %10d seconds\n3. %15s   %c   %10d seconds\n4. %15s   %c   %10f seconds\n", topPlayer[0].getName(), WDL[0], topTime[0], topPlayer[1].getName(), WDL[1], topTime[1], topPlayer[2].getName(), WDL[2], topTime[2], topPlayer[3].getName(), WDL[3], topTime[3]);
+        display = String.format("\t\t\tScore Board\n\n1.\t%-30s   %c   %5d : %02d\n2.\t%-30s   %c   %5d : %02d\n3.\t%-30s   %c   %5d : %02d\n4.\t%-30s   %c   %5d : %02d\n", topPlayer[0], WDL[0], topTime[0]/60, topTime[0]%60, topPlayer[1], WDL[1], topTime[1]/60, topTime[1]%60, topPlayer[2], WDL[2], topTime[2]/60, topTime[2]%60, topPlayer[3], WDL[3], topTime[3]/60, topTime[3]%60);
         scoreDisplay.setText(display);
         scoreDisplay.setX(50);
         scoreDisplay.setY(50);
@@ -40,17 +42,21 @@ public class ScoreBoard {
     }
   
     public void addPlayer(Player topCandidate, char gameStat, Instant startTime, Instant endTime){
-        Duration gameTime = Duration.between(startTime, endTime);
-        
+        Duration gt = Duration.between(startTime, endTime);
+        long gameTime = gt.getSeconds();
+
         for(int i=0; i<4; i++){
             if(WDL[i] == ' '){
-                topPlayer[i] = topCandidate;
+                topPlayer[i] = topCandidate.getName();
                 WDL[i] = gameStat;
                 topTime[i] = gameTime;
+                display = String.format("\t\t\tScore Board\n\n1.\t%-30s   %c   %5d : %02d\n2.\t%-30s   %c   %5d : %02d\n3.\t%-30s   %c   %5d : %02d\n4.\t%-30s   %c   %5d : %02d\n", topPlayer[0], WDL[0], topTime[0]/60, topTime[0]%60, topPlayer[1], WDL[1], topTime[1]/60, topTime[1]%60, topPlayer[2], WDL[2], topTime[2]/60, topTime[2]%60, topPlayer[3], WDL[3], topTime[3]/60, topTime[3]%60);
+                scoreDisplay.setText(display);
+                break;
             }
-            if((WDL[i] == 'W' && gameStat == 'W' && topTime[i].compareTo(gameTime)<0)
-                || (WDL[i] == 'D' && gameStat == 'D' && topTime[i].compareTo(gameTime)<0)
-                || (WDL[i] == 'L' && gameStat == 'L' && topTime[i].compareTo(gameTime)>0)
+            if((WDL[i] == 'W' && gameStat == 'W' && topTime[i] < gameTime)
+                || (WDL[i] == 'D' && gameStat == 'D' && topTime[i] < gameTime)
+                || (WDL[i] == 'L' && gameStat == 'L' && topTime[i] > gameTime)
                 || (WDL[i] == 'L' && (gameStat == 'D' || gameStat == 'W'))
                 || (WDL[i] == 'D' && gameStat == 'W')
                 ){
@@ -59,11 +65,18 @@ public class ScoreBoard {
                     WDL[j] = WDL[j-1];
                     topTime[j] = topTime[j-1];
                 }
-                topPlayer[i] = topCandidate;
+                topPlayer[i] = topCandidate.getName();
                 WDL[i] = gameStat;
                 topTime[i] = gameTime;
+                display = String.format("\t\t\tScore Board\n\n1.\t%-30s   %c   %5d : %02d\n2.\t%-30s   %c   %5d : %02d\n3.\t%-30s   %c   %5d : %02d\n4.\t%-30s   %c   %5d : %02d\n", topPlayer[0], WDL[0], topTime[0]/60, topTime[0]%60, topPlayer[1], WDL[1], topTime[1]/60, topTime[1]%60, topPlayer[2], WDL[2], topTime[2]/60, topTime[2]%60, topPlayer[3], WDL[3], topTime[3]/60, topTime[3]%60);
+                scoreDisplay.setText(display);
+                break;
             }
+
         }
     }
 
+    public void setReturnCB(ReturnToCallback returnCB){
+        this.returnCB = returnCB;
+    }
 }
