@@ -120,8 +120,8 @@ public class GameBoard{
 
     @FXML //Allows playerone to access the scoreboard by pressing the scoreboard button
     private void onScoreBoard(ActionEvent event){
-        System.out.println("onScoreBoard");
-        this.scoreBoardCB.launchScoreBoard(this.playerOne.getUuid());
+        // System.out.println("onScoreBoard");
+        this.scoreBoardCB.launchScoreBoard(this.playerOne.getUuid(), TTTScene.GAME_BOARD, this.generateGameState());
     }
 
     @FXML //Checks whetheer or not the image is already in use or null and sets it if both ar false
