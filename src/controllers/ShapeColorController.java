@@ -1,12 +1,13 @@
 package controllers;
 
-import models.Color;
+import models.ColorScheme;
 import models.Player;
 import models.ReturnToCallback;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.image.*;
+import javafx.scene.paint.Color;
 import models.MarkerShape;
 
 public class ShapeColorController {
@@ -22,7 +23,7 @@ public class ShapeColorController {
         CurrentPlayerImage.setImage(new Image("assets/images/" + player.getShape().getFilename()));
         currentColor = player.getColor();
         this.player = player;
-        Color.adjustImageColor(CurrentPlayerImage, currentColor);
+        ColorScheme.adjustImageColor(CurrentPlayerImage, currentColor);
     }
 
     @FXML protected void ReturnButtonClicked(ActionEvent event) {
@@ -87,47 +88,47 @@ public class ShapeColorController {
 
     @FXML protected void YellowButtonClicked(ActionEvent event) {
         currentColor = Color.YELLOW;
-        Color.adjustImageColor(CurrentPlayerImage, currentColor);
+        ColorScheme.adjustImageColor(CurrentPlayerImage, currentColor);
     }
 
     @FXML protected void RedButtonClicked(ActionEvent event) {
         currentColor = Color.RED;
-        Color.adjustImageColor(CurrentPlayerImage, currentColor);
+        ColorScheme.adjustImageColor(CurrentPlayerImage, currentColor);
     }
 
     @FXML protected void OrangeButtonClicked(ActionEvent event) {
         currentColor = Color.ORANGE;
-        Color.adjustImageColor(CurrentPlayerImage, currentColor);
+        ColorScheme.adjustImageColor(CurrentPlayerImage, currentColor);
     }
 
     @FXML protected void PinkButtonClicked(ActionEvent event) {
         currentColor = Color.PINK;
-        Color.adjustImageColor(CurrentPlayerImage, currentColor);
+        ColorScheme.adjustImageColor(CurrentPlayerImage, currentColor);
     }
 
     @FXML protected void BlueButtonClicked(ActionEvent event) {
         currentColor = Color.BLUE;
-        Color.adjustImageColor(CurrentPlayerImage, currentColor);
+        ColorScheme.adjustImageColor(CurrentPlayerImage, currentColor);
     }
 
     @FXML protected void GreenButtonClicked(ActionEvent event) {
         currentColor = Color.GREEN;
-        Color.adjustImageColor(CurrentPlayerImage, currentColor);
+        ColorScheme.adjustImageColor(CurrentPlayerImage, currentColor);
     }
 
     @FXML protected void TealButtonClicked(ActionEvent event) {
         currentColor = Color.TEAL;
-        Color.adjustImageColor(CurrentPlayerImage, currentColor);
+        ColorScheme.adjustImageColor(CurrentPlayerImage, currentColor);
     }
 
     @FXML protected void PurpleButtonClicked(ActionEvent event) {
         currentColor = Color.PURPLE;
-        Color.adjustImageColor(CurrentPlayerImage, currentColor);
+        ColorScheme.adjustImageColor(CurrentPlayerImage, currentColor);
     }
 
     @FXML protected void BlackButtonClicked(ActionEvent event) {
         currentColor = Color.BLACK;
-        Color.adjustImageColor(CurrentPlayerImage, currentColor);
+        ColorScheme.adjustImageColor(CurrentPlayerImage, currentColor);
     }
 
     public void setReturnCB(ReturnToCallback returnCB){

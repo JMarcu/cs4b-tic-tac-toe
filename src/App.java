@@ -1,7 +1,4 @@
 import java.util.UUID;
-import java.util.function.Function;
-
-import javax.lang.model.type.NullType;
 
 import controllers.GameBoard;
 import controllers.ScoreBoard;
@@ -11,8 +8,8 @@ import controllers.ShapeColorController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import models.Color;
 import models.GameMode;
 import models.GameState;
 import models.MarkerShape;

@@ -13,7 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 
 import javafx.event.ActionEvent;
-import models.Color;
+import models.ColorScheme;
 import models.GameMode;
 import models.GameState;
 import models.Player;
@@ -131,7 +131,7 @@ public class GameBoard{
             final Image newImage = new Image(newUrl);
             iv.setImage(newImage);
         }
-        Color.adjustImageColor(iv, player.getColor());
+        ColorScheme.adjustImageColor(iv, player.getColor());
     }
 
     //Binds the player to their chosen image/shape

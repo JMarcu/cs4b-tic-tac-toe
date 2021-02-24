@@ -14,7 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import models.Player;
-import models.Color;
+import models.ColorScheme;
 
 public class Board{
     private final String ASSETS_DIRECTORY = "/assets/images/";
@@ -116,7 +116,7 @@ public class Board{
     private ImageView createImageView(){
         final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());
         ImageView iv = new ImageView(new Image(newUrl));
-        Color.adjustImageColor(iv, player.getColor());
+        ColorScheme.adjustImageColor(iv, player.getColor());
         iv.setFitHeight(100);
         iv.setFitWidth(100);
         if(!views.containsKey(player.getUuid())){
@@ -132,7 +132,7 @@ public class Board{
             final Image newImage = new Image(newUrl);
             iv.setImage(newImage);
         }
-        Color.adjustImageColor(iv, player.getColor());
+        ColorScheme.adjustImageColor(iv, player.getColor());
     }
 
     public void setPlayer(Player playerToSet) {

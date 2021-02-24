@@ -15,6 +15,7 @@ import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
@@ -24,9 +25,10 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
-import models.Color;
+import models.ColorScheme;
 import models.GameMode;
 import models.MarkerShape;
 import models.Player;
@@ -86,6 +88,7 @@ public class MainMenu {
         // this.secondaryOptionTF.setTextFormatter(new TextFormatter<String>(numberValidator));
         this.setPlayers(playerOne, playerTwo);
         this.animateSinglePlayerButtons();
+        this.root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
         this.root.getStylesheets().add(getClass().getResource("/styles/main-menu.css").toExternalForm());
     }
 
@@ -187,7 +190,10 @@ public class MainMenu {
     private void animateSinglePlayerButtons(){
         ToggleButton darkBtn = this.singlePlayer ? this.aiBtn : this.humanBtn;
         ToggleButton lightBtn = this.singlePlayer ? this.humanBtn : this.aiBtn;
-        
+
+        Color darkColor = ColorScheme.SECONDARY.getColor();
+        Color lightColor = ColorScheme.SECONDARY_LIGHT.getColor();
+
         final Animation lightToDark = new Transition(){
             {
                 setCycleDuration(Duration.millis(150));
@@ -196,19 +202,13 @@ public class MainMenu {
 
             @Override
             protected void interpolate(double frac) {
-                javafx.scene.paint.Color vColor = new javafx.scene.paint.Color(
-                    0.40 - (frac * 0.21), 
-                    0.42 - (frac * 0.17), 
-                    0.82 - (frac * 0.20), 
-                    1
-                );
-                darkBtn.setBackground(new Background(new BackgroundFill(vColor, new CornerRadii(4), Insets.EMPTY)));
+                darkBtn.setBackground(new Background(new BackgroundFill(
+                    darkColor.interpolate(lightColor, frac), 
+                    new CornerRadii(4), 
+                    Insets.EMPTY
+                )));
             }
         };
-        lightToDark.setOnFinished((onFinishedAction) -> {
-            darkBtn.setStyle("-fx-background-color: #303f9f; -fx-border-color: #001970;");
-        });
-        lightToDark.play();
 
         final Animation darkToLight = new Transition(){
             {
@@ -218,18 +218,15 @@ public class MainMenu {
 
             @Override
             protected void interpolate(double frac) {
-                javafx.scene.paint.Color vColor = new javafx.scene.paint.Color(
-                    0.19 + (frac * 0.21), 
-                    0.25 + (frac * 0.17), 
-                    0.62 + (frac * 0.20), 
-                    1
-                );
-                lightBtn.setBackground(new Background(new BackgroundFill(vColor, new CornerRadii(4), Insets.EMPTY)));
+                lightBtn.setBackground(new Background(new BackgroundFill(
+                    lightColor.interpolate(darkColor, frac), 
+                    new CornerRadii(4), 
+                    Insets.EMPTY
+                )));
             }
         };
-        darkToLight.setOnFinished((onFinishedAction) -> {
-            lightBtn.setStyle("-fx-background-color: #666ad1");
-        });
+
+        lightToDark.play();
         darkToLight.play();
     }
 
@@ -260,7 +257,7 @@ public class MainMenu {
                 final Image newImage = new Image(newUrl);
                 iv.setImage(newImage);
             }
-            Color.adjustImageColor(iv, player.getColor());
+            ColorScheme.adjustImageColor(iv, player.getColor());
         }
     }
 }

@@ -1,0 +1,12 @@
+* {
+    -primary: #455a64;
+    -primary-dark: #1c313a;
+    -primary-light: #718792;
+
+    -secondary: #303f9f;
+    -secondary-dark: #666ad1;
+    -secondary-light: #001970;
+
+    -text-on-primary: #eeeeee;
+    -text-on-secondary: #ffffff;
+}
