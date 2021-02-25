@@ -50,7 +50,8 @@ public class MainMenu {
 
     private final String ASSETS_DIRECTORY = "/assets/images/";
 
-    @FXML private ToggleButton   aiBtn;    
+    @FXML private ToggleButton   aiBtn;
+    @FXML private ImageView      gearIV;
     @FXML private ToggleButton   humanBtn;
     // @FXML private ChoiceBox<String> gameModeCB;
     @FXML private TextField      playerOneNameTF;
@@ -73,6 +74,7 @@ public class MainMenu {
     @FXML
     void initialize() {
         this.aiBtn.setSelected(true);
+        ColorScheme.adjustImageColor(gearIV, ColorScheme.TEXT_ON_SECONDARY.getColor());
         // this.gameModeCB.setItems(GameMode.toObservableArray());
         // this.gameModeCB.setValue(GameMode.FREE_PLAY.toString());
         // final UnaryOperator<TextFormatter.Change> numberValidator = change -> {
