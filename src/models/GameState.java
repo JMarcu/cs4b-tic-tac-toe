@@ -6,4 +6,7 @@ public class GameState {
     public Player playerOne;
     public Player playerTwo;
     public int secondaryOption;
+    
+    public Player winner;
+    public boolean isDraw;
 }

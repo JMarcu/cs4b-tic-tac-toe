@@ -86,7 +86,8 @@ public class GameBoard{
         updateImage(playerOneShapeIV, playerOne);
         updateImage(playerTwoShapeIV, playerTwo);
 
-        boardController.setPlayer(playerOne);
+        //boardController.setPlayer(playerOne);
+        boardController.setPlayers(playerOne, playerTwo);
     }
     
     @FXML 
