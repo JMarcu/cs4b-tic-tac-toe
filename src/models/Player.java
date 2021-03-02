@@ -7,6 +7,8 @@ import java.util.concurrent.Flow.Subscriber;
 
 import javax.lang.model.type.NullType;
 
+import javafx.scene.paint.Color;
+
 public class Player implements Publisher<NullType> {
     private Color color;
     private UUID id;

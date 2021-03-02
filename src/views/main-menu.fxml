@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -18,113 +25,124 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainMenu">
-   <bottom>
-      <Pane prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-   </bottom>
-   <right>
-      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-   </right>
-   <left>
-      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-   </left>
-   <center>
-      <VBox maxHeight="900.0" maxWidth="1400.0" prefHeight="1000.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <children>
-            <HBox maxHeight="150.0" prefHeight="100.0" prefWidth="200.0">
+
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="425.0" prefWidth="625.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainMenu">
+   <content>
+      <BorderPane fx:id="root" minHeight="400.0" minWidth="600.0" style="-fx-background-color: -primary; -fx-border-color: -primary;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <bottom>
+            <Pane minHeight="100.0" BorderPane.alignment="CENTER" />
+         </bottom>
+         <center>
+            <VBox maxHeight="900.0" maxWidth="1400.0" BorderPane.alignment="CENTER">
                <children>
-                  <ToggleButton fx:id="aiBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="10000.0" text="vs AI" HBox.hgrow="ALWAYS">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="singlePlayer" />
-                     </toggleGroup></ToggleButton>
-                  <ToggleButton fx:id="humanBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="10000.0" text="vs Human" toggleGroup="$singlePlayer" HBox.hgrow="ALWAYS" />
+                  <HBox maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                     <children>
+                        <ToggleButton fx:id="aiBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAiAction" styleClass="toggle-btn" text="vs AI" HBox.hgrow="ALWAYS">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <toggleGroup>
+                              <ToggleGroup fx:id="singlePlayer" />
+                           </toggleGroup>
+                        </ToggleButton>
+                        <ToggleButton fx:id="humanBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onHumanAction" styleClass="toggle-btn" text="vs Human" toggleGroup="$singlePlayer" HBox.hgrow="ALWAYS">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ToggleButton>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </HBox>
+                  <Separator maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
+                  <GridPane maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayerOneShapeAction" GridPane.columnIndex="2">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <graphic>
+                              <ImageView fx:id="playerOneShapeIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../assets/images/x.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <TextField fx:id="playerOneNameTF" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyTyped="#onPlayerOneKeyTyped" promptText="Player 1" styleClass="textfield" text="Player 1" GridPane.columnSpan="2" GridPane.vgrow="ALWAYS" />
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
+                     </rowConstraints>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </GridPane>
+                  <Separator layoutX="10.0" layoutY="35.0" maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
+                  <GridPane layoutX="10.0" layoutY="35.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <TextField fx:id="playerTwoNameTF" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyTyped="#onPlayerTwoKeyTyped" promptText="Player 2" styleClass="textfield" text="Player 2" GridPane.columnSpan="2" GridPane.vgrow="ALWAYS" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayerTwoShapeAction" GridPane.columnIndex="2">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <graphic>
+                              <ImageView fx:id="playerTwoShapeIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../assets/images/o.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
+                     </rowConstraints>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </GridPane>
+                  <Separator layoutX="10.0" layoutY="85.0" maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayAction" text="Play" VBox.vgrow="ALWAYS">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
                </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </HBox>
-            <Separator maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
-            <GridPane maxHeight="150.0" prefHeight="200.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
-              </rowConstraints>
+            </VBox>
+         </center>
+         <left>
+            <Pane minWidth="100.0" style="-fx-background-color: ;" BorderPane.alignment="CENTER" />
+         </left>
+         <right>
+            <Pane maxWidth="1.7976931348623157E308" minWidth="100.0" BorderPane.alignment="CENTER" />
+         </right>
+         <top>
+            <AnchorPane minHeight="100.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="30.0" mnemonicParsing="false" onAction="#onPlayerOneShapeAction" prefHeight="100.0" GridPane.columnIndex="2">
+                  <Button mnemonicParsing="false" onAction="#onOptions" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
                      <graphic>
-                        <ImageView fx:id="playerOneShapeIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="gearIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../assets/images/x.png" />
+                              <Image url="@../assets/images/gear.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <TextField fx:id="playerOneNameTF" maxHeight="1.7976931348623157E308" minHeight="30.0" onKeyTyped="#onPlayerOneKeyTyped" prefHeight="100.0" promptText="Player 1" text="Player 1" GridPane.columnSpan="2" GridPane.vgrow="ALWAYS" />
                </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </GridPane>
-            <Separator layoutX="10.0" layoutY="35.0" maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
-            <GridPane layoutX="10.0" layoutY="35.0" maxHeight="150.0" prefHeight="200.0">
-               <children>
-                  <TextField fx:id="playerTwoNameTF" maxHeight="1.7976931348623157E308" minHeight="30.0" onKeyTyped="#onPlayerTwoKeyTyped" promptText="Player 2" text="Player 2" GridPane.columnSpan="2" GridPane.vgrow="ALWAYS" />
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="30.0" mnemonicParsing="false" onAction="#onPlayerTwoShapeAction" GridPane.columnIndex="2">
-                     <graphic>
-                        <ImageView fx:id="playerTwoShapeIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../assets/images/o.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-               </children>
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
-               </rowConstraints>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </GridPane>
-            <Separator layoutX="10.0" layoutY="85.0" maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
-            <!-- <ChoiceBox fx:id="gameModeCB" maxHeight="150.0" maxWidth="1.7976931348623157E308" onAction="#onGameModeAction" prefWidth="150.0" VBox.vgrow="ALWAYS">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </ChoiceBox>
-            <Separator layoutX="10.0" layoutY="125.0" maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
-            <TextField fx:id="secondaryOptionTF" disable="true" maxHeight="150.0" onKeyTyped="#onSecondaryOptionKeyTyped" prefHeight="100.0">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </TextField> -->
-            <Separator layoutX="10.0" layoutY="150.0" maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
-            <Button maxHeight="150.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayAction" prefHeight="100.0" text="Play" />
-         </children>
-      </VBox>
-   </center>
-   <top>
-      <AnchorPane maxHeight="100.0" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button mnemonicParsing="false" onAction="#onOptions" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
-               <graphic>
-                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../assets/images/gear.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-         </children>
-      </AnchorPane>
-   </top>
-</BorderPane>
+            </AnchorPane>
+         </top>
+      </BorderPane>
+   </content>
+</ScrollPane>

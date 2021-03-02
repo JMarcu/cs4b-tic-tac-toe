@@ -9,14 +9,26 @@ import java.util.concurrent.Flow.Subscription;
 
 import javax.lang.model.type.NullType;
 
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import models.Color;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
+
+import models.ColorScheme;
 import models.GameMode;
 import models.MarkerShape;
 import models.Player;
@@ -38,24 +50,18 @@ public class MainMenu {
 
     private final String ASSETS_DIRECTORY = "/assets/images/";
 
-    @FXML
-    private ToggleButton aiBtn;
-    // @FXML
-    // private ChoiceBox<String> gameModeCB;
-    @FXML
-    private TextField playerOneNameTF;
-    @FXML
-    private ImageView playerOneShapeIV;
-    @FXML
-    private TextField playerTwoNameTF;
-    @FXML
-    private ImageView playerTwoShapeIV;
-    @FXML
-    private URL location;
-    @FXML
-    private ResourceBundle resources;
-    // @FXML
-    // private TextField secondaryOptionTF;
+    @FXML private ToggleButton   aiBtn;
+    @FXML private ImageView      gearIV;
+    @FXML private ToggleButton   humanBtn;
+    // @FXML private ChoiceBox<String> gameModeCB;
+    @FXML private TextField      playerOneNameTF;
+    @FXML private ImageView      playerOneShapeIV;
+    @FXML private TextField      playerTwoNameTF;
+    @FXML private ImageView      playerTwoShapeIV;
+    @FXML private URL            location;
+    @FXML private ResourceBundle resources;
+    @FXML private BorderPane     root;
+    // @FXML private TextField secondaryOptionTF;
 
     public MainMenu(){
         this.playerOne = new Player(Color.BLACK, UUID.randomUUID(), "Player 1", MarkerShape.X);
@@ -68,6 +74,7 @@ public class MainMenu {
     @FXML
     void initialize() {
         this.aiBtn.setSelected(true);
+        ColorScheme.adjustImageColor(gearIV, ColorScheme.TEXT_ON_SECONDARY.getColor());
         // this.gameModeCB.setItems(GameMode.toObservableArray());
         // this.gameModeCB.setValue(GameMode.FREE_PLAY.toString());
         // final UnaryOperator<TextFormatter.Change> numberValidator = change -> {
@@ -82,6 +89,17 @@ public class MainMenu {
         // this.secondaryOptionTF.setDisable(true);
         // this.secondaryOptionTF.setTextFormatter(new TextFormatter<String>(numberValidator));
         this.setPlayers(playerOne, playerTwo);
+        this.animateSinglePlayerButtons();
+        this.root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
+        this.root.getStylesheets().add(getClass().getResource("/styles/main-menu.css").toExternalForm());
+    }
+
+    @FXML
+    private void onAiAction(){
+        if(!this.singlePlayer){
+            this.singlePlayer = true;
+            this.animateSinglePlayerButtons();
+        }
     }
 
     @FXML
@@ -102,6 +120,14 @@ public class MainMenu {
         //         this.secondaryOptionTF.setDisable(true);
         //         break;
         // }
+    }
+
+    @FXML
+    private void onHumanAction(){
+        if(this.singlePlayer){
+            this.singlePlayer = false;
+            this.animateSinglePlayerButtons();
+        }
     }
 
     @FXML
@@ -163,6 +189,49 @@ public class MainMenu {
     }
     public void setShapePickerCB(LaunchShapePickerCallback shapePickerCB){this.shapePickerCB = shapePickerCB;}
 
+    private void animateSinglePlayerButtons(){
+        ToggleButton darkBtn = this.singlePlayer ? this.aiBtn : this.humanBtn;
+        ToggleButton lightBtn = this.singlePlayer ? this.humanBtn : this.aiBtn;
+
+        Color darkColor = ColorScheme.SECONDARY.getColor();
+        Color lightColor = ColorScheme.SECONDARY_LIGHT.getColor();
+
+        final Animation lightToDark = new Transition(){
+            {
+                setCycleDuration(Duration.millis(150));
+                setInterpolator(Interpolator.EASE_OUT);
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+                darkBtn.setBackground(new Background(new BackgroundFill(
+                    darkColor.interpolate(lightColor, frac), 
+                    new CornerRadii(4), 
+                    Insets.EMPTY
+                )));
+            }
+        };
+
+        final Animation darkToLight = new Transition(){
+            {
+                setCycleDuration(Duration.millis(150));
+                setInterpolator(Interpolator.EASE_OUT);
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+                lightBtn.setBackground(new Background(new BackgroundFill(
+                    lightColor.interpolate(darkColor, frac), 
+                    new CornerRadii(4), 
+                    Insets.EMPTY
+                )));
+            }
+        };
+
+        lightToDark.play();
+        darkToLight.play();
+    }
+
     private void bindPlayers(ImageView iv, Player player){
         player.subscribe(new Subscriber<NullType>(){
 			@Override
@@ -190,7 +259,7 @@ public class MainMenu {
                 final Image newImage = new Image(newUrl);
                 iv.setImage(newImage);
             }
-            Color.adjustImageColor(iv, player.getColor());
+            ColorScheme.adjustImageColor(iv, player.getColor());
         }
     }
 }
