@@ -51,17 +51,15 @@ public class GameState implements Publisher<NullType>  {
         }
     }
 
-    public void setCellPlayer(int x, int y, Player player) {
+    public Player setCellPlayer(int x, int y, Player player) {
         if(x < 0 || x > 2 || y < 0 || y > 2){
             throw new IllegalArgumentException("Cell coordinates must be greater than or equal to 0 and less than 3.");
         } else if(this.grid[x][y] != null){
             throw new IllegalArgumentException("Cell is already claimed.");
         } else if(player.equals(players.getValue0())){
-            this.grid[x][y] = players.getValue0();
-            this.notifySubscribers();
+            return makeMove(x, y, players.getValue0());
         } else if(player.equals(players.getValue1())){
-            this.grid[x][y] = players.getValue1();
-            this.notifySubscribers();
+            return makeMove(x, y, players.getValue1());
         } else{
             throw new IllegalArgumentException("Player is not a participant in this game.");
         }
@@ -70,6 +68,43 @@ public class GameState implements Publisher<NullType>  {
     @Override
     public void subscribe(Subscriber<? super NullType> subscriber) {
         this.subscribers.add(subscriber);
+    }
+
+    private Player checkRow(int x){
+        return grid[x][0] != null && grid[x][0].equals(grid[x][1]) && grid[x][1].equals(grid[x][2])
+            ? grid[x][0]
+            : null;
+    }
+
+    private Player makeMove(int playToX, int playToY, Player player){
+        this.grid[playToX][playToY] = player;
+        
+        int x = 0;
+        boolean keepSearching = true;
+        Player winner = null;
+        while(keepSearching){
+            if(x < 3){
+                winner = checkRow(x);
+                keepSearching = winner == null;
+                x++;
+            } else {
+                keepSearching = false;
+
+                if(
+                    grid[0][0] != null && grid[0][0].equals(grid[1][1]) && grid[1][1].equals(grid[2][2]) ||
+                    grid[0][2] != null && grid[0][2].equals(grid[1][1]) && grid[1][1].equals(grid[2][0])
+                ){
+                    winner = grid[1][1];
+                }
+            }
+        }
+
+        if(winner != null){
+            this.winner = winner;
+        }
+
+        this.notifySubscribers();
+        return winner;
     }
 
     private void notifySubscribers(){
