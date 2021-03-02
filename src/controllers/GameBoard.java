@@ -14,7 +14,6 @@ import javafx.scene.input.KeyEvent;
 
 import javafx.event.ActionEvent;
 import models.ColorScheme;
-import models.GameMode;
 import models.GameState;
 import models.Player;
 import models.TTTScene;
@@ -24,12 +23,8 @@ import models.SceneCallback.LaunchScoreBoardCallback;
 
 
 public class GameBoard{
-
-    private boolean singlePlayer;
-    private GameMode gameMode; 
-    private Player playerOne;
-    private Player playerTwo;
-    private int secondaryOption;
+    
+    private GameState gameState;
 
     private LaunchOptionsMenuCallback optionsMenuCB;
     private LaunchShapePickerCallback shapePickerCB;
@@ -60,34 +55,24 @@ public class GameBoard{
     private Board boardController;
     
     public GameBoard(){
-        this.singlePlayer = false;
-        this.gameMode = null;
-        this.playerOne = null;
-        this.playerTwo = null;
-        this.secondaryOption = 0;
+        this.gameState = new GameState();
         this.subscriptions = new ArrayList<>();
     }
 
     //Loads data from launchGame
-    public void loadData(boolean singlePlayer, GameMode gameMode, Player playerOne, Player playerTwo, int secondaryOption){
+    public void setGameState(GameState gameState){
+        this.gameState = gameState;
 
-        this.singlePlayer = singlePlayer;
-        this.gameMode = gameMode;
-        this.playerOne = playerOne;
-        this.playerTwo = playerTwo;
-        this.secondaryOption = secondaryOption;
+        playerOneTF.setText(gameState.getPlayers().getValue0().getName());
+        playerTwoTF.setText(gameState.getPlayers().getValue1().getName());
 
-        playerOneTF.setText(playerOne.getName());
-        playerTwoTF.setText(playerTwo.getName());
+        bindPlayers(playerOneShapeIV, gameState.getPlayers().getValue0());
+        bindPlayers(playerTwoShapeIV, gameState.getPlayers().getValue1());
 
-        bindPlayers(playerOneShapeIV, playerOne);
-        bindPlayers(playerTwoShapeIV, playerTwo);
+        updateImage(playerOneShapeIV, gameState.getPlayers().getValue0());
+        updateImage(playerTwoShapeIV, gameState.getPlayers().getValue1());
 
-        updateImage(playerOneShapeIV, playerOne);
-        updateImage(playerTwoShapeIV, playerTwo);
-
-        //boardController.setPlayer(playerOne);
-        boardController.setPlayers(playerOne, playerTwo);
+        boardController.setPlayers(gameState.getPlayers().getValue0(), gameState.getPlayers().getValue1());
     }
     
     @FXML 
@@ -95,34 +80,34 @@ public class GameBoard{
 
     @FXML //Sets Playerone's name on the textfield for the gameboard
     private void onPlayerOneTF(KeyEvent event){
-        this.playerOne.setName(this.playerOneTF.getText());
+        gameState.getPlayers().getValue0().setName(this.playerOneTF.getText());
     }
 
     @FXML //Sets Playertwo's name on the textfield for the gameboard
     private void onPlayerTwoTF(KeyEvent event){
-        this.playerTwo.setName(this.playerTwoTF.getText());
+        gameState.getPlayers().getValue1().setName(this.playerTwoTF.getText());
     }
 
     @FXML //Allows playerone to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerOneShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(this.playerOne, TTTScene.GAME_BOARD, this.generateGameState());
+        this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue0(), TTTScene.GAME_BOARD, gameState);
     }
 
     @FXML //Allows playertwo to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerTwoShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(this.playerTwo, TTTScene.GAME_BOARD, this.generateGameState());
+        this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue1(), TTTScene.GAME_BOARD, gameState);
     }
 
     @FXML //Allows playerone to use the options menu by pressing the gear button
     private void onOption(ActionEvent event){
       // System.out.println("onOption");
-        this.optionsMenuCB.launchOptionsMenu(this.playerOne.getUuid(), TTTScene.GAME_BOARD, this.generateGameState());
+        this.optionsMenuCB.launchOptionsMenu(gameState.getPlayers().getValue0().getUuid(), TTTScene.GAME_BOARD, gameState);
     }
 
     @FXML //Allows playerone to access the scoreboard by pressing the scoreboard button
     private void onScoreBoard(ActionEvent event){
         // System.out.println("onScoreBoard");
-        this.scoreBoardCB.launchScoreBoard(this.playerOne.getUuid(), TTTScene.GAME_BOARD, this.generateGameState());
+        this.scoreBoardCB.launchScoreBoard(gameState.getPlayers().getValue0().getUuid(), TTTScene.GAME_BOARD, gameState);
     }
 
     @FXML //Checks whetheer or not the image is already in use or null and sets it if both ar false
@@ -156,19 +141,7 @@ public class GameBoard{
         });
     }
 
-    private GameState generateGameState(){
-        final GameState gameState = new GameState();
-        gameState.gameMode = gameMode;
-        gameState.playerOne = playerOne;
-        gameState.playerTwo = playerTwo;
-        gameState.secondaryOption = secondaryOption;
-        gameState.singlePlayer = singlePlayer;
-        return gameState;
-    }
-
     public void setShapePickerCB(LaunchShapePickerCallback shapePickerCB){this.shapePickerCB = shapePickerCB;}
     public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB){this.optionsMenuCB = optionsMenuCB;}
     public void setScoreBoardCB(LaunchScoreBoardCallback scoreBoardCB){this.scoreBoardCB = scoreBoardCB;}
-    
-    public Player TEMPORARY_GET_PLAYER_FOR_TESTING(){return this.playerOne;}
 }

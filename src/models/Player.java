@@ -63,4 +63,8 @@ public class Player implements Publisher<NullType> {
             this.subscribers.remove(subscriber);
         });
     }
+
+    public boolean equals(Player otherPlayer){
+        return id == otherPlayer.id;
+    }
 }
