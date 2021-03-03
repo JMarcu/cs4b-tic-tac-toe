@@ -22,6 +22,7 @@ public class ShapeColorController {
     {
         CurrentPlayerImage.setImage(new Image("assets/images/" + player.getShape().getFilename()));
         currentColor = player.getColor();
+        myShape = player.getShape();
         this.player = player;
         ColorScheme.adjustImageColor(CurrentPlayerImage, currentColor);
     }
