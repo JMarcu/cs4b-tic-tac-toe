@@ -15,7 +15,7 @@ public class SplashScreen {
 
     @FXML
     private void Initialize() {
-        Image image = new Image("src/assets/images/trophy.png");
+        Image image = new Image("src/assets/images/splash/trophy.png");
         splashImageView.setImage(image);
         splashText.setText("YOU WON!");
     }
