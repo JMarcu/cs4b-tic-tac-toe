@@ -1,14 +1,7 @@
 package models.SceneCallback;
 
-import models.GameMode;
-import models.Player;
+import models.GameState;
 
 public interface LaunchGameCallback {
-    public void launchGame(
-        boolean singlePlayer, 
-        GameMode gameMode,
-        Player playerOne,
-        Player playerTwo,
-        int secondaryOption
-    );
+    public void launchGame(GameState gameState);
 }
