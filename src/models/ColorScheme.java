@@ -25,7 +25,6 @@ public enum ColorScheme {
     }
 
     public static void adjustImageColor(ImageView iv, Color color){
-
         double hue;
         double brightness = 0;
         double saturation = 1;

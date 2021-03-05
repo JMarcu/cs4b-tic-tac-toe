@@ -108,6 +108,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
 
     @Override
     public void launchShapePicker(Player player, TTTScene returnTo, GameState gameState) {
+        System.out.println("launchShapePicker: " + gameState);
         try{
             ShapeColorController markerMenu = markerPickerFXML.getController();
             markerMenu.acceptPlayer(player);
@@ -134,6 +135,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         switch(scene){
             case GAME_BOARD: 
                 if(gameState != null){
+                    System.out.println("return to game board: " + gameState);
                     launchGame(gameState);
                 }
                 break;

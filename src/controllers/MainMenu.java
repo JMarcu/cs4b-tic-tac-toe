@@ -229,15 +229,17 @@ public class MainMenu {
     }
 
     private void bindPlayers(ImageView iv, Player player){
-        player.subscribe(new Subscriber<NullType>(){
+        player.subscribe(new Subscriber<Player.Patch>(){
 			@Override
 			public void onSubscribe(Subscription subscription) {
                 subscriptions.add(subscription);
             }
 
 			@Override
-			public void onNext(NullType item) {
-                setMarker(iv, player);
+			public void onNext(Player.Patch item) {
+                if(item.getColor() != null || item.getShape() != null){
+                    setMarker(iv, player);
+                }
 			}
 
 			@Override

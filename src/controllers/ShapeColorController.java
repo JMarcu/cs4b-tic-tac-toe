@@ -28,6 +28,7 @@ public class ShapeColorController {
     }
 
     @FXML protected void ReturnButtonClicked(ActionEvent event) {
+        System.out.println("currentColor: " + currentColor);
         player.setColor(currentColor != null ? currentColor : Color.BLACK);
         player.setShape(myShape);
         this.returnCB.returnToCB();
