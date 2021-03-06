@@ -125,14 +125,16 @@ public class Board {
 
     private void initializeIVGrid(){
         playerIVMap = new HashMap<UUID, ArrayList<ImageView>>();
-        this.playerIVMap.put(gameState.getPlayers().getValue0().getUuid(), new ArrayList<ImageView>());
-        this.playerIVMap.put(gameState.getPlayers().getValue1().getUuid(), new ArrayList<ImageView>());
+        playerIVMap.put(gameState.getPlayers().getValue0().getUuid(), new ArrayList<ImageView>());
+        playerIVMap.put(gameState.getPlayers().getValue1().getUuid(), new ArrayList<ImageView>());
 
         for(int i = 0; i < imageViewGrid.length; i++){
             for(int j = 0; j < imageViewGrid[i].length; j++){
                 if(gameState.getCell(i, j) != null){
                     createCellImage(gameState.getCell(i, j), imageViewGrid[i][j]);
-                    this.playerIVMap.get(gameState.getCell(i, j).getUuid()).add(imageViewGrid[i][j]);
+                    playerIVMap.get(gameState.getCell(i, j).getUuid()).add(imageViewGrid[i][j]);
+                } else {
+                    imageViewGrid[i][j].setImage(null);
                 }
             }
         }
@@ -157,11 +159,7 @@ public class Board {
      ************************************************************************************************************/
 
     private void onGameStatePatch(GameState.Patch patch){
-        if(patch.getStatus() == GameState.Status.WON){
-            //TODO Transition to victory splash screen.
-        } else if(patch.getStatus() == GameState.Status.DRAW){
-            //TODO Transition to draw splash screen.
-        } else if(patch.getMove() != null){
+        if(patch.getMove() != null){
             this.createCellImage(patch.getMove().getValue0(), imageViewGrid[patch.getMove().getValue1()][patch.getMove().getValue2()]);
             this.playerIVMap.get(patch.getMove().getValue0().getUuid()).add(imageViewGrid[patch.getMove().getValue1()][patch.getMove().getValue2()]);
         }

@@ -292,7 +292,8 @@ public class GameState implements Publisher<GameState.Patch>  {
                 notifySubscribers(new Patch(){
                     {
                         status = Status.WON;
-                        winner = getCurrentPlayer();
+                        move = new Triplet<Player, Integer, Integer>(GameState.this.getCurrentPlayer(), Integer.valueOf(x), Integer.valueOf(y));
+                        winner = GameState.this.winner;
                     }
                 });
             //Else if nobody has won, but the player has just played to the last empty cell, the game is a draw. 
@@ -304,8 +305,10 @@ public class GameState implements Publisher<GameState.Patch>  {
                 victoryCounts = null;
 
                 //Notifiy subscribers.
-                notifySubscribers(new Patch(){ {
+                notifySubscribers(new Patch(){ 
+                    {
                         status = Status.DRAW;
+                        move = new Triplet<Player, Integer, Integer>(GameState.this.getCurrentPlayer(), Integer.valueOf(x), Integer.valueOf(y));
                     }
                 });
             //Else if nobody has won and the game hasn't drawn, handle the player's move.

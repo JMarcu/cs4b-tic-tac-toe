@@ -1,16 +1,14 @@
 package controllers;
 
-import javafx.fxml.FXML;
-import javafx.scene.text.Text;
-import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
-import javafx.event.ActionEvent;
-
-import models.Player;
-import models.ReturnToCallback;
-
 import java.time.Duration;
 import java.time.Instant;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
+import models.Player;
+import models.SceneCallback.ReturnToCallback;
 
 public class ScoreBoard {
 
@@ -36,7 +34,7 @@ public class ScoreBoard {
     // }
     @FXML 
     protected void ReturnButtonClicked(ActionEvent event) {
-        returnCB.returnToCB();
+        returnCB.returnTo();
     }
 
     public ScoreBoard(){

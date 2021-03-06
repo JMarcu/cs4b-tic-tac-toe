@@ -1,15 +1,14 @@
 package controllers;
 
-import models.ColorScheme;
-import models.Player;
-import models.ReturnToCallback;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.*;
 import javafx.scene.paint.Color;
+import models.ColorScheme;
 import models.MarkerShape;
+import models.Player;
+import models.SceneCallback.ReturnToCallback;
 
 public class ShapeColorController {
     @FXML
@@ -38,7 +37,7 @@ public class ShapeColorController {
         System.out.println("currentColor: " + currentColor);
         player.setColor(currentColor != null ? currentColor : Color.BLACK);
         player.setShape(myShape);
-        this.returnCB.returnToCB();
+        returnCB.returnTo();
     }
 
     @FXML protected void XButtonClicked(ActionEvent event) {
