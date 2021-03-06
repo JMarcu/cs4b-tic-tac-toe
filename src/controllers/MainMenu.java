@@ -7,8 +7,6 @@ import java.util.UUID;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
-import javax.lang.model.type.NullType;
-
 import org.javatuples.Pair;
 
 import javafx.animation.Animation;
@@ -17,6 +15,7 @@ import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
@@ -62,7 +61,7 @@ public class MainMenu {
     @FXML private ImageView      playerTwoShapeIV;
     @FXML private URL            location;
     @FXML private ResourceBundle resources;
-    @FXML private BorderPane     root;
+    @FXML private ScrollPane     root;
     // @FXML private TextField secondaryOptionTF;
 
     public MainMenu(){
@@ -134,7 +133,7 @@ public class MainMenu {
 
     @FXML
     void onOptions(ActionEvent event) {
-        this.optionsMenuCB.launchOptionsMenu(this.playerOne.getUuid(), TTTScene.MAIN_MENU, null);
+        this.optionsMenuCB.launchOptionsMenu();
     }
 
     @FXML
@@ -150,7 +149,7 @@ public class MainMenu {
 
     @FXML
     void onPlayerOneShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(this.playerOne, TTTScene.MAIN_MENU, null);
+        this.shapePickerCB.launchShapePicker(this.playerOne);
     }
 
     @FXML
@@ -160,7 +159,7 @@ public class MainMenu {
 
     @FXML
     void onPlayerTwoShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(this.playerTwo, TTTScene.MAIN_MENU, null);
+        this.shapePickerCB.launchShapePicker(this.playerTwo);
     }
 
     @FXML
@@ -168,6 +167,8 @@ public class MainMenu {
         // final String text = this.secondaryOptionTF.getText();
         // this.secondaryOption = text == "" ? 0 : Integer.valueOf(text);
     }
+
+    public ScrollPane getRoot(){ return this.root; }
 
     public void setLaunchGameCB(LaunchGameCallback launchGameCB){this.launchGameCB = launchGameCB;}
     public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB){this.optionsMenuCB = optionsMenuCB;}

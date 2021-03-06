@@ -6,6 +6,7 @@ import models.ReturnToCallback;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.SplitPane;
 import javafx.scene.image.*;
 import javafx.scene.paint.Color;
 import models.MarkerShape;
@@ -13,6 +14,10 @@ import models.MarkerShape;
 public class ShapeColorController {
     @FXML
     private ImageView CurrentPlayerImage;
+
+    @FXML
+    private SplitPane root;
+
     private Color currentColor;
     private MarkerShape myShape;
     private Player player;
@@ -26,6 +31,8 @@ public class ShapeColorController {
         this.player = player;
         ColorScheme.adjustImageColor(CurrentPlayerImage, currentColor);
     }
+
+    public SplitPane getRoot(){ return this.root; }
 
     @FXML protected void ReturnButtonClicked(ActionEvent event) {
         System.out.println("currentColor: " + currentColor);

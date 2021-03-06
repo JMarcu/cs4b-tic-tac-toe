@@ -3,6 +3,7 @@ package controllers;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.event.ActionEvent;
 
 import models.Player;
@@ -22,6 +23,11 @@ public class ScoreBoard {
     private Text scoreDisplay = new Text();
     private ReturnToCallback returnCB;
     private Button Return;
+
+    @FXML
+    private AnchorPane root;
+
+    public AnchorPane getRoot(){ return this.root; }
     // private Button Reset;
 
     // @FXML 

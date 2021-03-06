@@ -66,6 +66,7 @@ public class Board {
      * ACCESSORS & MUTATORS
      ************************************************************************************************************/
     public void setGameState(GameState gameState){
+        System.out.println("setGameState: " + gameState);
         this.gameState = gameState;
 
         if(this.gameStateSubscription != null){ this.gameStateSubscription.cancel(); }
@@ -73,8 +74,14 @@ public class Board {
         if(this.playerTwoSubscription != null){ this.playerTwoSubscription.cancel(); }
         
         this.gameState.subscribe(new Subscriber<GameState.Patch>(){
-			@Override public void onSubscribe(Subscription subscription) {gameStateSubscription = subscription; }
-			@Override public void onNext(GameState.Patch item) { onGameStatePatch(item); }
+			@Override public void onSubscribe(Subscription subscription) { 
+                gameStateSubscription = subscription; 
+                gameStateSubscription.request(1);
+            }
+			@Override public void onNext(GameState.Patch item) { 
+                onGameStatePatch(item); 
+                gameStateSubscription.request(1);
+            }
 			@Override public void onError(Throwable throwable) { }
 			@Override public void onComplete() { }
         });
@@ -157,7 +164,6 @@ public class Board {
         } else if(patch.getMove() != null){
             this.createCellImage(patch.getMove().getValue0(), imageViewGrid[patch.getMove().getValue1()][patch.getMove().getValue2()]);
             this.playerIVMap.get(patch.getMove().getValue0().getUuid()).add(imageViewGrid[patch.getMove().getValue1()][patch.getMove().getValue2()]);
-            System.out.println("this.playerIVMap.get(patch.getMove().getValue0().getUuid()).size(): " + this.playerIVMap.get(patch.getMove().getValue0().getUuid()).size());
         }
     }
 
