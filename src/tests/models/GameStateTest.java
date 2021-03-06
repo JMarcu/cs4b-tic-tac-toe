@@ -1,4 +1,4 @@
-package test.models;
+package tests.models;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
+import java.util.stream.Stream;
+
 import models.GameMode;
 import models.GameState;
 import models.GameState.Patch;
@@ -15,9 +17,9 @@ import models.Player;
 import org.javatuples.Pair;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 public class GameStateTest {
@@ -57,7 +59,7 @@ public class GameStateTest {
         assertEquals(gameState.getSinglePlayer(), isSinglePlayer);
     }
 
-    @Test
+    @ParameterizedTest
     @ValueSource(ints = { -1, 0, 1})
     void getSecondaryOption(int secondaryOption) {
         GameState gameState = new GameState(
@@ -77,7 +79,7 @@ public class GameStateTest {
     void throwsOobCellCoords(int x, int y) {
         GameState gameState = new GameState();
 
-        assertThrows(IllegalAccessException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             gameState.setCell(x, y);
         });
     }
@@ -113,7 +115,7 @@ public class GameStateTest {
     }
 
     @Test
-    void throwsAlreadClaimedCell(){
+    void throwsAlreadyClaimedCell(){
         GameState gameState = new GameState();
         gameState.setCell(0, 0);
         assertThrows(IllegalArgumentException.class, () -> {
@@ -140,8 +142,22 @@ public class GameStateTest {
         assertEquals(gameState.getCurrentPlayer(), playerOne);
     }
 
+    static Stream<int[][]> detectVictory() {
+        final int[][][] arr = new int[][][] {
+            new int[][] {new int[] {2, 2}, new int[] {0, 0}, new int[] {1, 0}, new int[] {0, 1}, new int[] {1, 1}, new int[] {0, 2}},
+            new int[][] {new int[] {2, 2}, new int[] {1, 0}, new int[] {0, 0}, new int[] {1, 1}, new int[] {0, 1}, new int[] {1, 2}},
+            new int[][] {new int[] {1, 1}, new int[] {2, 0}, new int[] {0, 0}, new int[] {2, 1}, new int[] {0, 1}, new int[] {2, 2}},
+            new int[][] {new int[] {2, 2}, new int[] {0, 0}, new int[] {0, 1}, new int[] {1, 0}, new int[] {0, 2}, new int[] {2, 0}},
+            new int[][] {new int[] {2, 2}, new int[] {0, 1}, new int[] {0, 0}, new int[] {1, 1}, new int[] {0, 2}, new int[] {2, 1}},
+            new int[][] {new int[] {1, 1}, new int[] {0, 2}, new int[] {0, 0}, new int[] {1, 2}, new int[] {0, 1}, new int[] {2, 2}},
+            new int[][] {new int[] {1, 0}, new int[] {0, 0}, new int[] {0, 1}, new int[] {1, 1}, new int[] {0, 2}, new int[] {2, 2}},
+            new int[][] {new int[] {0, 1}, new int[] {0, 2}, new int[] {1, 0}, new int[] {1, 1}, new int[] {1, 2}, new int[] {2, 0}}
+        };
+        return Stream.of(arr);
+    }
+
     @ParameterizedTest
-    @CsvFileSource(files = "../source-files/detectVictory.csv")
+    @MethodSource
     void detectVictory(int[][] moves){
         Player playerOne = new Player();
         Player playerTwo = new Player();
@@ -164,15 +180,15 @@ public class GameStateTest {
             new Pair<Player, Player>(playerOne, playerTwo),
             false
         );
-        
+
         //In this game, player one does use the first move in the array.
         //This offsets who plays which move and results in a player two victory.
         playerTwoVictory.setCell(moves[0][0], moves[0][1]);
         for(int i = 1; i < moves.length; i++){
-            playerOneVictory.setCell(moves[i][0], moves[i][1]);
+            playerTwoVictory.setCell(moves[i][0], moves[i][1]);
         }
-        assertEquals(playerOneVictory.getStatus(), GameState.Status.WON);
-        assertEquals(playerOneVictory.getWinner(), playerTwo);
+        assertEquals(playerTwoVictory.getStatus(), GameState.Status.WON);
+        assertEquals(playerTwoVictory.getWinner(), playerTwo);
     }
 
     @Test

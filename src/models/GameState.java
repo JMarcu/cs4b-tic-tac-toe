@@ -140,7 +140,7 @@ public class GameState implements Publisher<GameState.Patch>  {
 
     /** Creates a default game: single player, free play, and with both players set to null. */
     public GameState(){
-        this(GameMode.FREE_PLAY, new Pair<Player, Player>(null, null), true, 0);
+        this(GameMode.FREE_PLAY, new Pair<Player, Player>(new Player(), new Player()), true, 0);
     }
 
     /** 
@@ -254,7 +254,6 @@ public class GameState implements Publisher<GameState.Patch>  {
      * the specified cell is not empty.
      */
     public void setCell(int x, int y) {
-        System.out.println("set cell: (" + x + ", " + y + ")");
         if(x < 0 || x > 2 || y < 0 || y > 2){
             throw new IllegalArgumentException("Cell coordinates must be greater than or equal to 0 and less than " + GRID_SIZE);
         } else if(grid[x][y] != null){
