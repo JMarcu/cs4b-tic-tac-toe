@@ -8,6 +8,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
 import models.ColorScheme;
 import models.GameState;
 import models.Player;
@@ -35,6 +37,7 @@ public class GameBoard{
     @FXML private ImageView playerOneShapeIV;
     @FXML private ImageView playerTwoShapeIV;
     @FXML private Board boardController;
+    @FXML private BorderPane root;
     
     public GameBoard(){
         this.gameState = null;
@@ -68,6 +71,8 @@ public class GameBoard{
     /************************************************************************************************************
      * ACCESSORS & MUTATORS
      ************************************************************************************************************/
+
+    public BorderPane getRoot(){ return this.root; }
 
     //Loads data from launchGame
     public void setGameState(GameState gameState){
@@ -124,18 +129,18 @@ public class GameBoard{
 
     @FXML //Allows playerone to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerOneShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue0(), TTTScene.GAME_BOARD, gameState);
+        this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue0());
     }
 
     @FXML //Allows playertwo to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerTwoShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue1(), TTTScene.GAME_BOARD, gameState);
+        this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue1());
     }
 
     @FXML //Allows playerone to use the options menu by pressing the gear button
     private void onOption(ActionEvent event){
       // System.out.println("onOption");
-        this.optionsMenuCB.launchOptionsMenu(gameState.getPlayers().getValue0().getUuid(), TTTScene.GAME_BOARD, gameState);
+        this.optionsMenuCB.launchOptionsMenu();
     }
 
     @FXML //Allows playerone to access the scoreboard by pressing the scoreboard button
