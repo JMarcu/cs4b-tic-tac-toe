@@ -25,10 +25,48 @@ public enum ColorScheme {
     }
 
     public static void adjustImageColor(ImageView iv, Color color){
+        double hue;
+        double brightness = 0;
+        double saturation = 1;
+
+        switch(color.toString()){
+            case "0x0000ffff": //BLUE
+                hue = -.7;
+                break;
+            case "0xffff00ff": //YELLOW
+                hue = .33;
+                brightness = -.1;
+                break;
+            case "0x008000ff": //GREEN
+                brightness = -.1;
+                hue = .66;
+                break;
+            case "0x008080ff": //TEAL
+                brightness = -.1;
+                hue = 1.0;
+                break;
+            case "0x800080ff": //PURPLE
+                hue = -.45;
+                break;
+            case "0xff0000ff": //RED
+                hue = 0.0;
+                break;
+            case "0xffa500ff": //ORANGE
+                hue = .17;
+                break;
+            case "0xffc0cbff": //PINK
+                hue = -.22;
+                break;
+            default: //BLACK
+                hue = 0;
+                brightness = -1;
+        }
+
         ColorAdjust adjuster = new ColorAdjust();
-        adjuster.setBrightness(color.getBrightness());
-        adjuster.setSaturation(color.getSaturation());
-        adjuster.setHue(color.getHue());
+
+        adjuster.setBrightness(brightness);
+        adjuster.setSaturation(saturation);
+        adjuster.setHue(hue);
         iv.setEffect(adjuster);
     }
 }

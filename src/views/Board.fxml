@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Board">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="400.0" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Board">
    <children>
-      <GridPane layoutX="2.0" layoutY="2.0" prefHeight="389.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+      <GridPane layoutX="2.0" layoutY="2.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.39996337890625" minWidth="10.0" prefWidth="199.79998779296875" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.39996337890625" minWidth="10.0" prefWidth="199.79998779296875" />
@@ -20,15 +21,33 @@
           <RowConstraints maxHeight="122.5999816894531" minHeight="10.0" prefHeight="102.59995117187498" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <StackPane fx:id="leftTop" onMouseClicked="#handleLeftTop" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" />
-            <StackPane fx:id="centerTop" onMouseClicked="#handleCenterTop" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1" />
-            <StackPane fx:id="rightTop" onMouseClicked="#handleRightTop" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2" />
-            <StackPane fx:id="leftMid" onMouseClicked="#handleLeftMid" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.rowIndex="1" />
-            <StackPane fx:id="centerMid" onMouseClicked="#handleCenterMid" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <StackPane fx:id="rightMid" onMouseClicked="#handleRightMid" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <StackPane fx:id="leftBtm" onMouseClicked="#handleLeftBtm" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.rowIndex="2" />
-            <StackPane fx:id="centerBtm" onMouseClicked="#handleCenterBtm" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <StackPane fx:id="rightBtm" onMouseClicked="#handleRightBtm" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <StackPane onMouseClicked="#handleLeftTop" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;">
+               <ImageView fx:id="leftTop" fitHeight="100" fitWidth="100" />
+            </StackPane>
+            <StackPane onMouseClicked="#handleCenterTop" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1">
+               <ImageView fx:id="centerTop" fitHeight="100" fitWidth="100" />
+            </StackPane>
+            <StackPane onMouseClicked="#handleRightTop" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2">
+               <ImageView fx:id="rightTop" fitHeight="100" fitWidth="100" />
+            </StackPane>
+            <StackPane onMouseClicked="#handleLeftMid" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.rowIndex="1">
+               <ImageView fx:id="leftMid" fitHeight="100" fitWidth="100" />
+            </StackPane>
+            <StackPane onMouseClicked="#handleCenterMid" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <ImageView fx:id="centerMid" fitHeight="100" fitWidth="100" />
+            </StackPane>
+            <StackPane onMouseClicked="#handleRightMid" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <ImageView fx:id="rightMid" fitHeight="100" fitWidth="100" />
+            </StackPane>
+            <StackPane onMouseClicked="#handleLeftBtm" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.rowIndex="2">
+               <ImageView fx:id="leftBtm" fitHeight="100" fitWidth="100" />
+            </StackPane>
+            <StackPane onMouseClicked="#handleCenterBtm" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <ImageView fx:id="centerBtm" fitHeight="100" fitWidth="100" />
+            </StackPane>
+            <StackPane onMouseClicked="#handleRightBtm" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <ImageView fx:id="rightBtm" fitHeight="100" fitWidth="100" />
+            </StackPane>
          </children>
       </GridPane>
    </children>

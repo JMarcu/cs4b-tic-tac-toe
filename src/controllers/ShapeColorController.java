@@ -22,11 +22,13 @@ public class ShapeColorController {
     {
         CurrentPlayerImage.setImage(new Image("assets/images/" + player.getShape().getFilename()));
         currentColor = player.getColor();
+        myShape = player.getShape();
         this.player = player;
         ColorScheme.adjustImageColor(CurrentPlayerImage, currentColor);
     }
 
     @FXML protected void ReturnButtonClicked(ActionEvent event) {
+        System.out.println("currentColor: " + currentColor);
         player.setColor(currentColor != null ? currentColor : Color.BLACK);
         player.setShape(myShape);
         this.returnCB.returnToCB();
