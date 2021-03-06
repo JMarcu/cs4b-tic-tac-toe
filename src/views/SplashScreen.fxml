@@ -14,6 +14,6 @@
             <Font size="36.0" />
          </font>
       </Label>
-      <Button mnemonicParsing="false" text="STUFF" />
+      <Button mnemonicParsing="false" text="OK" />
    </children>
 </VBox>
