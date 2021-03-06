@@ -9,13 +9,14 @@ import java.util.concurrent.Flow.Subscription;
 
 import javax.lang.model.type.NullType;
 
+import org.javatuples.Pair;
+
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
@@ -30,6 +31,7 @@ import javafx.util.Duration;
 
 import models.ColorScheme;
 import models.GameMode;
+import models.GameState;
 import models.MarkerShape;
 import models.Player;
 import models.TTTScene;
@@ -138,13 +140,7 @@ public class MainMenu {
     @FXML
     void onPlayAction(ActionEvent event) {
         System.out.println(this.launchGameCB);
-        this.launchGameCB.launchGame(
-            this.singlePlayer, 
-            this.gameMode, 
-            this.playerOne, 
-            this.playerTwo, 
-            this.secondaryOption
-        );
+        this.launchGameCB.launchGame(new GameState(gameMode, new Pair<Player, Player>(playerOne, playerTwo), singlePlayer, secondaryOption));
     }
 
     @FXML
@@ -233,15 +229,17 @@ public class MainMenu {
     }
 
     private void bindPlayers(ImageView iv, Player player){
-        player.subscribe(new Subscriber<NullType>(){
+        player.subscribe(new Subscriber<Player.Patch>(){
 			@Override
 			public void onSubscribe(Subscription subscription) {
                 subscriptions.add(subscription);
             }
 
 			@Override
-			public void onNext(NullType item) {
-                setMarker(iv, player);
+			public void onNext(Player.Patch item) {
+                if(item.getColor() != null || item.getShape() != null){
+                    setMarker(iv, player);
+                }
 			}
 
 			@Override
