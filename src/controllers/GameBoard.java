@@ -11,7 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-
+import javafx.scene.layout.BorderPane;
 import javafx.event.ActionEvent;
 import models.ColorScheme;
 import models.GameState;
@@ -32,6 +32,9 @@ public class GameBoard{
     private ArrayList<Subscription> subscriptions;
 
     private final String ASSETS_DIRECTORY = "/assets/images/";
+
+    @FXML 
+    private BorderPane root;
     
     @FXML
     private Button optionButton;
@@ -76,7 +79,10 @@ public class GameBoard{
     }
     
     @FXML 
-    private void initialize(){ }
+    private void initialize(){
+        this.root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
+        this.root.getStylesheets().add(getClass().getResource("/styles/game-board.css").toExternalForm());
+     }
 
     @FXML //Sets Playerone's name on the textfield for the gameboard
     private void onPlayerOneTF(KeyEvent event){
