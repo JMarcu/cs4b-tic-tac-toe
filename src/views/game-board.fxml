@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
@@ -26,17 +25,6 @@
          <cursor>
             <Cursor fx:constant="OPEN_HAND" />
          </cursor>
-         <bottom>
-            <HBox minHeight="25.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Label text="Welcome to Tic-Tac-Toe">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-         </bottom>
          <right>
             <Pane minWidth="100.0" BorderPane.alignment="CENTER" />
          </right>
@@ -70,7 +58,7 @@
                   <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
                </rowConstraints>
                <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="Vs." GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <Label alignment="CENTER" contentDisplay="CENTER" style="-fx-font-size: 3em;" text="Vs." textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -117,18 +105,25 @@
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <Button fx:id="optionButton" mnemonicParsing="false" onAction="#onOption" GridPane.columnIndex="2">
-                     <graphic>
-                        <ImageView fitHeight="27.0" fitWidth="30.0">
-                           <image>
-                              <Image url="@../assets/images/gear.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
+                     <children>
+                        <Button fx:id="optionButton" layoutX="282.0" layoutY="9.0" mnemonicParsing="false" onAction="#onOption" AnchorPane.rightAnchor="0.0">
+                           <graphic>
+                              <ImageView fx:id="options" fitHeight="27.0" fitWidth="30.0">
+                                 <image>
+                                    <Image url="@../assets/images/gear.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </AnchorPane>
                </children>
             </GridPane>
          </top>
+         <bottom>
+            <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </bottom>
       </BorderPane>
    </content>
 </ScrollPane>

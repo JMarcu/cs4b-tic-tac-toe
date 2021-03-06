@@ -1,19 +1,21 @@
+.parent{
+    -fx-font-size: 18px;
+}
+
 .textfield {
     -fx-background-color: -primary-light;
     -fx-cursor: text;
-    -fx-font-size: 24px;
+    -fx-font-size: 30pt;
     -fx-text-fill: -text-on-primary;
 }
 
-Button {
-    -fx-font-size: 18px;
-    -fx-cursor: hand;
-    -fx-background-color: -secondary;
-    -fx-text-fill: -text-on-secondary;
-
-    
+.label{
+    -fx-font-size: 1em;
 }
 
-Label{
-    -fx-text-fill: -text-on-secondary;
+.button {
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
+    -fx-background-color: -secondary;   
+    -fx-text-fill: -text-on-secondary; 
 }

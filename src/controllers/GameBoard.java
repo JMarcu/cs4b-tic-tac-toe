@@ -39,6 +39,7 @@ public class GameBoard{
     @FXML private TextField playerTwoTF;
     @FXML private ImageView playerOneShapeIV;
     @FXML private ImageView playerTwoShapeIV;
+    @FXML private ImageView options;
     @FXML private Board boardController;
     
     public GameBoard(){
@@ -61,6 +62,8 @@ public class GameBoard{
 
         this.root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
         this.root.getStylesheets().add(getClass().getResource("/styles/game-board.css").toExternalForm());
+
+        ColorScheme.adjustImageColor(options, ColorScheme.TEXT_ON_SECONDARY.getColor());
     }
 
     private void finallyInitialize(){
