@@ -2,7 +2,6 @@ package models;
 
 import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public enum ColorScheme {

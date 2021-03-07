@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.Instant;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import models.Player;
@@ -20,7 +19,6 @@ public class ScoreBoard {
     @FXML 
     private Text scoreDisplay = new Text();
     private ReturnToCallback returnCB;
-    private Button Return;
 
     @FXML
     private AnchorPane root;

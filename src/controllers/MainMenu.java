@@ -9,11 +9,9 @@ import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
@@ -74,7 +72,7 @@ public class MainMenu {
     /** Stores whether or not the player has selected a single player game. */
     private boolean singlePlayer;
 
-    /** Absolute location of the assets directory. */
+    /** Absolute location of the image assets directory. */
     private final String IMAGES_DIRECTORY = "/assets/images/";
 
     /*==========================================================================================================
@@ -166,6 +164,86 @@ public class MainMenu {
     }
 
     /*==========================================================================================================
+     * ACCESSORS & MUTATORS
+     *==========================================================================================================*/
+
+    /** 
+     * Gets the root element of the MainMenu view.
+     * @returns The root element of the MainMenu view.
+     */
+    public ScrollPane getRoot(){ return this.root; }
+
+    /** Sets the callback to be invoked when the MainMenu wishes to launch a new game. */
+    public void setLaunchGameCB(LaunchGameCallback launchGameCB){
+        this.launchGameCB = launchGameCB;
+    }
+
+    /** Sets the callback to be invoked when the MainMenu wants to open the options menu. */
+    public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB){
+        this.optionsMenuCB = optionsMenuCB;
+    }
+
+    /** Sets and binds the two players in the game. */
+    public void setPlayers(Player playerOne, Player playerTwo){
+        //Set the players.
+        this.playerOne = playerOne;
+        this.playerTwo = playerTwo;
+
+        //Cancel any subscriptions to previous players.
+        if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
+        if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
+
+        //Initialize the player marker views.
+        this.setMarker(playerOneMarkerPane, playerOne);
+        this.setMarker(playerTwoMarkerPane, playerTwo);
+
+        //Subscribe to player updates. We want to update the marker views whenever the 
+        //players change their markers in another menu.
+        this.playerOne.subscribe(new Subscriber<Player.Patch>(){
+            @Override public void onComplete() { }
+            @Override public void onError(Throwable throwable) { }
+
+            @Override
+            public void onSubscribe(Subscription subscription) {
+                playerOneSubscription = subscription;
+                playerOneSubscription.request(1);
+            }
+
+            @Override
+            public void onNext(Player.Patch item) {
+                if(item.getColor() != null || item.getShape() != null){
+                    setMarker(playerOneMarkerPane, playerOne);
+                }
+                playerOneSubscription.request(1);
+            }
+        });
+
+        this.playerTwo.subscribe(new Subscriber<Player.Patch>(){
+            @Override public void onComplete() { }
+            @Override public void onError(Throwable throwable) { }
+
+            @Override
+            public void onSubscribe(Subscription subscription) {
+                playerTwoSubscription = subscription;
+                playerTwoSubscription.request(1);
+            }
+
+            @Override
+            public void onNext(Player.Patch item) {
+                if(item.getColor() != null || item.getShape() != null){
+                    setMarker(playerTwoMarkerPane, playerTwo);
+                }
+                playerTwoSubscription.request(1);
+            }
+        });
+    }
+
+    /** Sets the callback to be invoked when the MainMenu wants to launch a marker picker menu. */
+    public void setShapePickerCB(LaunchShapePickerCallback shapePickerCB){
+        this.shapePickerCB = shapePickerCB;
+    }
+
+    /*==========================================================================================================
      * EVENT HANDLERS
      *==========================================================================================================*/
 
@@ -214,7 +292,11 @@ public class MainMenu {
         optionsMenuCB.launchOptionsMenu();
     }
 
-    /** Invoke the {@link launchGameCB} when the user hits the play button, feeding it the user's chosen game state. */
+    /** 
+     * Invoke the {@link launchGameCB} when the user hits the play button, feeding it the user's chosen game state.
+     * The controller assumes it will be unloaded and releases certain state objects from memory, so likely will not
+     * funciton fully if it persists after invoking this method.
+     */
     @FXML
     void onPlayAction(ActionEvent event) {
         if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
@@ -234,76 +316,29 @@ public class MainMenu {
         shapePickerCB.launchShapePicker(playerOne);
     }
 
+    /** Binds KeyEvents from the TextField to playerTwo's name. */
     @FXML
     void onPlayerTwoKeyTyped(KeyEvent event) {
         playerTwo.setName(playerTwoNameTF.getText());
     }
 
+    /** Invoke the {@link shapePickerCB} when the user clicks  */
     @FXML
     void onPlayerTwoShapeAction(ActionEvent event) {
         shapePickerCB.launchShapePicker(playerTwo);
     }
 
-    @FXML
-    void onSecondaryOptionKeyTyped(KeyEvent event) {
+    // @FXML
+    // void onSecondaryOptionKeyTyped(KeyEvent event) {
         // final String text = this.secondaryOptionTF.getText();
         // this.secondaryOption = text == "" ? 0 : Integer.valueOf(text);
-    }
+    // }
 
-    public ScrollPane getRoot(){ return this.root; }
+    /*==========================================================================================================
+     * VIEW MANIPULATORS
+     *==========================================================================================================*/
 
-    public void setLaunchGameCB(LaunchGameCallback launchGameCB){this.launchGameCB = launchGameCB;}
-    public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB){this.optionsMenuCB = optionsMenuCB;}
-    public void setPlayers(Player playerOne, Player playerTwo){
-        if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
-        if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
-        this.playerOne = playerOne;
-        this.playerTwo = playerTwo;
-        this.setMarker(playerOneMarkerPane, playerOne);
-        this.setMarker(playerTwoMarkerPane, playerTwo);
-
-        this.playerOne.subscribe(new Subscriber<Player.Patch>(){
-            @Override
-            public void onSubscribe(Subscription subscription) {
-                playerOneSubscription = subscription;
-                playerOneSubscription.request(1);
-            }
-
-            @Override
-            public void onNext(Player.Patch item) {
-                if(item.getColor() != null || item.getShape() != null){
-                    setMarker(playerOneMarkerPane, playerOne);
-                }
-                playerOneSubscription.request(1);
-            }
-
-            @Override public void onError(Throwable throwable) { }
-
-            @Override public void onComplete() { }
-        });
-
-        this.playerTwo.subscribe(new Subscriber<Player.Patch>(){
-            @Override
-            public void onSubscribe(Subscription subscription) {
-                playerTwoSubscription = subscription;
-                playerTwoSubscription.request(1);
-            }
-
-            @Override
-            public void onNext(Player.Patch item) {
-                if(item.getColor() != null || item.getShape() != null){
-                    setMarker(playerTwoMarkerPane, playerTwo);
-                }
-                playerTwoSubscription.request(1);
-            }
-
-            @Override public void onError(Throwable throwable) { }
-
-            @Override public void onComplete() { }
-        });
-    }
-    public void setShapePickerCB(LaunchShapePickerCallback shapePickerCB){this.shapePickerCB = shapePickerCB;}
-
+    /** Transitions the background colors of the vsHuman/vsAI buttons whenever they are toggled. */
     private void animateSinglePlayerButtons(){
         ToggleButton darkBtn = this.singlePlayer ? this.aiBtn : this.humanBtn;
         ToggleButton lightBtn = this.singlePlayer ? this.humanBtn : this.aiBtn;
@@ -347,6 +382,11 @@ public class MainMenu {
         darkToLight.play();
     }
 
+    /** 
+     * Updates the background image of the provided pane to display the player's marker.
+     * @param pane The pane element whose background should display the marker.
+     * @param player The player whose marker should be displayed.
+     */
     private void setMarker(Pane pane, Player player){
         StringBuilder sb = new StringBuilder();
         sb.append("-fx-background-image: url('");
