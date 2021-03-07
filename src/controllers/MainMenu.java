@@ -9,6 +9,7 @@ import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
@@ -18,6 +19,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import models.ColorScheme;
@@ -51,8 +53,14 @@ public class MainMenu {
     /** Player object describing the first player. */
     private Player playerOne;
 
+    /** Subscription to player one updates. */
+    private Subscription playerOneSubscription;
+
     /** Player object describing the second player. */
     private Player playerTwo;
+
+    /** Subscription to player two updates. */
+    private Subscription playerTwoSubscription;
 
     /** 
      * Some game modes have a configurable quantity associated with them. For instance, {@link GameMode.BULLET} 
@@ -67,7 +75,7 @@ public class MainMenu {
     private boolean singlePlayer;
 
     /** Absolute location of the assets directory. */
-    private final String ASSETS_DIRECTORY = "/assets/images/";
+    private final String IMAGES_DIRECTORY = "/assets/images/";
 
     /*==========================================================================================================
      * VIEW ELEMENTS
@@ -87,14 +95,17 @@ public class MainMenu {
     /** TextField for displaying and editing the first player's name. */
     @FXML private TextField playerOneNameTF;
 
+    /** Pane for displaying player one's marker. */
+    @FXML private Pane playerOneMarkerPane;
+    
     /** ImageView displaying the first player's marker. */
-    @FXML private ImageView playerOneShapeIV;
+    // @FXML private ImageView playerOneShapeIV;
     
     /** TextField for displaying and editing the second player's name. */
     @FXML private TextField playerTwoNameTF;
 
-    /** ImageView displaying the second player's marker. */
-    @FXML private ImageView playerTwoShapeIV;
+    /** Pane for displaying player two's marker. */
+    @FXML private Pane playerTwoMarkerPane;
 
     /** Root pane of the view. */
     @FXML private ScrollPane root;
@@ -206,6 +217,8 @@ public class MainMenu {
     /** Invoke the {@link launchGameCB} when the user hits the play button, feeding it the user's chosen game state. */
     @FXML
     void onPlayAction(ActionEvent event) {
+        if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
+        if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
         launchGameCB.launchGame(new GameState(gameMode, new Pair<Player, Player>(playerOne, playerTwo), singlePlayer, secondaryOption));
     }
 
@@ -242,16 +255,52 @@ public class MainMenu {
     public void setLaunchGameCB(LaunchGameCallback launchGameCB){this.launchGameCB = launchGameCB;}
     public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB){this.optionsMenuCB = optionsMenuCB;}
     public void setPlayers(Player playerOne, Player playerTwo){
-        // this.subscriptions.forEach((Subscription subscription) -> {
-        //     subscription.cancel();
-        // });
-        // this.subscriptions = new ArrayList<Subscription>();
+        if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
+        if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
-        this.bindPlayers(playerOneShapeIV, playerOne);
-        this.bindPlayers(playerTwoShapeIV, playerTwo);
-        this.setMarker(playerOneShapeIV, playerOne);
-        this.setMarker(playerTwoShapeIV, playerTwo);
+        this.setMarker(playerOneMarkerPane, playerOne);
+        this.setMarker(playerTwoMarkerPane, playerTwo);
+
+        this.playerOne.subscribe(new Subscriber<Player.Patch>(){
+            @Override
+            public void onSubscribe(Subscription subscription) {
+                playerOneSubscription = subscription;
+                playerOneSubscription.request(1);
+            }
+
+            @Override
+            public void onNext(Player.Patch item) {
+                if(item.getColor() != null || item.getShape() != null){
+                    setMarker(playerOneMarkerPane, playerOne);
+                }
+                playerOneSubscription.request(1);
+            }
+
+            @Override public void onError(Throwable throwable) { }
+
+            @Override public void onComplete() { }
+        });
+
+        this.playerTwo.subscribe(new Subscriber<Player.Patch>(){
+            @Override
+            public void onSubscribe(Subscription subscription) {
+                playerTwoSubscription = subscription;
+                playerTwoSubscription.request(1);
+            }
+
+            @Override
+            public void onNext(Player.Patch item) {
+                if(item.getColor() != null || item.getShape() != null){
+                    setMarker(playerTwoMarkerPane, playerTwo);
+                }
+                playerTwoSubscription.request(1);
+            }
+
+            @Override public void onError(Throwable throwable) { }
+
+            @Override public void onComplete() { }
+        });
     }
     public void setShapePickerCB(LaunchShapePickerCallback shapePickerCB){this.shapePickerCB = shapePickerCB;}
 
@@ -298,36 +347,13 @@ public class MainMenu {
         darkToLight.play();
     }
 
-    private void bindPlayers(ImageView iv, Player player){
-        player.subscribe(new Subscriber<Player.Patch>(){
-			@Override
-			public void onSubscribe(Subscription subscription) {
-                // subscriptions.add(subscription);
-            }
-
-			@Override
-			public void onNext(Player.Patch item) {
-                if(item.getColor() != null || item.getShape() != null){
-                    setMarker(iv, player);
-                }
-			}
-
-			@Override
-			public void onError(Throwable throwable) { }
-
-			@Override
-			public void onComplete() { }
-        });
-    }
-
-    private void setMarker(ImageView iv, Player player){
-        if(iv.getImage() != null && player != null){
-            final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());
-            if(!iv.getImage().getUrl().equals(newUrl)){
-                final Image newImage = new Image(newUrl);
-                iv.setImage(newImage);
-            }
-            ColorScheme.adjustImageColor(iv, player.getColor());
-        }
+    private void setMarker(Pane pane, Player player){
+        StringBuilder sb = new StringBuilder();
+        sb.append("-fx-background-image: url('");
+        sb.append(IMAGES_DIRECTORY);
+        sb.append(player.getShape().getFilename());
+        sb.append("');");
+        pane.setStyle(sb.toString());
+        ColorScheme.adjustImageColor(pane, player.getColor());
     }
 }

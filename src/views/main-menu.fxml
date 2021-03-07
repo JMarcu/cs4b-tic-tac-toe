@@ -25,7 +25,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-
 <ScrollPane fx:id="root" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="425.0" prefWidth="625.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainMenu">
    <content>
       <BorderPane minHeight="400.0" minWidth="600.0" style="-fx-background-color: -primary; -fx-border-color: -primary;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -58,21 +57,25 @@
                   <Separator maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
                   <GridPane maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                      <children>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayerOneShapeAction" GridPane.columnIndex="2">
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayerOneShapeAction" GridPane.columnIndex="4">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
                            <graphic>
-                              <ImageView fx:id="playerOneShapeIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../assets/images/x.png" />
-                                 </image>
-                              </ImageView>
+                              <Pane fx:id="playerOneMarkerPane"  styleClass="marker-pane" />
                            </graphic>
                         </Button>
-                        <TextField fx:id="playerOneNameTF" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyTyped="#onPlayerOneKeyTyped" promptText="Player 1" styleClass="textfield" text="Player 1" GridPane.columnSpan="2" GridPane.vgrow="ALWAYS" />
+                        <TextField fx:id="playerOneNameTF" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyTyped="#onPlayerOneKeyTyped" promptText="Player 1" styleClass="textfield" text="Player 1" GridPane.columnSpan="4" GridPane.vgrow="ALWAYS" />
                      </children>
                      <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
@@ -87,21 +90,19 @@
                   <Separator layoutX="10.0" layoutY="35.0" maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
                   <GridPane layoutX="10.0" layoutY="35.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <TextField fx:id="playerTwoNameTF" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyTyped="#onPlayerTwoKeyTyped" promptText="Player 2" styleClass="textfield" text="Player 2" GridPane.columnSpan="2" GridPane.vgrow="ALWAYS" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayerTwoShapeAction" GridPane.columnIndex="2">
+                        <TextField fx:id="playerTwoNameTF" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyTyped="#onPlayerTwoKeyTyped" promptText="Player 2" styleClass="textfield" text="Player 2" GridPane.columnSpan="4" GridPane.vgrow="ALWAYS" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayerTwoShapeAction" GridPane.columnIndex="4">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
                            <graphic>
-                              <ImageView fx:id="playerTwoShapeIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../assets/images/o.png" />
-                                 </image>
-                              </ImageView>
+                              <Pane fx:id="playerTwoMarkerPane" styleClass="marker-pane" />
                            </graphic>
                         </Button>
                      </children>
                      <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

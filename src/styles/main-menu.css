@@ -1,3 +1,9 @@
+.marker-pane {
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
 .textfield {
     -fx-background-color: -primary-light;
     -fx-cursor: text;
@@ -12,8 +18,8 @@
 }
 
 Button {
+    -fx-background-color: -secondary;
     -fx-font-size: 18px;
     -fx-cursor: hand;
-    -fx-background-color: -secondary;
     -fx-text-fill: -text-on-secondary;
 }

@@ -1,5 +1,6 @@
 package models;
 
+import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -24,7 +25,7 @@ public enum ColorScheme {
         return this.color;
     }
 
-    public static void adjustImageColor(ImageView iv, Color color){
+    public static void adjustImageColor(Node node, Color color){
         double hue;
         double brightness = 0;
         double saturation = 1;
@@ -67,6 +68,6 @@ public enum ColorScheme {
         adjuster.setBrightness(brightness);
         adjuster.setSaturation(saturation);
         adjuster.setHue(hue);
-        iv.setEffect(adjuster);
+        node.setEffect(adjuster);
     }
 }
