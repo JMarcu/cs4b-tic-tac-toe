@@ -14,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.StackPane;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -50,7 +51,9 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     @Override
     public void start(Stage primaryStage) {
         try {
+            System.out.println(Color.BLACK.toString());
             rootPane = new StackPane();
+            Font.loadFont(App.class.getResource("/assets/fonts/Pixeboy.ttf").toExternalForm(), 10);
 
             gameBoardFXML = new FXMLLoader(getClass().getResource("/views/game-board.fxml"));
             mainMenuFXML = new FXMLLoader(getClass().getResource("/views/main-menu.fxml"));

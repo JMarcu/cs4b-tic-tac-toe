@@ -57,9 +57,15 @@ public enum ColorScheme {
             case "0xffc0cbff": //PINK
                 hue = -.22;
                 break;
-            default: //BLACK
+            case "0x000000ff": //BLACK
                 hue = 0;
                 brightness = -1;
+                break;
+            default:
+                hue = color.getHue();
+                brightness = color.getBrightness();
+                saturation = color.getSaturation();
+                break;
         }
 
         ColorAdjust adjuster = new ColorAdjust();
