@@ -40,6 +40,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     private FXMLLoader optionsMenuFXML;
     private Player     playerOne;
     private Player     playerTwo;
+    private ScoreBoard scoreboard;
     private StackPane  rootPane;
     private FXMLLoader splashScreenFXML;
 
@@ -124,11 +125,11 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
                     gameStateSubscription = subscription; 
                     subscription.request(1);
                 }
-                @Override public void onNext(GameState.Patch item) { onGameStatePatch(item); };
+                @Override public void onNext(GameState.Patch item) {    onGameStatePatch(item);};
                 @Override public void onError(Throwable throwable) { }
                 @Override public void onComplete() { }
             });
-
+            
             launchScene(gameBoard.getRoot());
         } catch (Exception e) {
             e.printStackTrace();
@@ -168,7 +169,8 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     @Override
     public void launchScoreBoard(UUID topCandidate, TTTScene returnTo, GameState gameState){
         try{
-            ScoreBoard scoreboard = scoreboardFXML.getController();
+            scoreboard = scoreboardFXML.getController();
+            scoreboard.addPlayer(gameState);
             scoreboard.setReturnCB(() -> {closeMenu(scoreboard.getRoot());});
             openMenu(scoreboard.getRoot());
         } catch(Exception e){

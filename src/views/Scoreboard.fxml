@@ -6,13 +6,10 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ScoreBoard">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ScoreBoard">
     <children>
-        <Text fx:id="scoreDisplay" layoutX="150.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="5.0" text="Scoreboard"/> 
-        <Text fx:id="scoreDisplay" layoutX="100.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="5.0" text="1.       null        0 : 00"/> 
-        <Text fx:id="scoreDisplay" layoutX="100.0" layoutY="135.0" strokeType="OUTSIDE" strokeWidth="5.0" text="2.       null        0 : 00"/> 
-        <Text fx:id="scoreDisplay" layoutX="100.0" layoutY="150.0" strokeType="OUTSIDE" strokeWidth="5.0" text="3.       null        0 : 00"/> 
-        <Text fx:id="scoreDisplay" layoutX="100.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="5.0" text="4.       null        0 : 00"/> 
-        <Button fx:id="Return" layoutX="150.0" layoutY="200.0" onAction="#ReturnButtonClicked" text="Return"/>
+        <Text fx:id="scoreDisplay" layoutX="160.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="5.0" style="-fx-font-size: 20; -fx-fill: darkred; -fx-font-weight: bold;" text="Game History"/> 
+        <Text fx:id="scoreDisplay" layoutX="80.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="5.0" style="-fx-font-size: 20; -fx-fill: darkred; -fx-font-weight: bold;"/> 
+        <Button fx:id="Return" layoutX="200.0" layoutY="300.0" onAction="#ReturnButtonClicked" text="Return"/>
     </children>
 </AnchorPane>

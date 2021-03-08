@@ -38,7 +38,8 @@ public class GameState implements Publisher<GameState.Patch>  {
     public class Patch {
         /** The player who's turn it is. */
         protected Player currentPlayer;
-
+        /** The players in this game. */
+        protected Pair<Player, Player> players;
         /** 
          * A tuple describing a player's move. The first index is a {@link Player} object describing the
          * player who made the move. The second and third indices are the x- and y-coordinates (respectively) 
@@ -58,6 +59,13 @@ public class GameState implements Publisher<GameState.Patch>  {
          * @return The current player, or null if the current player has not changed since the last patch.
          */
         public Player getCurrentPlayer(){ return currentPlayer; }
+
+        /** 
+         * The players who are playing this game. Not defined for games with a status other than {@link Status.NEW} or 
+         * {@link Status.IN_PROGRESS}. 
+         * @return The players in this game, or null if the current players have not changed since the last patch.
+         */
+        public Pair<Player, Player> getPlayers(){ return players; }
 
         /** 
          * Describes a player move onto the board, or null if no move.
