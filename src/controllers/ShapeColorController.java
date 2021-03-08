@@ -26,6 +26,10 @@ public class ShapeColorController {
 
     public void acceptPlayer(Player player)
     {
+        //Load external style sheets.
+        root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/styles/shapeColor.css").toExternalForm());
+
         CurrentPlayerImage.setImage(new Image("assets/images/" + player.getShape().getFilename()));
         currentColor = player.getColor();
         myShape = player.getShape();

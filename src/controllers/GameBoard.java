@@ -140,7 +140,7 @@ public class GameBoard{
     @FXML //Allows playerone to use the options menu by pressing the gear button
     private void onOption(ActionEvent event){
       // System.out.println("onOption");
-        this.optionsMenuCB.launchOptionsMenu();
+        this.optionsMenuCB.launchOptionsMenu("Game");
     }
 
     @FXML //Allows playerone to access the scoreboard by pressing the scoreboard button

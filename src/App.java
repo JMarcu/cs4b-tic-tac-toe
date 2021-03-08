@@ -137,12 +137,13 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     }
 
     @Override
-    public void launchOptionsMenu() {
+    public void launchOptionsMenu(String caller) {
         try{
             MusicPlayer musicSFX = new MusicPlayer();
             musicSFX.playSFX(MusicPlayer.Track.openMenu);
 
             OptionsController optionsMenu = optionsMenuFXML.getController();
+            optionsMenu.acceptCaller(caller);
             optionsMenu.setMainMenuCB(this);
             optionsMenu.setReturnToCB(() -> {closeMenu(optionsMenu.getRoot());});
             openMenu(optionsMenu.getRoot());

@@ -3,6 +3,7 @@ package controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
+import javafx.scene.control.Button;
 import models.SceneCallback.ReturnToCallback;
 import models.SceneCallback.LaunchMainMenuCallback;
 import models.MusicPlayer;
@@ -11,7 +12,32 @@ public class OptionsController {
 
     private LaunchMainMenuCallback mainMenuCB;
     private ReturnToCallback returnToCB;
+
     //private MusicPlayer music;
+
+    @FXML
+    private Button RestartButton;
+
+    @FXML
+    private Button MainMenuButton;
+
+    public void acceptCaller(String caller)
+    {
+        //Load external style sheets.
+        root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/styles/options-menu.css").toExternalForm());
+        //System.out.println(caller);
+        if(caller == "MainMenu") // if called from the main menu don't let the player use these two buttons
+        {
+            RestartButton.setDisable(true);
+            MainMenuButton.setDisable(true);
+        }
+        else
+        {
+            RestartButton.setDisable(false);
+            MainMenuButton.setDisable(false);
+        }
+    }
 
     @FXML private GridPane root;
 
@@ -47,16 +73,19 @@ public class OptionsController {
 
     @FXML protected void MainMenuButtonClicked(ActionEvent event) {
         // Returns you to main menu (from game)
+        this.mainMenuCB.launchMainMenu();
     }
 
     @FXML protected void ExitButtonClicked(ActionEvent event) {
-        this.mainMenuCB.launchMainMenu();
+        //Exits program
+
+        System.exit(0);
     }
 
     public void setMainMenuCB(LaunchMainMenuCallback mainMenuCB){
         this.mainMenuCB = mainMenuCB;
     }
-
+    
     public void setReturnToCB(ReturnToCallback returnToCB){
         this.returnToCB = returnToCB;
     }
