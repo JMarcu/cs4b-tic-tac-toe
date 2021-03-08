@@ -23,6 +23,9 @@ public class OptionsController {
 
     public void acceptCaller(String caller)
     {
+        //Load external style sheets.
+        root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/styles/options-menu.css").toExternalForm());
         //System.out.println(caller);
         if(caller == "MainMenu") // if called from the main menu don't let the player use these two buttons
         {
