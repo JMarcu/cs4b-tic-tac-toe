@@ -28,6 +28,7 @@ import models.SceneCallback.LaunchScoreBoardCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
 import models.SceneCallback.ReturnToCallback;
 import models.TTTScene;
+import models.MusicPlayer;
 
 public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback, LaunchScoreBoardCallback {
 
@@ -138,6 +139,9 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     @Override
     public void launchOptionsMenu() {
         try{
+            MusicPlayer musicSFX = new MusicPlayer();
+            musicSFX.playSFX(MusicPlayer.Track.openMenu);
+
             OptionsController optionsMenu = optionsMenuFXML.getController();
             optionsMenu.setMainMenuCB(this);
             optionsMenu.setReturnToCB(() -> {closeMenu(optionsMenu.getRoot());});
@@ -150,6 +154,9 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     @Override
     public void launchShapePicker(Player player) {
         try{
+            MusicPlayer musicSFX = new MusicPlayer();
+            musicSFX.playSFX(MusicPlayer.Track.openMenu);
+
             ShapeColorController markerMenu = markerPickerFXML.getController();
             markerMenu.acceptPlayer(player);
             markerMenu.setReturnCB(() -> {closeMenu(markerMenu.getRoot());});
