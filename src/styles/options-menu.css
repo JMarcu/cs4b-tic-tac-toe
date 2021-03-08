@@ -1,7 +1,7 @@
 Button {
     -fx-font-family: Pixeboy;
     -fx-background-color: -secondary;
-    -fx-font-size: 26px;
+    -fx-font-size: 32px;
     -fx-cursor: hand;
     -fx-text-fill: -text-on-secondary;
 }

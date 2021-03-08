@@ -1,0 +1,10 @@
+AnchorPane {
+    -fx-background-color: -secondary;
+}
+Button {
+    -fx-font-family: Pixeboy;
+    -fx-background-color: -primary-dark;
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
+    -fx-text-fill: -text-on-primary;
+}
