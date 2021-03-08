@@ -1,3 +1,13 @@
+.arcade-font {
+    -fx-font-family: Pixeboy;
+}
+
+.marker-pane {
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
 .textfield {
     -fx-background-color: -primary-light;
     -fx-cursor: text;
@@ -5,15 +15,19 @@
     -fx-text-fill: -text-on-primary;
 }
 
+.title {
+    -fx-font-color: -text-on-primary;
+}
+
 .toggle-btn {
-    -fx-font-size: 18px;
+    -fx-font-size: 26px;
     -fx-border-radius: 4;
     -fx-text-fill: -text-on-secondary;
 }
 
 Button {
-    -fx-font-size: 18px;
-    -fx-cursor: hand;
     -fx-background-color: -secondary;
+    -fx-font-size: 26px;
+    -fx-cursor: hand;
     -fx-text-fill: -text-on-secondary;
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.*?>
 <?import java.lang.*?>
@@ -25,7 +26,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-
 <ScrollPane fx:id="root" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="425.0" prefWidth="625.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainMenu">
    <content>
       <BorderPane minHeight="400.0" minWidth="600.0" style="-fx-background-color: -primary; -fx-border-color: -primary;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -37,7 +37,7 @@
                <children>
                   <HBox maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                      <children>
-                        <ToggleButton fx:id="aiBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAiAction" styleClass="toggle-btn" text="vs AI" HBox.hgrow="ALWAYS">
+                        <ToggleButton fx:id="aiBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="225.0" mnemonicParsing="false" onAction="#onAiAction" styleClass="arcade-font, toggle-btn" text="vs AI" HBox.hgrow="ALWAYS">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -45,7 +45,7 @@
                               <ToggleGroup fx:id="singlePlayer" />
                            </toggleGroup>
                         </ToggleButton>
-                        <ToggleButton fx:id="humanBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onHumanAction" styleClass="toggle-btn" text="vs Human" toggleGroup="$singlePlayer" HBox.hgrow="ALWAYS">
+                        <ToggleButton fx:id="humanBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="225.0" mnemonicParsing="false" onAction="#onHumanAction" styleClass="arcade-font, toggle-btn" text="vs Human" toggleGroup="$singlePlayer" HBox.hgrow="ALWAYS">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -58,21 +58,25 @@
                   <Separator maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
                   <GridPane maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                      <children>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayerOneShapeAction" GridPane.columnIndex="2">
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayerOneShapeAction" GridPane.columnIndex="4">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
                            <graphic>
-                              <ImageView fx:id="playerOneShapeIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../assets/images/x.png" />
-                                 </image>
-                              </ImageView>
+                              <Pane fx:id="playerOneMarkerPane" styleClass="marker-pane" />
                            </graphic>
                         </Button>
-                        <TextField fx:id="playerOneNameTF" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyTyped="#onPlayerOneKeyTyped" promptText="Player 1" styleClass="textfield" text="Player 1" GridPane.columnSpan="2" GridPane.vgrow="ALWAYS" />
+                        <TextField fx:id="playerOneNameTF" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyTyped="#onPlayerOneKeyTyped" promptText="Player 1" styleClass="textfield" text="Player 1" GridPane.columnSpan="4" GridPane.vgrow="ALWAYS" />
                      </children>
                      <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
@@ -87,21 +91,19 @@
                   <Separator layoutX="10.0" layoutY="35.0" maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
                   <GridPane layoutX="10.0" layoutY="35.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <TextField fx:id="playerTwoNameTF" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyTyped="#onPlayerTwoKeyTyped" promptText="Player 2" styleClass="textfield" text="Player 2" GridPane.columnSpan="2" GridPane.vgrow="ALWAYS" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayerTwoShapeAction" GridPane.columnIndex="2">
+                        <TextField fx:id="playerTwoNameTF" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyTyped="#onPlayerTwoKeyTyped" promptText="Player 2" styleClass="textfield" text="Player 2" GridPane.columnSpan="4" GridPane.vgrow="ALWAYS" />
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayerTwoShapeAction" GridPane.columnIndex="4">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
                            <graphic>
-                              <ImageView fx:id="playerTwoShapeIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../assets/images/o.png" />
-                                 </image>
-                              </ImageView>
+                              <Pane fx:id="playerTwoMarkerPane" styleClass="marker-pane" />
                            </graphic>
                         </Button>
                      </children>
                      <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -114,7 +116,7 @@
                      </VBox.margin>
                   </GridPane>
                   <Separator layoutX="10.0" layoutY="85.0" maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayAction" text="Play" VBox.vgrow="ALWAYS">
+                  <Button styleClass="arcade-font, play-btn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayAction" text="Play" VBox.vgrow="ALWAYS">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
@@ -129,7 +131,7 @@
             <Pane maxWidth="1.7976931348623157E308" minWidth="100.0" BorderPane.alignment="CENTER" />
          </right>
          <top>
-            <AnchorPane minHeight="100.0" BorderPane.alignment="CENTER">
+            <AnchorPane maxHeight="1.7976931348623157E308" minHeight="100.0" BorderPane.alignment="CENTER">
                <children>
                   <Button mnemonicParsing="false" onAction="#onOptions" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
                      <graphic>
@@ -140,6 +142,11 @@
                         </ImageView>
                      </graphic>
                   </Button>
+                  <Label styleClass="arcade-font, title" alignment="CENTER" contentDisplay="CENTER" text="Tic Tac Toe!" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="100.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
          </top>

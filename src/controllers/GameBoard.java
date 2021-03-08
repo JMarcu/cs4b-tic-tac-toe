@@ -8,7 +8,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import models.ColorScheme;
 import models.GameState;
@@ -78,9 +77,9 @@ public class GameBoard{
     public void setGameState(GameState gameState){
         this.gameState = gameState;
 
-        if(this.playerOneSubscription != null){ this.playerOneSubscription.cancel(); }
-        if(this.playerTwoSubscription != null){ this.playerTwoSubscription.cancel(); }
-
+        if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
+        if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
+        
         gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
 			@Override public void onSubscribe(Subscription subscription) { playerOneSubscription = subscription; }
 			@Override public void onNext(Player.Patch item) { onPlayerPatch(gameState.getPlayers().getValue0(), playerOneShapeIV, item); }
@@ -99,6 +98,7 @@ public class GameBoard{
             finallyInitialize();
         }
     }
+
     public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB) {this.optionsMenuCB = optionsMenuCB;}
     public void setScoreBoardCB(LaunchScoreBoardCallback scoreBoardCB)    {this.scoreBoardCB = scoreBoardCB;}
     public void setShapePickerCB(LaunchShapePickerCallback shapePickerCB) {this.shapePickerCB = shapePickerCB;}
@@ -152,6 +152,7 @@ public class GameBoard{
     /************************************************************************************************************
      * SUBSCRIPTION HANDLERS
      ************************************************************************************************************/
+
     private void onPlayerPatch(Player player, ImageView iv, Player.Patch patch){
         if(patch.getColor() != null || patch.getShape() != null){
             updateImage(iv, player);

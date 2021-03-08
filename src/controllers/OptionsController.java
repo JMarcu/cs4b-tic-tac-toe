@@ -3,7 +3,7 @@ package controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
-import models.ReturnToCallback;
+import models.SceneCallback.ReturnToCallback;
 import models.SceneCallback.LaunchMainMenuCallback;
 
 public class OptionsController {
@@ -16,7 +16,7 @@ public class OptionsController {
     public GridPane getRoot(){ return this.root; }
 
     @FXML protected void ReturnButtonClicked(ActionEvent event) {
-        returnToCB.returnToCB();
+        returnToCB.returnTo();
     }
 
     @FXML protected void BackgroundButtonClicked(ActionEvent event) {

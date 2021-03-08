@@ -1,16 +1,20 @@
-import java.util.UUID;
-
 import controllers.GameBoard;
 import controllers.MainMenu;
 import controllers.OptionsController;
 import controllers.ScoreBoard;
 import controllers.ShapeColorController;
+import controllers.SplashScreen;
+import controllers.SplashScreen.SplashType;
+import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.Flow.Subscription;
+import java.util.UUID;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -22,24 +26,21 @@ import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchScoreBoardCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
+import models.SceneCallback.ReturnToCallback;
 import models.TTTScene;
 
 public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback, LaunchScoreBoardCallback {
 
     private FXMLLoader gameBoardFXML;
-    private Scene      gameBoardScene;
-    private FXMLLoader scoreboardFXML;
-    private Scene      scoreboardScene; 
+    private Subscription gameStateSubscription;
+    private FXMLLoader scoreboardFXML; 
     private FXMLLoader mainMenuFXML;
-    private Scene      mainMenuScene;
     private FXMLLoader markerPickerFXML;
-    private Scene      markerPickerScene;
     private FXMLLoader optionsMenuFXML;
-    private Scene      optionsMenuScene;
     private Player     playerOne;
     private Player     playerTwo;
-    private Stage      primaryStage;
     private StackPane  rootPane;
+    private FXMLLoader splashScreenFXML;
 
     private final long FADE_DURATION = 200;
 
@@ -50,27 +51,40 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     @Override
     public void start(Stage primaryStage) {
         try {
+            System.out.println(Color.BLACK.toString());
             rootPane = new StackPane();
+            Font.loadFont(App.class.getResource("/assets/fonts/Pixeboy.ttf").toExternalForm(), 10);
 
             gameBoardFXML = new FXMLLoader(getClass().getResource("/views/game-board.fxml"));
             mainMenuFXML = new FXMLLoader(getClass().getResource("/views/main-menu.fxml"));
             markerPickerFXML = new FXMLLoader(getClass().getResource("/views/ShapeColorPicker.fxml"));
             optionsMenuFXML = new FXMLLoader(getClass().getResource("/views/OptionsMenu.fxml"));
             scoreboardFXML = new FXMLLoader(getClass().getResource("/views/Scoreboard.fxml"));
+            splashScreenFXML = new FXMLLoader(getClass().getResource("/views/SplashScreen.fxml"));
 
-            gameBoardScene = new Scene(gameBoardFXML.load());
-            mainMenuScene = new Scene(mainMenuFXML.load());
-            markerPickerScene = new Scene(markerPickerFXML.load());
-            optionsMenuScene = new Scene(optionsMenuFXML.load());
-            scoreboardScene = new Scene(scoreboardFXML.load());
+            gameBoardFXML.load();
+            mainMenuFXML.load();
+            markerPickerFXML.load();
+            optionsMenuFXML.load();
+            scoreboardFXML.load();
+            splashScreenFXML.load();
 
             playerOne = new Player(Color.BLACK, UUID.randomUUID(), "Player 1", MarkerShape.X);
             playerTwo = new Player(Color.BLACK, UUID.randomUUID(), "Player 2", MarkerShape.O);
 
-            this.primaryStage = primaryStage;
             primaryStage.setTitle("Tic Tac Toe");
             primaryStage.setScene(new Scene(rootPane));
+
             launchMainMenu();
+
+            SplashScreen splashScreen = splashScreenFXML.getController();
+            splashScreen.setReturnCB(new ReturnToCallback(){
+                @Override
+                public void returnTo() { closeMenu(splashScreen.getRoot()); }
+            });
+            splashScreen.setSplashType(SplashType.TITLE);
+            openMenu(splashScreen.getRoot());
+
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,6 +114,19 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             gameBoard.setShapePickerCB(this);
             gameBoard.setOptionsMenuCB(this);
             gameBoard.setScoreBoardCB(this);
+
+            if(gameStateSubscription != null){
+                gameStateSubscription.cancel();
+            }
+            gameState.subscribe(new Subscriber<GameState.Patch>(){
+                @Override public void onSubscribe(Subscription subscription) { 
+                    gameStateSubscription = subscription; 
+                    subscription.request(1);
+                }
+                @Override public void onNext(GameState.Patch item) { onGameStatePatch(item); };
+                @Override public void onError(Throwable throwable) { }
+                @Override public void onComplete() { }
+            });
 
             launchScene(gameBoard.getRoot());
         } catch (Exception e) {
@@ -154,15 +181,14 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     }
 
     private void launchScene(Node sceneRoot){
-        final int elementsToRemove = rootPane.getChildren().size();
         rootPane.getChildren().add(sceneRoot);
         final FadeTransition transition = new FadeTransition(Duration.millis(FADE_DURATION));
         transition.setNode(sceneRoot);
         transition.setFromValue(0);
         transition.setToValue(1);
         transition.setOnFinished(onFinished -> {
-            for(int i = 0; i < elementsToRemove; i++){
-                rootPane.getChildren().remove(i);
+            while(rootPane.getChildren().size() > 1){
+                rootPane.getChildren().remove(0);
             }
         });
         transition.play();
@@ -177,18 +203,32 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         transition.play();
     }
 
-    private void loadScene(TTTScene scene, GameState gameState){
-        switch(scene){
-            case GAME_BOARD: 
-                if(gameState != null){
-                    System.out.println("return to game board: " + gameState);
-                    launchGame(gameState);
+    private void onGameStatePatch(GameState.Patch patch){
+        if(patch.getStatus() == GameState.Status.DRAW){
+            SplashScreen splashScreen = splashScreenFXML.getController();
+            splashScreen.setReturnCB(new ReturnToCallback(){
+                @Override
+                public void returnTo() {
+                    launchMainMenu();
                 }
-                break;
-            case MAIN_MENU:
-                this.launchMainMenu();
-                break;
-            default:
+            });
+            splashScreen.setSplashType(SplashType.DRAW);
+            openMenu(splashScreen.getRoot());
+        } else if(patch.getWinner() != null){
+            SplashScreen splashScreen = splashScreenFXML.getController();
+            splashScreen.setReturnCB(new ReturnToCallback(){
+                @Override
+                public void returnTo() {
+                    launchMainMenu();
+                }
+            });
+            splashScreen.setSplashType( 
+                patch.getWinner().getIsAI()
+                    ? SplashType.LOSE
+                    : SplashType.WIN
+            );
+            openMenu(splashScreen.getRoot());
         }
+        gameStateSubscription.request(1);
     }
 }
