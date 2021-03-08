@@ -1,5 +1,5 @@
 package models.SceneCallback;
 
 public interface LaunchOptionsMenuCallback {
-    public void launchOptionsMenu();
+    public void launchOptionsMenu(String caller);
 }

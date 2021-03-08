@@ -289,7 +289,7 @@ public class MainMenu {
     /** Invoke the {@link optionsMenuCB} when the user hits the options menu button. */
     @FXML
     void onOptions(ActionEvent event) {
-        optionsMenuCB.launchOptionsMenu();
+        optionsMenuCB.launchOptionsMenu("MainMenu");
     }
 
     /** 
