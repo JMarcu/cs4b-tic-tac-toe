@@ -19,9 +19,8 @@ public class OptionsController {
         returnToCB.returnTo();
     }
 
-    @FXML protected void BackgroundButtonClicked(ActionEvent event) {
-        // Lets you change your background... cycle through?
-        // CycleBackground();
+    @FXML protected void SFXButtonClicked(ActionEvent event) {
+        // changes sound effects volume
     }
 
     @FXML protected void VolumeButtonClicked(ActionEvent event) {
@@ -34,8 +33,8 @@ public class OptionsController {
         // Restart()
     }
 
-    @FXML protected void StatsButtonClicked(ActionEvent event) {
-        // Shows you the Stats Board
+    @FXML protected void MainMenuButtonClicked(ActionEvent event) {
+        // Returns you to main menu (from game)
     }
 
     @FXML protected void ExitButtonClicked(ActionEvent event) {
