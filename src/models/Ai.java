@@ -110,28 +110,26 @@
 
 //     /** */
 //     @SuppressWarnings("unchecked")
-//     static Triplet<Integer, Integer, Integer> miniMax(DefaultTreeModel tree, boolean isMax){
+//     static int miniMax(DefaultTreeModel tree, boolean isMax){
 //         DefaultMutableTreeNode root = (DefaultMutableTreeNode)tree.getRoot();
+//         Triplet<Integer, Integer, Integer> rootData = (Triplet<Integer, Integer, Integer>)root.getUserObject();
 //         if(root.isLeaf()){
-//             return (Triplet<Integer, Integer, Integer>) root.getUserObject();
+//             return rootData.getValue2();
 //         } else{            
-//             Triplet<Integer, Integer, Integer> bestMove = (Triplet<Integer, Integer, Integer>)((DefaultMutableTreeNode)(root.getChildAt(0))).getUserObject();
 //             int childIndex = 1;
 //             boolean prune = false;
 //             while(!prune && childIndex < root.getChildCount()){
+//                 rootData.setAt2(0);
 //                 DefaultTreeModel childTree = new DefaultTreeModel(root.getChildAt(childIndex));
-//                 Triplet<Integer, Integer, Integer> childVal = miniMax(childTree, !isMax);
-//                 if(
-//                     (isMax && childVal.getValue2() > bestMove.getValue2()) ||
-//                     (!isMax && childVal.getValue2() < bestMove.getValue2())
-//                 ){
-//                     bestMove = childVal;
+//                 int childWeight = miniMax(childTree, !isMax);
+//                 if((isMax && childWeight > 0) || (!isMax && childWeight < 0)){
+//                     rootData.setAt2(childWeight);
 //                     prune = true;
 //                     root.removeAllChildren();
 //                     root.add((DefaultMutableTreeNode)childTree.getRoot());
 //                 }
 //             }
-//             return bestMove;
+//             return rootData.getValue2();
 //         }
 //     }
 
