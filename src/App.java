@@ -8,6 +8,7 @@ import controllers.SplashScreen.SplashType;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.UUID;
+import java.util.Vector;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -40,7 +41,6 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     private FXMLLoader optionsMenuFXML;
     private Player     playerOne;
     private Player     playerTwo;
-    private ScoreBoard scoreboard;
     private StackPane  rootPane;
     private FXMLLoader splashScreenFXML;
 
@@ -168,10 +168,12 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     }
 
     @Override
-    public void launchScoreBoard(UUID topCandidate, TTTScene returnTo, GameState gameState){
+    public void launchScoreBoard(UUID topCandidate, TTTScene returnTo, Vector<GameState> gameState){
         try{
-            scoreboard = scoreboardFXML.getController();
-            scoreboard.addPlayer(gameState);
+            ScoreBoard scoreboard = scoreboardFXML.getController();
+            if(gameState.size()==0) scoreboard.set();
+            for(int i=0; i<gameState.size(); i++)
+                scoreboard.addPlayer(gameState.get(i));
             scoreboard.setReturnCB(() -> {closeMenu(scoreboard.getRoot());});
             openMenu(scoreboard.getRoot());
         } catch(Exception e){
