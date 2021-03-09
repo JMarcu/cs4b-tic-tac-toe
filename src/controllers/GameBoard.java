@@ -8,7 +8,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
+//import javafx.scene.layout.BorderPane;
+import javafx.scene.control.ScrollPane;
 import models.ColorScheme;
 import models.GameState;
 import models.Player;
@@ -37,7 +38,7 @@ public class GameBoard{
     @FXML private ImageView playerTwoShapeIV;
     @FXML private ImageView options;
     @FXML private Board boardController;
-    @FXML private BorderPane root;
+    @FXML private ScrollPane root;
     
     public GameBoard(){
         this.gameState = null;
@@ -77,7 +78,7 @@ public class GameBoard{
      * ACCESSORS & MUTATORS
      ************************************************************************************************************/
 
-    public BorderPane getRoot(){ return this.root; }
+    public ScrollPane getRoot(){ return this.root; }
 
     //Loads data from launchGame
     public void setGameState(GameState gameState){
