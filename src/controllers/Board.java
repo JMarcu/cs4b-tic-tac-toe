@@ -1,5 +1,7 @@
 package controllers;
 
+import models.Ai;
+
 import java.util.ArrayList;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
@@ -153,6 +155,11 @@ public class Board {
     @FXML private void handleLeftBtm(MouseEvent e)   { gameState.setCell(2, 0); }
     @FXML private void handleCenterBtm(MouseEvent e) { gameState.setCell(2, 1); }
     @FXML private void handleRightBtm(MouseEvent e)  { gameState.setCell(2, 2); }
+    
+    // private void AiPlay(){
+        
+
+    // } 
 
     /************************************************************************************************************
      * SUBSCRIPTION HANDLERS
