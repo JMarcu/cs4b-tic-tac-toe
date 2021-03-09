@@ -2,7 +2,7 @@ package controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.*;
 import javafx.scene.paint.Color;
 import models.ColorScheme;
@@ -16,7 +16,7 @@ public class ShapeColorController {
     private ImageView CurrentPlayerImage;
 
     @FXML
-    private SplitPane root;
+    private ScrollPane root;
 
     private Color currentColor;
     private MarkerShape myShape;
@@ -38,7 +38,7 @@ public class ShapeColorController {
         musicSFX = new MusicPlayer();
     }
 
-    public SplitPane getRoot(){ return this.root; }
+    public ScrollPane getRoot(){ return this.root; }
 
     @FXML protected void ReturnButtonClicked(ActionEvent event) {
         //System.out.println("currentColor: " + currentColor);

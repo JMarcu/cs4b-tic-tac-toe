@@ -2,7 +2,8 @@ package controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.layout.GridPane;
+//import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.control.Button;
 import models.SceneCallback.ReturnToCallback;
 import models.SceneCallback.LaunchMainMenuCallback;
@@ -39,9 +40,9 @@ public class OptionsController {
         }
     }
 
-    @FXML private GridPane root;
+    @FXML private StackPane root;
 
-    public GridPane getRoot(){ return this.root; }
+    public StackPane getRoot(){ return this.root; }
     
     @FXML protected void ReturnButtonClicked(ActionEvent event) {
         MusicPlayer music = new MusicPlayer();
