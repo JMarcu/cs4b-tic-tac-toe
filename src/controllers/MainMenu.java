@@ -28,7 +28,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-
+import models.Ai;
 import models.ColorScheme;
 import models.GameMode;
 import models.GameState;
@@ -140,6 +140,12 @@ public class MainMenu {
     @FXML
     void onPlayAction(ActionEvent event) {
         System.out.println(this.launchGameCB);
+        
+        //"AI: Player 2"
+        if(singlePlayer){
+      //    this.playerTwo = new Ai(playerTwo.getColor(), playerTwo.getUuid(), playerTwo.getName(), MarkerShape.O);
+        }
+
         this.launchGameCB.launchGame(new GameState(gameMode, new Pair<Player, Player>(playerOne, playerTwo), singlePlayer, secondaryOption));
     }
 
