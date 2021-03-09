@@ -29,6 +29,7 @@ import models.SceneCallback.LaunchScoreBoardCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
 import models.SceneCallback.ReturnToCallback;
 import models.TTTScene;
+import models.MusicPlayer.Track;
 import models.MusicPlayer;
 
 public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback, LaunchScoreBoardCallback {
@@ -43,6 +44,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     private Player     playerTwo;
     private StackPane  rootPane;
     private FXMLLoader splashScreenFXML;
+    private MusicPlayer music = new MusicPlayer();
 
     private final long FADE_DURATION = 200;
 
@@ -95,6 +97,9 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
 
     @Override
     public void launchMainMenu() {
+
+        music.playMusic(Track.title);
+
         MainMenu mainMenu = mainMenuFXML.getController();
         mainMenu.setLaunchGameCB(this);
         mainMenu.setOptionsMenuCB(this);
@@ -111,6 +116,9 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     @Override
     public void launchGame(GameState gameState) {
         try {
+
+            music.playMusic(Track.waiting);
+
             GameBoard gameBoard = gameBoardFXML.getController();
             gameBoard.setGameState(gameState);
             gameBoard.setShapePickerCB(this);
