@@ -8,3 +8,129 @@ Button {
     -fx-cursor: hand;
     -fx-text-fill: -text-on-primary;
 }
+
+#PaneX{
+    -fx-background-image: url("../assets/images/x.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneO{
+    -fx-background-image: url("../assets/images/o.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneDragon{
+    -fx-background-image: url("../assets/images/Dragon.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneCat{
+    -fx-background-image: url("../assets/images/CatFace.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneStar{
+    -fx-background-image: url("../assets/images/Star.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneSmiley{
+    -fx-background-image: url("../assets/images/SmileyFace.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneFrowny{
+    -fx-background-image: url("../assets/images/FrownyFace.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneOutline{
+    -fx-background-image: url("../assets/images/OutlineFilled.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneFilled{
+    -fx-background-image: url("../assets/images/ColorFilled.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneRed{
+    -fx-background-image: url("../assets/images/ColorFilledRed.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneBlack{
+    -fx-background-image: url("../assets/images/ColorFilledBlack.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneBlue{
+    -fx-background-image: url("../assets/images/ColorFilledBlue.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PanePink{
+    -fx-background-image: url("../assets/images/ColorFilledPink.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PanePurple{
+    -fx-background-image: url("../assets/images/ColorFilledPurple.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneGreen{
+    -fx-background-image: url("../assets/images/ColorFilledGreen.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneTeal{
+    -fx-background-image: url("../assets/images/ColorFilledTeal.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneYellow{
+    -fx-background-image: url("../assets/images/ColorFilledYellow.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
+#PaneOrange{
+    -fx-background-image: url("../assets/images/ColorFilledOrange.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}

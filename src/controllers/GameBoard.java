@@ -31,13 +31,14 @@ public class GameBoard{
     private Vector<GameState>         gameHistory = new Vector<GameState>();
 
     private final String ASSETS_DIRECTORY = "/assets/images/";
-    
+
     @FXML private Button optionButton;
     @FXML private Button scoreButton;
     @FXML private TextField playerOneTF;
     @FXML private TextField playerTwoTF;
     @FXML private ImageView playerOneShapeIV;
     @FXML private ImageView playerTwoShapeIV;
+    @FXML private ImageView options;
     @FXML private Board boardController;
     @FXML private BorderPane root;
     
@@ -58,6 +59,11 @@ public class GameBoard{
         if(gameState != null){
             finallyInitialize();
         }
+
+        this.root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
+        this.root.getStylesheets().add(getClass().getResource("/styles/game-board.css").toExternalForm());
+
+        ColorScheme.adjustImageColor(options, ColorScheme.TEXT_ON_SECONDARY.getColor());
     }
 
     private void finallyInitialize(){

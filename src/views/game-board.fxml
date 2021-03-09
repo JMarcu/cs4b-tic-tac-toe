@@ -4,6 +4,7 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -11,107 +12,118 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id='root' maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="600.0" style="-fx-pref-height: 850; -fx-pref-width: 600;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.GameBoard">
-   <padding>
-      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-   </padding>
-   <cursor>
-      <Cursor fx:constant="OPEN_HAND" />
-   </cursor>
-   <bottom>
-      <HBox BorderPane.alignment="CENTER">
-         <children>
-            <Label text="Welcome to Tic Tac Toe">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-         </children>
-      </HBox>
-   </bottom>
-   <left>
-      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="60.0" BorderPane.alignment="CENTER" />
-   </left>
-   <center>
-      <AnchorPane BorderPane.alignment="CENTER">
-         <fx:include fx:id='board' source="Board.fxml" />
-      </AnchorPane>
-   </center>
-   <right>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="60.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button fx:id="scoreButton" contentDisplay="CENTER" layoutX="9.0" layoutY="-68.0" mnemonicParsing="false" onAction="#onScoreBoard" prefHeight="650.0" prefWidth="51.0" text="Score Board" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-         </children></AnchorPane>
-   </right>
-   <top>
-      <AnchorPane prefWidth="584.0" BorderPane.alignment="CENTER">
-         <children>
-            <GridPane layoutX="82.0" layoutY="65.0" prefHeight="33.0" prefWidth="436.0" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="81.0" AnchorPane.rightAnchor="81.0" AnchorPane.topAnchor="65.0">
-              <columnConstraints>
-                <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="50.0" />
-                  <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
-              </rowConstraints>
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="916.0" prefWidth="752.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.GameBoard">
+   <content>
+      <BorderPane fx:id="root" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="750.0" style="-fx-background-color: -primary; -fx-border-color: -primary;">
+         <padding>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+         </padding>
+         <cursor>
+            <Cursor fx:constant="OPEN_HAND" />
+         </cursor>
+         <right>
+            <Pane minWidth="100.0" BorderPane.alignment="CENTER" />
+         </right>
+         <center>
+            <AnchorPane BorderPane.alignment="CENTER">
                <children>
-                  <Label contentDisplay="CENTER" text="Vs." GridPane.columnIndex="1">
+                  <fx:include fx:id="board" source="Board.fxml" />
+               </children>
+            </AnchorPane>
+         </center>
+         <left>
+            <AnchorPane minHeight="100.0" minWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="scoreButton" alignment="CENTER" contentDisplay="CENTER" layoutX="7.0" layoutY="333.0" minHeight="100.0" mnemonicParsing="false" onAction="#onScoreBoard" prefHeight="802.0" prefWidth="22.0" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="3.0" AnchorPane.topAnchor="10.0">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Button>
+               </children>
+            </AnchorPane>
+         </left>
+         <top>
+            <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="125.0" prefWidth="734.0" BorderPane.alignment="CENTER">
+               <columnConstraints>
+                  <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="-Infinity" minWidth="10.0" prefWidth="50.0" />
+                  <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                  <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
+               </rowConstraints>
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" style="-fx-font-size: 3em;" text="Vs." textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <GridPane maxHeight="150.0" prefHeight="200.0">
+                  <AnchorPane GridPane.rowIndex="1">
                      <children>
-                        <TextField fx:id="playerOneTF" maxHeight="1.7976931348623157E308" minHeight="30.0" onKeyTyped="#onPlayerOneTF" promptText="Player 2" text="Player 1" GridPane.columnSpan="2" GridPane.vgrow="ALWAYS" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="30.0" mnemonicParsing="false" onAction="#onPlayerOneShapeAction" GridPane.columnIndex="1">
+                        <GridPane layoutX="-134.0" layoutY="4.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onPlayerOneShapeAction" prefHeight="50.0" prefWidth="80.0">
+                                 <graphic>
+                                    <ImageView fx:id="playerOneShapeIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+                                 </graphic>
+                              </Button>
+                              <TextField fx:id="playerOneTF" minHeight="-Infinity" minWidth="-Infinity" onKeyTyped="#onPlayerOneTF" prefHeight="50.0" prefWidth="90.0" promptText="Player 1" text="Player 1" GridPane.columnIndex="1" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
+                           </rowConstraints>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <children>
+                        <GridPane layoutX="-141.0" layoutY="-7.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onPlayerTwoShapeAction" prefHeight="50.0" prefWidth="80.0" GridPane.columnIndex="1">
+                                 <graphic>
+                                    <ImageView fx:id="playerTwoShapeIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+                                 </graphic>
+                              </Button>
+                              <TextField fx:id="playerTwoTF" minHeight="-Infinity" minWidth="-Infinity" onKeyTyped="#onPlayerTwoTF" prefHeight="50.0" prefWidth="90.0" promptText="Player 2" text="Player 2" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
+                           </rowConstraints>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
+                     <children>
+                        <Button fx:id="optionButton" layoutX="282.0" layoutY="9.0" mnemonicParsing="false" onAction="#onOption" AnchorPane.rightAnchor="0.0">
                            <graphic>
-                              <ImageView fx:id="playerOneShapeIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="options" fitHeight="27.0" fitWidth="30.0">
+                                 <image>
+                                    <Image url="@../assets/images/gear.png" />
+                                 </image>
+                              </ImageView>
                            </graphic>
                         </Button>
                      </children>
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
-                     </rowConstraints>
-                  </GridPane>
-                  <GridPane maxHeight="150.0" prefHeight="200.0" GridPane.columnIndex="2">
-                     <children>
-                        <TextField fx:id="playerTwoTF" maxHeight="1.7976931348623157E308" minHeight="30.0" onKeyTyped="#onPlayerTwoTF" promptText="Player 2" text="Player 2" GridPane.columnSpan="2" GridPane.vgrow="ALWAYS" />
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="30.0" mnemonicParsing="false" onAction="#onPlayerTwoShapeAction" GridPane.columnIndex="1">
-                           <graphic>
-                              <ImageView fx:id="playerTwoShapeIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                        </Button>
-                     </children>
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
-                     </rowConstraints>
-                  </GridPane>
+                  </AnchorPane>
                </children>
             </GridPane>
-            <Button fx:id="optionButton" layoutX="539.0" layoutY="14.0" mnemonicParsing="false" onAction="#onOption" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
-               <graphic>
-                  <ImageView fitHeight="27.0" fitWidth="30.0">
-                     <image>
-                        <Image url="@../assets/images/gear.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-         </children>
-      </AnchorPane>
-   </top>
-</BorderPane>
+         </top>
+         <bottom>
+            <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </bottom>
+      </BorderPane>
+   </content>
+</ScrollPane>
