@@ -44,6 +44,11 @@ public class ScoreBoard {
         scoreDisplay.setY(50);
     }
   
+    public void set(){
+        display = String.format("1.\t%30s\t%s\n2.\t%30s\t%s\n3.\t%30s\t%s\n4.\t%30s\t%s\n5.\t%30s\t%s\n", topGames[0], topPlayers[0], topGames[1], topPlayers[1], topGames[2],topPlayers[2], topGames[3], topPlayers[3], topGames[4], topPlayers[4]); 
+        scoreDisplay.setText(display);
+    }
+
     public void addPlayer(GameState gameState){
         players = gameState.getPlayers();
         if(gameState.getStatus() == GameState.Status.DRAW){

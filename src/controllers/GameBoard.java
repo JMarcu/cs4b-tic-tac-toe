@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.concurrent.Flow.*;
+import java.util.Vector;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -27,6 +28,8 @@ public class GameBoard{
     private LaunchShapePickerCallback shapePickerCB;
     private LaunchScoreBoardCallback  scoreBoardCB;
     private boolean                   viewInit;
+    private boolean                   read;
+    private Vector<GameState>         gameHistory = new Vector<GameState>();
 
     private final String ASSETS_DIRECTORY = "/assets/images/";
 
@@ -65,6 +68,9 @@ public class GameBoard{
     }
 
     private void finallyInitialize(){
+        if(!read) gameHistory.add(gameState);
+        read = false;
+
         boardController.setGameState(gameState);
 
         playerOneTF.setText(gameState.getPlayers().getValue0().getName());
@@ -101,6 +107,8 @@ public class GameBoard{
 			@Override public void onComplete() { }
         });
 
+        if(!read){ gameHistory.add(gameState); read = true;}
+        
         if(viewInit){
             finallyInitialize();
         }
@@ -153,7 +161,9 @@ public class GameBoard{
     @FXML //Allows playerone to access the scoreboard by pressing the scoreboard button
     private void onScoreBoard(ActionEvent event){
         // System.out.println("onScoreBoard");
-        this.scoreBoardCB.launchScoreBoard(gameState.getPlayers().getValue0().getUuid(), TTTScene.GAME_BOARD, gameState);
+        this.scoreBoardCB.launchScoreBoard(gameState.getPlayers().getValue0().getUuid(), TTTScene.GAME_BOARD, gameHistory);
+        for(int i=0; i<gameHistory.size(); i++)    
+            this.gameHistory.remove(i);
     }
 
     /************************************************************************************************************
