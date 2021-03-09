@@ -3,14 +3,15 @@ package models;
 import java.io.File;
 import javax.sound.sampled.*;
 
-enum Track{
-    adjustSound, changeMarker, clickSquare, exitMenu, openMenu, title, waiting, lose, tie, win;
-}
-
 public class MusicPlayer {
+    public enum Track{
+        adjustSound, changeMarker, clickSquare, exitMenu, openMenu, title, waiting, lose, tie, win;
+    }
+
     private final String SOUND_DIRECTORY = "src/assets/sounds/";
 
-    void playMusic(Track track){
+    String getMusicLocation(Track track)
+    {
         String musicLocation = "";
         switch(track){
             case adjustSound:   musicLocation = SOUND_DIRECTORY.concat("adjust-sound.wav");
@@ -37,6 +38,12 @@ public class MusicPlayer {
                 break;
         }//end switch
 
+        return musicLocation;
+    }
+
+    public void playMusic(Track track){
+        String musicLocation = getMusicLocation(track);
+
         File musicPath = new File(musicLocation);
         try{
             if(musicPath.exists()){
@@ -45,6 +52,26 @@ public class MusicPlayer {
                 clip.open(audioInput);
                 clip.start();
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
+            }
+            else{
+                System.out.println("Can't find the file");
+            }
+        } catch(Exception ex){
+
+        }
+    }
+
+    public void playSFX(Track track){
+        String musicLocation = getMusicLocation(track);
+
+        File musicPath = new File(musicLocation);
+        try{
+            if(musicPath.exists()){
+                AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioInput);
+                clip.start();
+                //clip.loop(Clip.LOOP_CONTINUOUSLY);
             }
             else{
                 System.out.println("Can't find the file");

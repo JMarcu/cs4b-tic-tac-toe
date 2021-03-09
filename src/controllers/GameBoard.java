@@ -9,7 +9,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.event.ActionEvent;
 import models.ColorScheme;
 import models.GameState;
 import models.Player;
@@ -30,9 +29,6 @@ public class GameBoard{
 
     private final String ASSETS_DIRECTORY = "/assets/images/";
 
-    @FXML 
-    private BorderPane root;
-    
     @FXML private Button optionButton;
     @FXML private Button scoreButton;
     @FXML private TextField playerOneTF;
@@ -41,6 +37,7 @@ public class GameBoard{
     @FXML private ImageView playerTwoShapeIV;
     @FXML private ImageView options;
     @FXML private Board boardController;
+    @FXML private BorderPane root;
     
     public GameBoard(){
         this.gameState = null;
@@ -80,13 +77,15 @@ public class GameBoard{
      * ACCESSORS & MUTATORS
      ************************************************************************************************************/
 
+    public BorderPane getRoot(){ return this.root; }
+
     //Loads data from launchGame
     public void setGameState(GameState gameState){
         this.gameState = gameState;
 
-        if(this.playerOneSubscription != null){ this.playerOneSubscription.cancel(); }
-        if(this.playerTwoSubscription != null){ this.playerTwoSubscription.cancel(); }
-
+        if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
+        if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
+        
         gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
 			@Override public void onSubscribe(Subscription subscription) { playerOneSubscription = subscription; }
 			@Override public void onNext(Player.Patch item) { onPlayerPatch(gameState.getPlayers().getValue0(), playerOneShapeIV, item); }
@@ -105,6 +104,7 @@ public class GameBoard{
             finallyInitialize();
         }
     }
+
     public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB) {this.optionsMenuCB = optionsMenuCB;}
     public void setScoreBoardCB(LaunchScoreBoardCallback scoreBoardCB)    {this.scoreBoardCB = scoreBoardCB;}
     public void setShapePickerCB(LaunchShapePickerCallback shapePickerCB) {this.shapePickerCB = shapePickerCB;}
@@ -135,18 +135,18 @@ public class GameBoard{
 
     @FXML //Allows playerone to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerOneShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue0(), TTTScene.GAME_BOARD, gameState);
+        this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue0());
     }
 
     @FXML //Allows playertwo to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerTwoShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue1(), TTTScene.GAME_BOARD, gameState);
+        this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue1());
     }
 
     @FXML //Allows playerone to use the options menu by pressing the gear button
     private void onOption(ActionEvent event){
       // System.out.println("onOption");
-        this.optionsMenuCB.launchOptionsMenu(gameState.getPlayers().getValue0().getUuid(), TTTScene.GAME_BOARD, gameState);
+        this.optionsMenuCB.launchOptionsMenu("Game");
     }
 
     @FXML //Allows playerone to access the scoreboard by pressing the scoreboard button
@@ -158,6 +158,7 @@ public class GameBoard{
     /************************************************************************************************************
      * SUBSCRIPTION HANDLERS
      ************************************************************************************************************/
+
     private void onPlayerPatch(Player player, ImageView iv, Player.Patch patch){
         if(patch.getColor() != null || patch.getShape() != null){
             updateImage(iv, player);

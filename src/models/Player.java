@@ -64,6 +64,11 @@ public class Player {
     /** The shape of the player's marker. */
     private MarkerShape shape;
 
+    /** Constructs a default player object. */
+    public Player() {
+        this(Color.BLACK, UUID.randomUUID(), "Player", MarkerShape.X);
+    }
+
     /** Constructs a new player object. */
     public Player(Color color, UUID id, String name, MarkerShape shape) {
         this.color = color == null ? Color.BLACK : color;

@@ -38,7 +38,8 @@ public class GameState implements Publisher<GameState.Patch>  {
     public class Patch {
         /** The player who's turn it is. */
         protected Player currentPlayer;
-
+        /** The players in this game. */
+        protected Pair<Player, Player> players;
         /** 
          * A tuple describing a player's move. The first index is a {@link Player} object describing the
          * player who made the move. The second and third indices are the x- and y-coordinates (respectively) 
@@ -58,6 +59,13 @@ public class GameState implements Publisher<GameState.Patch>  {
          * @return The current player, or null if the current player has not changed since the last patch.
          */
         public Player getCurrentPlayer(){ return currentPlayer; }
+
+        /** 
+         * The players who are playing this game. Not defined for games with a status other than {@link Status.NEW} or 
+         * {@link Status.IN_PROGRESS}. 
+         * @return The players in this game, or null if the current players have not changed since the last patch.
+         */
+        public Pair<Player, Player> getPlayers(){ return players; }
 
         /** 
          * Describes a player move onto the board, or null if no move.
@@ -140,7 +148,7 @@ public class GameState implements Publisher<GameState.Patch>  {
 
     /** Creates a default game: single player, free play, and with both players set to null. */
     public GameState(){
-        this(GameMode.FREE_PLAY, new Pair<Player, Player>(null, null), true, 0);
+        this(GameMode.FREE_PLAY, new Pair<Player, Player>(new Player(), new Player()), true, 0);
     }
 
     /** 
@@ -291,7 +299,8 @@ public class GameState implements Publisher<GameState.Patch>  {
                 notifySubscribers(new Patch(){
                     {
                         status = Status.WON;
-                        winner = getCurrentPlayer();
+                        move = new Triplet<Player, Integer, Integer>(GameState.this.getCurrentPlayer(), Integer.valueOf(x), Integer.valueOf(y));
+                        winner = GameState.this.winner;
                     }
                 });
             //Else if nobody has won, but the player has just played to the last empty cell, the game is a draw. 
@@ -303,8 +312,10 @@ public class GameState implements Publisher<GameState.Patch>  {
                 victoryCounts = null;
 
                 //Notifiy subscribers.
-                notifySubscribers(new Patch(){ {
+                notifySubscribers(new Patch(){ 
+                    {
                         status = Status.DRAW;
+                        move = new Triplet<Player, Integer, Integer>(GameState.this.getCurrentPlayer(), Integer.valueOf(x), Integer.valueOf(y));
                     }
                 });
             //Else if nobody has won and the game hasn't drawn, handle the player's move.

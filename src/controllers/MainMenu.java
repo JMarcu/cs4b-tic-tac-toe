@@ -1,31 +1,23 @@
 package controllers;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
-import java.util.UUID;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
-
-import javax.lang.model.type.NullType;
-
-import org.javatuples.Pair;
-
+import java.util.UUID;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import models.Ai;
@@ -34,49 +26,129 @@ import models.GameMode;
 import models.GameState;
 import models.MarkerShape;
 import models.Player;
-import models.TTTScene;
 import models.SceneCallback.LaunchGameCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
+import org.javatuples.Pair;
 
+/**
+ * Controls the main menu view.
+ * @author James Marcu
+ */
 public class MainMenu {
+    /*==========================================================================================================
+     * CLASS VARIABLES
+     *==========================================================================================================*/
+
+    /** Stores user selection of game mode. */
     private GameMode gameMode;
+
+    /** Interface invoked to tell the scene controller to launch a game. */
     private LaunchGameCallback launchGameCB;
+
+    /** Interface invoked to tell the scene controller to open the options menu. */
     private LaunchOptionsMenuCallback optionsMenuCB;
+    
+    /** Player object describing the first player. */
     private Player playerOne;
+
+    /** Subscription to player one updates. */
+    private Subscription playerOneSubscription;
+
+    /** Player object describing the second player. */
     private Player playerTwo;
+
+    /** Subscription to player two updates. */
+    private Subscription playerTwoSubscription;
+
+    /** 
+     * Some game modes have a configurable quantity associated with them. For instance, {@link GameMode.BULLET} 
+     * allows players to set the timer duration. This field stores the input value for such game mode properties.
+     */
     private int secondaryOption;
+
+    /** Interface invoked to tell the scene controller to open the marker menu. */
     private LaunchShapePickerCallback shapePickerCB;
+
+    /** Stores whether or not the player has selected a single player game. */
     private boolean singlePlayer;
-    private ArrayList<Subscription> subscriptions;
 
-    private final String ASSETS_DIRECTORY = "/assets/images/";
+    /** Absolute location of the image assets directory. */
+    private final String IMAGES_DIRECTORY = "/assets/images/";
 
-    @FXML private ToggleButton   aiBtn;
-    @FXML private ImageView      gearIV;
-    @FXML private ToggleButton   humanBtn;
+    /*==========================================================================================================
+     * VIEW ELEMENTS
+     *==========================================================================================================*/
+
+    /** ToggleButton for selecting to vs the AI. */
+    @FXML private ToggleButton aiBtn;
+
+    /** ImageView displaying a gear for the options menu button. */
+    @FXML private ImageView gearIV;
+
+    /** ToggleButton for selecting to vs a second human opponent. */
+    @FXML private ToggleButton humanBtn;
+
     // @FXML private ChoiceBox<String> gameModeCB;
-    @FXML private TextField      playerOneNameTF;
-    @FXML private ImageView      playerOneShapeIV;
-    @FXML private TextField      playerTwoNameTF;
-    @FXML private ImageView      playerTwoShapeIV;
-    @FXML private URL            location;
-    @FXML private ResourceBundle resources;
-    @FXML private BorderPane     root;
+    
+    /** TextField for displaying and editing the first player's name. */
+    @FXML private TextField playerOneNameTF;
+
+    /** Pane for displaying player one's marker. */
+    @FXML private Pane playerOneMarkerPane;
+    
+    /** ImageView displaying the first player's marker. */
+    // @FXML private ImageView playerOneShapeIV;
+    
+    /** TextField for displaying and editing the second player's name. */
+    @FXML private TextField playerTwoNameTF;
+
+    /** Pane for displaying player two's marker. */
+    @FXML private Pane playerTwoMarkerPane;
+
+    /** Root pane of the view. */
+    @FXML private ScrollPane root;
+
     // @FXML private TextField secondaryOptionTF;
 
+    /*==========================================================================================================
+     * LIFECYCLE
+     *==========================================================================================================*/
+
+    /** 
+     * Constructs a default instance of MainMenu.
+     *  - Player one will be named "Player 1" and have a black {@link MarkerShape.X} marker.
+     *  - Player two will be named "Player 2" and have a black {@link MarkerShape.O} marker.
+     *  - Single player will be set to true.
+     *  - Game mode will be set to {@link GameMode.FREE_PLAY}.
+     */
     public MainMenu(){
         this.playerOne = new Player(Color.BLACK, UUID.randomUUID(), "Player 1", MarkerShape.X);
         this.playerTwo = new Player(Color.BLACK, UUID.randomUUID(), "Player 2", MarkerShape.O);
         this.secondaryOption = -1;
         this.singlePlayer = true;
-        this.subscriptions = new ArrayList<Subscription>();
     }
 
-    @FXML
+    /** Sets the default state of the view's interactive elements. */
+    @FXML 
     void initialize() {
-        this.aiBtn.setSelected(true);
+        //Load external style sheets.
+        root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/styles/main-menu.css").toExternalForm());
+
+        //Bind the default player objects to the associated view elements.
+        setPlayers(playerOne, playerTwo);
+
+        //Set the state of the single player toggle buttons.
+        aiBtn.setSelected(singlePlayer);
+        humanBtn.setSelected(!singlePlayer);
+
+        //Color the options button to fit the color scheme.
         ColorScheme.adjustImageColor(gearIV, ColorScheme.TEXT_ON_SECONDARY.getColor());
+        
+        //An initial animation must be run to set certain style values.
+        animateSinglePlayerButtons();
+        
         // this.gameModeCB.setItems(GameMode.toObservableArray());
         // this.gameModeCB.setValue(GameMode.FREE_PLAY.toString());
         // final UnaryOperator<TextFormatter.Change> numberValidator = change -> {
@@ -90,22 +162,103 @@ public class MainMenu {
         // };
         // this.secondaryOptionTF.setDisable(true);
         // this.secondaryOptionTF.setTextFormatter(new TextFormatter<String>(numberValidator));
-        this.setPlayers(playerOne, playerTwo);
-        this.animateSinglePlayerButtons();
-        this.root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
-        this.root.getStylesheets().add(getClass().getResource("/styles/main-menu.css").toExternalForm());
     }
 
+    /*==========================================================================================================
+     * ACCESSORS & MUTATORS
+     *==========================================================================================================*/
+
+    /** 
+     * Gets the root element of the MainMenu view.
+     * @returns The root element of the MainMenu view.
+     */
+    public ScrollPane getRoot(){ return this.root; }
+
+    /** Sets the callback to be invoked when the MainMenu wishes to launch a new game. */
+    public void setLaunchGameCB(LaunchGameCallback launchGameCB){
+        this.launchGameCB = launchGameCB;
+    }
+
+    /** Sets the callback to be invoked when the MainMenu wants to open the options menu. */
+    public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB){
+        this.optionsMenuCB = optionsMenuCB;
+    }
+
+    /** Sets and binds the two players in the game. */
+    public void setPlayers(Player playerOne, Player playerTwo){
+        //Set the players.
+        this.playerOne = playerOne;
+        this.playerTwo = playerTwo;
+
+        //Cancel any subscriptions to previous players.
+        if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
+        if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
+
+        //Initialize the player marker views.
+        this.setMarker(playerOneMarkerPane, playerOne);
+        this.setMarker(playerTwoMarkerPane, playerTwo);
+
+        //Subscribe to player updates. We want to update the marker views whenever the 
+        //players change their markers in another menu.
+        this.playerOne.subscribe(new Subscriber<Player.Patch>(){
+            @Override public void onComplete() { }
+            @Override public void onError(Throwable throwable) { }
+
+            @Override
+            public void onSubscribe(Subscription subscription) {
+                playerOneSubscription = subscription;
+                playerOneSubscription.request(1);
+            }
+
+            @Override
+            public void onNext(Player.Patch item) {
+                if(item.getColor() != null || item.getShape() != null){
+                    setMarker(playerOneMarkerPane, playerOne);
+                }
+                playerOneSubscription.request(1);
+            }
+        });
+
+        this.playerTwo.subscribe(new Subscriber<Player.Patch>(){
+            @Override public void onComplete() { }
+            @Override public void onError(Throwable throwable) { }
+
+            @Override
+            public void onSubscribe(Subscription subscription) {
+                playerTwoSubscription = subscription;
+                playerTwoSubscription.request(1);
+            }
+
+            @Override
+            public void onNext(Player.Patch item) {
+                if(item.getColor() != null || item.getShape() != null){
+                    setMarker(playerTwoMarkerPane, playerTwo);
+                }
+                playerTwoSubscription.request(1);
+            }
+        });
+    }
+
+    /** Sets the callback to be invoked when the MainMenu wants to launch a marker picker menu. */
+    public void setShapePickerCB(LaunchShapePickerCallback shapePickerCB){
+        this.shapePickerCB = shapePickerCB;
+    }
+
+    /*==========================================================================================================
+     * EVENT HANDLERS
+     *==========================================================================================================*/
+
+    /** Set {@link singlePlayer} to true when the user clicks the AI button. */
     @FXML
     private void onAiAction(){
-        if(!this.singlePlayer){
-            this.singlePlayer = true;
-            this.animateSinglePlayerButtons();
+        if(!singlePlayer){
+            singlePlayer = true;
+            animateSinglePlayerButtons();
         }
     }
 
-    @FXML
-    void onGameModeAction(ActionEvent event) {
+    // @FXML
+    // void onGameModeAction(ActionEvent event) {
         // this.gameMode = GameMode.fromString(this.gameModeCB.getValue());
         // switch(this.gameMode){
         //     case BEST_OF_X:
@@ -122,75 +275,71 @@ public class MainMenu {
         //         this.secondaryOptionTF.setDisable(true);
         //         break;
         // }
-    }
+    // }
 
+
+    /** Set {@link singlePlayer} to false when the user clicks {@link humanBtn}. */
     @FXML
     private void onHumanAction(){
-        if(this.singlePlayer){
-            this.singlePlayer = false;
-            this.animateSinglePlayerButtons();
+        if(singlePlayer){
+            singlePlayer = false;
+            animateSinglePlayerButtons();
         }
     }
 
+    /** Invoke the {@link optionsMenuCB} when the user hits the options menu button. */
     @FXML
     void onOptions(ActionEvent event) {
-        this.optionsMenuCB.launchOptionsMenu(this.playerOne.getUuid(), TTTScene.MAIN_MENU, null);
+        optionsMenuCB.launchOptionsMenu("MainMenu");
     }
 
+    /** 
+     * Invoke the {@link launchGameCB} when the user hits the play button, feeding it the user's chosen game state.
+     * The controller assumes it will be unloaded and releases certain state objects from memory, so likely will not
+     * funciton fully if it persists after invoking this method.
+     */
     @FXML
     void onPlayAction(ActionEvent event) {
-        System.out.println(this.launchGameCB);
-        
-        //"AI: Player 2"
-        if(singlePlayer){
-      //    this.playerTwo = new Ai(playerTwo.getColor(), playerTwo.getUuid(), playerTwo.getName(), MarkerShape.O);
-        }
-
-        this.launchGameCB.launchGame(new GameState(gameMode, new Pair<Player, Player>(playerOne, playerTwo), singlePlayer, secondaryOption));
+        if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
+        if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
+        launchGameCB.launchGame(new GameState(gameMode, new Pair<Player, Player>(playerOne, playerTwo), singlePlayer, secondaryOption));
     }
 
+    /** Update player one's name when the user types in ${@link playerOneNameTF}.  */
     @FXML
     void onPlayerOneKeyTyped(KeyEvent event) {
-        this.playerOne.setName(this.playerOneNameTF.getText());
+        playerOne.setName(playerOneNameTF.getText());
     }
 
+    /** Invoke the {@link shapePickerCB} when the user clicks  */
     @FXML
     void onPlayerOneShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(this.playerOne, TTTScene.MAIN_MENU, null);
+        shapePickerCB.launchShapePicker(playerOne);
     }
 
+    /** Binds KeyEvents from the TextField to playerTwo's name. */
     @FXML
     void onPlayerTwoKeyTyped(KeyEvent event) {
-        this.playerTwo.setName(this.playerTwoNameTF.getText());
+        playerTwo.setName(playerTwoNameTF.getText());
     }
 
+    /** Invoke the {@link shapePickerCB} when the user clicks  */
     @FXML
     void onPlayerTwoShapeAction(ActionEvent event) {
-        this.shapePickerCB.launchShapePicker(this.playerTwo, TTTScene.MAIN_MENU, null);
+        shapePickerCB.launchShapePicker(playerTwo);
     }
 
-    @FXML
-    void onSecondaryOptionKeyTyped(KeyEvent event) {
+    // @FXML
+    // void onSecondaryOptionKeyTyped(KeyEvent event) {
         // final String text = this.secondaryOptionTF.getText();
         // this.secondaryOption = text == "" ? 0 : Integer.valueOf(text);
-    }
+    // }
 
-    public void setLaunchGameCB(LaunchGameCallback launchGameCB){this.launchGameCB = launchGameCB;}
-    public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB){this.optionsMenuCB = optionsMenuCB;}
-    public void setPlayers(Player playerOne, Player playerTwo){
-        this.subscriptions.forEach((Subscription subscription) -> {
-            subscription.cancel();
-        });
-        this.subscriptions = new ArrayList<Subscription>();
-        this.playerOne = playerOne;
-        this.playerTwo = playerTwo;
-        this.bindPlayers(playerOneShapeIV, playerOne);
-        this.bindPlayers(playerTwoShapeIV, playerTwo);
-        this.setMarker(playerOneShapeIV, playerOne);
-        this.setMarker(playerTwoShapeIV, playerTwo);
-    }
-    public void setShapePickerCB(LaunchShapePickerCallback shapePickerCB){this.shapePickerCB = shapePickerCB;}
+    /*==========================================================================================================
+     * VIEW MANIPULATORS
+     *==========================================================================================================*/
 
+    /** Transitions the background colors of the vsHuman/vsAI buttons whenever they are toggled. */
     private void animateSinglePlayerButtons(){
         ToggleButton darkBtn = this.singlePlayer ? this.aiBtn : this.humanBtn;
         ToggleButton lightBtn = this.singlePlayer ? this.humanBtn : this.aiBtn;
@@ -234,36 +383,18 @@ public class MainMenu {
         darkToLight.play();
     }
 
-    private void bindPlayers(ImageView iv, Player player){
-        player.subscribe(new Subscriber<Player.Patch>(){
-			@Override
-			public void onSubscribe(Subscription subscription) {
-                subscriptions.add(subscription);
-            }
-
-			@Override
-			public void onNext(Player.Patch item) {
-                if(item.getColor() != null || item.getShape() != null){
-                    setMarker(iv, player);
-                }
-			}
-
-			@Override
-			public void onError(Throwable throwable) { }
-
-			@Override
-			public void onComplete() { }
-        });
-    }
-
-    private void setMarker(ImageView iv, Player player){
-        if(iv.getImage() != null && player != null){
-            final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());
-            if(!iv.getImage().getUrl().equals(newUrl)){
-                final Image newImage = new Image(newUrl);
-                iv.setImage(newImage);
-            }
-            ColorScheme.adjustImageColor(iv, player.getColor());
-        }
+    /** 
+     * Updates the background image of the provided pane to display the player's marker.
+     * @param pane The pane element whose background should display the marker.
+     * @param player The player whose marker should be displayed.
+     */
+    private void setMarker(Pane pane, Player player){
+        StringBuilder sb = new StringBuilder();
+        sb.append("-fx-background-image: url('");
+        sb.append(IMAGES_DIRECTORY);
+        sb.append(player.getShape().getFilename());
+        sb.append("');");
+        pane.setStyle(sb.toString());
+        ColorScheme.adjustImageColor(pane, player.getColor());
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -9,177 +10,155 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<SplitPane dividerPositions="0.17725752508361203" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ShapeColorController">
-  <items>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="300.0">
-         <children>
-            <ImageView id="CurrentPlayerImage" fx:id="CurrentPlayerImage" fitHeight="68.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../assets/images/x.png" />
-               </image>
-            </ImageView>
-            <Button id="ReturnButton" fx:id="ReturnButton" layoutX="203.0" layoutY="6.0" mnemonicParsing="false" onAction="#ReturnButtonClicked" prefHeight="55.0" prefWidth="88.0" text="Return" />
-         </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="511.0" prefWidth="498.0">
-         <children>
-            <TabPane prefHeight="330.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE">
-              <tabs>
-                <Tab id="ShapesTab" text="Shapes">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <GridPane prefHeight="300.0" prefWidth="300.0">
-                                <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                </rowConstraints>
+<ScrollPane fx:id="root" fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ShapeColorController">
+   <content>
+      <SplitPane dividerPositions="0.17725752508361203" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="300.0">
+        <items>
+          <AnchorPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="300.0">
+               <children>
+                  <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <ImageView id="CurrentPlayerImage" fx:id="CurrentPlayerImage" fitHeight="68.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../assets/images/x.png" />
+                           </image>
+                        </ImageView>
+                        <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="59.0" prefWidth="125.0" HBox.hgrow="ALWAYS" />
+                        <Button id="ReturnButton" fx:id="ReturnButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ReturnButtonClicked" prefHeight="68.0" prefWidth="106.0" text="Return" />
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="511.0" prefWidth="498.0">
+               <children>
+                  <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="330.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <tabs>
+                      <Tab id="ShapesTab" text="Shapes">
+                        <content>
+                          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <Button id="XButton" fx:id="XButton" mnemonicParsing="false" onAction="#XButtonClicked" prefHeight="100.0" prefWidth="100.0" />
-                                    <ImageView fitHeight="100.0" fitWidth="100.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../assets/images/x.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="OButton" fx:id="OButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#OButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" />
-                                    <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="10.0" layoutY="11.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
-                                       <image>
-                                          <Image url="@../assets/images/o.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="SmileyButton" fx:id="SmileyButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#SmileyButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" />
-                                    <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="10.0" layoutY="11.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
-                                       <image>
-                                          <Image url="@../assets/images/SmileyFace.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="FrownyButton" fx:id="FrownyButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#FrownyButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.rowIndex="1" />
-                                    <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="342.0" layoutY="1.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
-                                       <image>
-                                          <Image url="@../assets/images/FrownyFace.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="ColorFilledButton" fx:id="ColorFilledButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ColorFilledButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                    <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="10.0" layoutY="157.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                       <image>
-                                          <Image url="@../assets/images/ColorFilled.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="OutlineFilledButton" fx:id="OutlineFilledButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#OutlineFilledButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                    <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="176.0" layoutY="165.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                       <image>
-                                          <Image url="@../assets/images/OutlineFilled.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="DragonButton" fx:id="DragonButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#DragonButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.rowIndex="2" />
-                                    <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="342.0" layoutY="162.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
-                                       <image>
-                                          <Image url="@../assets/images/Dragon.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="CatButton" fx:id="CatButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#CatButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="10.0" layoutY="318.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                       <image>
-                                          <Image url="@../assets/images/CatFace.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="StarButton" fx:id="StarButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#StarButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                    <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="176.0" layoutY="318.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                       <image>
-                                          <Image url="@../assets/images/Star.png" />
-                                       </image>
-                                    </ImageView>
+                                    <GridPane gridLinesVisible="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="300.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Button id="XButton" fx:id="XButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#XButtonClicked" prefHeight="100.0" prefWidth="100.0">
+                                             <graphic>
+                                                <Pane id="PaneX" fx:id="PaneX" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="OButton" fx:id="OButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#OButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1">
+                                             <graphic>
+                                                <Pane fx:id="PaneO" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="SmileyButton" fx:id="SmileyButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#SmileyButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2">
+                                             <graphic>
+                                                <Pane fx:id="PaneSmiley" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="FrownyButton" fx:id="FrownyButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#FrownyButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.rowIndex="1">
+                                             <graphic>
+                                                <Pane fx:id="PaneFrowny" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="ColorFilledButton" fx:id="ColorFilledButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ColorFilledButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                             <graphic>
+                                                <Pane fx:id="PaneFilled" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="OutlineFilledButton" fx:id="OutlineFilledButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#OutlineFilledButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                             <graphic>
+                                                <Pane fx:id="PaneOutline" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="DragonButton" fx:id="DragonButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#DragonButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.rowIndex="2">
+                                             <graphic>
+                                                <Pane fx:id="PaneDragon" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="CatButton" fx:id="CatButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#CatButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                             <graphic>
+                                                <Pane fx:id="PaneCat" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="StarButton" fx:id="StarButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#StarButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                             <graphic>
+                                                <Pane fx:id="PaneStar" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                       </children>
+                                    </GridPane>
                                  </children>
-                              </GridPane>
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </Tab>
-                <Tab id="ColorsTab" text="Colors">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <GridPane prefHeight="300.0" prefWidth="300.0">
-                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                      <Tab id="ColorsTab" text="Colors">
+                        <content>
+                          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <Button id="BlackButton" fx:id="BlackButton" mnemonicParsing="false" onAction="#BlackButtonClicked" prefHeight="100.0" prefWidth="100.0" text="Black" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                    <ImageView id="BlackButtonIV" fitHeight="100.0" fitWidth="100.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                       <image>
-                                          <Image url="@../assets/images/ColorFilledBlack.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="RedButton" fx:id="RedButton" mnemonicParsing="false" onAction="#RedButtonClicked" prefHeight="100.0" prefWidth="100.0" text="Red" GridPane.columnIndex="1" />
-                                    <ImageView id="RedButtonIV" fitHeight="100.0" fitWidth="100.0" layoutX="10.0" layoutY="10.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
-                                       <image>
-                                          <Image url="@../assets/images/ColorFilledRed.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="BlueButton" fx:id="BlueButton" mnemonicParsing="false" onAction="#BlueButtonClicked" prefHeight="100.0" prefWidth="100.0" text="Blue" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                    <ImageView id="BlueButtonIV" fitHeight="100.0" fitWidth="100.0" layoutX="110.0" layoutY="10.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                       <image>
-                                          <Image url="@../assets/images/ColorFilledBlue.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="YellowButton" fx:id="YellowButton" mnemonicParsing="false" onAction="#YellowButtonClicked" prefHeight="100.0" prefWidth="100.0" text="Yellow" GridPane.rowIndex="2" />
-                                    <ImageView id="YellowButtonIV" fitHeight="100.0" fitWidth="100.0" layoutX="210.0" layoutY="10.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
-                                       <image>
-                                          <Image url="@../assets/images/ColorFilledYellow.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="OrangeButton" fx:id="OrangeButton" mnemonicParsing="false" onAction="#OrangeButtonClicked" prefHeight="100.0" prefWidth="100.0" text="Orange" GridPane.rowIndex="1" />
-                                    <ImageView id="OrangeButtonIV" fitHeight="100.0" fitWidth="100.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
-                                       <image>
-                                          <Image url="@../assets/images/ColorFilledOrange.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="GreenButton" fx:id="GreenButton" mnemonicParsing="false" onAction="#GreenButtonClicked" prefHeight="100.0" prefWidth="100.0" text="Green" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <ImageView id="GreenButtonIV" fitHeight="100.0" fitWidth="100.0" layoutX="10.0" layoutY="110.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                       <image>
-                                          <Image url="@../assets/images/ColorFilledGreen.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="PurpleButton" fx:id="PurpleButton" mnemonicParsing="false" onAction="#PurpleButtonClicked" prefHeight="100.0" prefWidth="100.0" text="Purple" GridPane.columnIndex="2" />
-                                    <ImageView id="PurpleButtonIV" fitHeight="100.0" fitWidth="100.0" layoutX="110.0" layoutY="110.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
-                                       <image>
-                                          <Image url="@../assets/images/ColorFilledPurple.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="PinkButton" fx:id="PinkButton" mnemonicParsing="false" onAction="#PinkButtonClicked" prefHeight="100.0" prefWidth="100.0" text="Pink" />
-                                    <ImageView id="PinkButtonIV" fitHeight="100.0" fitWidth="100.0" layoutX="210.0" layoutY="110.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../assets/images/ColorFilledPink.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Button id="TealButton" fx:id="TealButton" mnemonicParsing="false" onAction="#TealButtonClicked" prefHeight="100.0" prefWidth="100.0" text="Teal" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                    <ImageView id="TealButtonIV" fitHeight="100.0" fitWidth="100.0" layoutX="110.0" layoutY="210.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                       <image>
-                                          <Image url="@../assets/images/ColorFilledTeal.png" />
-                                       </image>
-                                    </ImageView>
+                                    <GridPane gridLinesVisible="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="300.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Button id="BlackButton" fx:id="BlackButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#BlackButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                             <graphic>
+                                                <Pane fx:id="PaneBlack" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="RedButton" fx:id="RedButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#RedButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1">
+                                             <graphic>
+                                                <Pane fx:id="PaneRed" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="BlueButton" fx:id="BlueButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#BlueButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                             <graphic>
+                                                <Pane fx:id="PaneBlue" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="YellowButton" fx:id="YellowButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#YellowButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.rowIndex="2">
+                                             <graphic>
+                                                <Pane fx:id="PaneYellow" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="OrangeButton" fx:id="OrangeButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#OrangeButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.rowIndex="1">
+                                             <graphic>
+                                                <Pane fx:id="PaneOrange" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="GreenButton" fx:id="GreenButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#GreenButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                             <graphic>
+                                                <Pane fx:id="PaneGreen" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="PurpleButton" fx:id="PurpleButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#PurpleButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2">
+                                             <graphic>
+                                                <Pane fx:id="PanePurple" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="PinkButton" fx:id="PinkButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#PinkButtonClicked" prefHeight="100.0" prefWidth="100.0">
+                                             <graphic>
+                                                <Pane fx:id="PanePink" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                          <Button id="TealButton" fx:id="TealButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#TealButtonClicked" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                             <graphic>
+                                                <Pane fx:id="PaneTeal" prefHeight="200.0" prefWidth="200.0" />
+                                             </graphic></Button>
+                                       </children>
+                                    </GridPane>
                                  </children>
-                              </GridPane>
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </Tab>
-              </tabs>
-            </TabPane>
-         </children></AnchorPane>
-  </items>
-</SplitPane>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </content>
+</ScrollPane>
