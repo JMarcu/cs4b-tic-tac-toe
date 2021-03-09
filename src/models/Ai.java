@@ -1,9 +1,15 @@
 // package models;
 // import java.util.ArrayList;
 // import java.util.UUID;
+
+// import javax.swing.tree.DefaultMutableTreeNode;
+// import javax.swing.tree.DefaultTreeModel;
+// import javax.swing.tree.TreeNode;
+
 // import javafx.scene.paint.Color;
 // import org.javatuples.Pair;
-
+// import org.javatuples.Triplet;
+// import org.junit.Ignore;
 
 // import java.util.ArrayList;
 
@@ -102,87 +108,30 @@
 //         return 0;
 //     }
 
-//     /**
-//      * This methods considers all possible choice and determines the best play for the Ai.
-//      * Returns The value of the board. 
-//      * @param depth The depth of the search 
-//      * @param isMax A boolean that determines if the current object is a maximizer or minimizer
-//      * @param gameState gameState The current state  of the game.
-//      * @return The value of the board.
-//      */
-//     static int miniMax(int depth, boolean isMax, GameState gameState){
-
-//         ArrayList<Pair<Integer,Integer>> emptySpaces = new ArrayList<Pair<Integer,Integer>>();
-
-//         int score = evaluate(board);
-
-//         //If maximizer has won return the score.
-//         if(score == 10){
-//             return score;
-//         }
-
-//         //If minimizer has won return the score.
-//         if(score == -10){
-//             return score;
-//         }
-
-//         if(isMovesLeft(board) == false){
-//             return 0;
-//         }
-
-//         // If this maximizer's move
-//         if (isMax)
-//         {
-//             int best = Integer.MIN_VALUE;
-    
-//             // Traverse all cells.
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 for (int j = 0; j < 3; j++)
-//                 {
-//                     // Check if cell is empty.
-//                     if (board[i][j]== null)
-//                     {
-//                         // Make the move.
-//                         board[i][j] = ai;
-    
-//                         // Call minimax recursively and choose the maximum value.
-//                         best = Math.max(best, miniMax(board, depth + 1, !isMax, gameState));
-    
-//                         // Undo the move.
-//                         board[i][j] = null;
-//                     }
+//     /** */
+//     @SuppressWarnings("unchecked")
+//     static Triplet<Integer, Integer, Integer> miniMax(DefaultTreeModel tree, boolean isMax){
+//         DefaultMutableTreeNode root = (DefaultMutableTreeNode)tree.getRoot();
+//         if(root.isLeaf()){
+//             return (Triplet<Integer, Integer, Integer>) root.getUserObject();
+//         } else{            
+//             Triplet<Integer, Integer, Integer> bestMove = (Triplet<Integer, Integer, Integer>)((DefaultMutableTreeNode)(root.getChildAt(0))).getUserObject();
+//             int childIndex = 1;
+//             boolean prune = false;
+//             while(!prune && childIndex < root.getChildCount()){
+//                 DefaultTreeModel childTree = new DefaultTreeModel(root.getChildAt(childIndex));
+//                 Triplet<Integer, Integer, Integer> childVal = miniMax(childTree, !isMax);
+//                 if(
+//                     (isMax && childVal.getValue2() > bestMove.getValue2()) ||
+//                     (!isMax && childVal.getValue2() < bestMove.getValue2())
+//                 ){
+//                     bestMove = childVal;
+//                     prune = true;
+//                     root.removeAllChildren();
+//                     root.add((DefaultMutableTreeNode)childTree.getRoot());
 //                 }
 //             }
-//             return best;
-//         }
- 
-//         // If this minimizer's move.
-//         else
-//         {
-//             int best = Integer.MAX_VALUE;
-    
-//             // Traverse all cells.
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 for (int j = 0; j < 3; j++)
-//                 {
-//                     // Check if cell is empty.
-//                     if (board[i][j] == null)
-//                     {
-//                         // Make the move.
-//                        board[i][j] = opponentPlayer;
-    
-//                         // Call minimax recursively and choose the minimum value.
-//                         best = Math.min(best, miniMax(board, 
-//                                         depth + 1, !isMax, gameState));
-    
-//                         // Undo the move.
-//                         board[i][j] = null;
-//                     }
-//                 }
-//             }
-//             return best;
+//             return bestMove;
 //         }
 //     }
 
