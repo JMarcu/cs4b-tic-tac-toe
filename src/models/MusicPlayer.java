@@ -9,6 +9,15 @@ public class MusicPlayer {
     }
 
     private final String SOUND_DIRECTORY = "src/assets/sounds/";
+    Clip clip;
+
+    {
+        try{
+            clip = AudioSystem.getClip();
+        } catch(Exception ex){
+
+        }
+    }
 
     String getMusicLocation(Track track)
     {
@@ -44,11 +53,15 @@ public class MusicPlayer {
     public void playMusic(Track track){
         String musicLocation = getMusicLocation(track);
 
+        if(clip.isRunning()){
+            clip.close();
+        }
+
         File musicPath = new File(musicLocation);
         try{
             if(musicPath.exists()){
                 AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
-                Clip clip = AudioSystem.getClip();
+                //clip = AudioSystem.getClip();
                 clip.open(audioInput);
                 clip.start();
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -80,4 +93,30 @@ public class MusicPlayer {
 
         }
     }
+
+    /*
+    public void playMusicOnce(Track track){
+        String musicLocation = getMusicLocation(track);
+
+        if(clip.isRunning()){
+            clip.close();
+        }
+
+        File musicPath = new File(musicLocation);
+        try{
+            if(musicPath.exists()){
+                AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                clip = AudioSystem.getClip();
+                clip.open(audioInput);
+                clip.start();
+                //clip.loop(Clip.LOOP_CONTINUOUSLY);
+            }
+            else{
+                System.out.println("Can't find the file");
+            }
+        } catch(Exception ex){
+
+        }
+        
+    } */
 }
