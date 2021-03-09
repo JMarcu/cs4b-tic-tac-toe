@@ -269,25 +269,15 @@ public class GameState implements Publisher<GameState.Patch>  {
         } else{    
             //Mark the cell as having been played to by the current player.
             grid[x][y] = getCurrentPlayer();
+
+            boolean victory = GameState.checkVictoryArr(
+                victoryCounts, 
+                new Pair<Integer, Integer>(x, y), 
+                currentPlayerIndex == 0,
+                GRID_SIZE
+            );
             
-            //The value by which to modify elements in the victoryCounts array.
-            final int victoryMod = currentPlayerIndex == 0 ? 1 : -1;
-
-            //The value a cell in the victoryCounts array must reach to trigger a victory for the current player.
-            final int victoryCondition = victoryMod * GRID_SIZE;
-
-            //Conveniance variables for offsets of the grid size.
-            final int gridSizeLessOne = GRID_SIZE - 1;
-            final int doubleGridSize = 2 * GRID_SIZE;
-
-            //First check for victory in the row, column, and (if applicable) diagonals that contain the cell the player
-            //has just made a move to. 
-            if(
-                victoryCounts.get(x) + victoryMod == victoryCondition || 
-                victoryCounts.get(GRID_SIZE + y) + victoryMod == victoryCondition ||
-                (x == y && victoryCounts.get(doubleGridSize) + victoryMod == victoryCondition) ||
-                (x + y == gridSizeLessOne && victoryCounts.get((doubleGridSize) + 1) + victoryMod == victoryCondition)
-            ) {
+            if(victory){
                 //If the game has ended in a victory, update the game's status and winner properties.
                 status = Status.WON;
                 winner = getCurrentPlayer();
@@ -303,8 +293,7 @@ public class GameState implements Publisher<GameState.Patch>  {
                         winner = GameState.this.winner;
                     }
                 });
-            //Else if nobody has won, but the player has just played to the last empty cell, the game is a draw. 
-            } else if(emptyCells == 1){ 
+            } else if(emptyCells == 1){
                 //Update the status property.
                 status = Status.DRAW;
 
@@ -318,25 +307,14 @@ public class GameState implements Publisher<GameState.Patch>  {
                         move = new Triplet<Player, Integer, Integer>(GameState.this.getCurrentPlayer(), Integer.valueOf(x), Integer.valueOf(y));
                     }
                 });
-            //Else if nobody has won and the game hasn't drawn, handle the player's move.
-            } else{
+            } else {
                 //Decrement the count of empty cells.
                 emptyCells--;
-                
-                //Increment/decrement (as appropriate) the row, column, and diagonals that the player's move was in.
-                victoryCounts.set(x, victoryCounts.get(x) + victoryMod);
-                victoryCounts.set(GRID_SIZE + y, victoryCounts.get(GRID_SIZE + y) + victoryMod);
-                if(x == y){
-                    victoryCounts.set(doubleGridSize, victoryCounts.get(doubleGridSize) + victoryMod);
-                }
-                if(x + y == gridSizeLessOne){
-                    victoryCounts.set(doubleGridSize + 1, victoryCounts.get(doubleGridSize + 1) + victoryMod);
-                }
                 
                 //Switch turns to the next player.
                 final Player playerWhoMoved = getCurrentPlayer();
                 currentPlayerIndex = currentPlayerIndex == 0 ? 1 : 0;
-
+    
                 //Update subscribers of the move and that the current player has changed.
                 notifySubscribers(new Patch(){
                     {
@@ -363,5 +341,44 @@ public class GameState implements Publisher<GameState.Patch>  {
      /**  Offers the patch to all subscribers. */
     private void notifySubscribers(Patch patch){
         this.publisher.offer(patch, null);
+    }
+
+    public static boolean checkVictoryArr(ArrayList<Integer> victoryArr, Pair<Integer, Integer> move, boolean isPlayerOne){
+        return GameState.checkVictoryArr(victoryArr, move, isPlayerOne, 3);
+    }
+
+    public static boolean checkVictoryArr(ArrayList<Integer> victoryArr, Pair<Integer, Integer> move, boolean isPlayerOne, int gridSize){        
+        //The value by which to modify elements in the victoryCounts array.
+        final int victoryMod = isPlayerOne ? 1 : -1;
+
+        //The value a cell in the victoryCounts array must reach to trigger a victory for the current player.
+        final int victoryCondition = victoryMod * gridSize;
+
+        //Conveniance variables for offsets of the grid size.
+        final int gridSizeLessOne = gridSize - 1;
+        final int doubleGridSize = 2 * gridSize;
+
+        //First check for victory in the row, column, and (if applicable) diagonals that contain the cell the player
+        //has just made a move to. 
+        if(
+            victoryArr.get(move.getValue0()) + victoryMod == victoryCondition || 
+            victoryArr.get(gridSize + move.getValue1()) + victoryMod == victoryCondition ||
+            (move.getValue0() == move.getValue1() && victoryArr.get(doubleGridSize) + victoryMod == victoryCondition) ||
+            (move.getValue0() + move.getValue1() == gridSizeLessOne && victoryArr.get((doubleGridSize) + 1) + victoryMod == victoryCondition)
+        ) {
+            return true;
+        } else {
+            //Increment/decrement (as appropriate) the row, column, and diagonals that the player's move was in.
+            victoryArr.set(move.getValue0(), victoryArr.get(move.getValue0()) + victoryMod);
+            victoryArr.set(gridSize + move.getValue1(), victoryArr.get(gridSize + move.getValue1()) + victoryMod);
+            if(move.getValue0() == move.getValue1()){
+                victoryArr.set(doubleGridSize, victoryArr.get(doubleGridSize) + victoryMod);
+            }
+            if(move.getValue0() + move.getValue1() == gridSizeLessOne){
+                victoryArr.set(doubleGridSize + 1, victoryArr.get(doubleGridSize + 1) + victoryMod);
+            }
+            return false;
+        }
+        
     }
 }
