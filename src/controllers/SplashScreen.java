@@ -10,8 +10,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import models.SceneCallback.ReturnToCallback;
+import models.Player;
+import models.GameState;
 
 public class SplashScreen {
+    private GameState gameState;
+
     public enum SplashType{
         TITLE ("Click anywhere to continue...", "title"),
         LOSE ("YOU LOSE", "grave"),
@@ -35,6 +39,7 @@ public class SplashScreen {
     private final String SPLASH_DIRECTORY = "/assets/images/splash/";
 
     @FXML private ImageView splashImageView;
+    @FXML private Label personName;
     @FXML private Label splashText;
     @FXML private Button replayButton;
     @FXML private Separator spacer;
@@ -42,13 +47,19 @@ public class SplashScreen {
     @FXML private HBox buttons;
     @FXML private VBox root;
 
+    public SplashScreen(){
+        this.gameState = null;
+    }
+
     /** Sets the default state of the view's interactive elements. */
     @FXML
     void initialize(){
         //Load external style sheets
         root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
         root.getStylesheets().add(getClass().getResource("/styles/splash-screen.css").toExternalForm());
-
+        if(gameState != null){
+            personName.setText(gameState.getPlayers().getValue0().getName());
+        }
     }
 
     public VBox getRoot(){
@@ -67,9 +78,11 @@ public class SplashScreen {
         splashImageView.setImage(new Image(sb.toString()));
         splashText.setText(splashType.getMessage());
         if(splashType.getFilename() == "title"){
+            personName.setVisible(false);
             buttons.setVisible(false);
         }
         else{
+            personName.setVisible(true);
             buttons.setVisible(true);
         }
     }
