@@ -98,7 +98,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     @Override
     public void launchMainMenu() {
         System.out.println("launchMainMenu");
-        // music.playMusic(Track.title);
+        music.playMusic(Track.title);
 
         MainMenu mainMenu = mainMenuFXML.getController();
         mainMenu.setLaunchGameCB(this);
@@ -118,7 +118,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     public void launchGame(GameState gameState) {
         try {
             System.out.println("launchGame");
-            // music.playMusic(Track.waiting);
+            music.playMusic(Track.waiting);
             playerOne = gameState.getPlayers().getValue0();
             playerTwo = gameState.getPlayers().getValue1();
             System.out.println("playerTwo.getIsAi(): " + playerTwo.getIsAI());
@@ -151,11 +151,13 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     @Override
     public void launchOptionsMenu(String caller) {
         try{
-            MusicPlayer musicSFX = new MusicPlayer();
-            musicSFX.playSFX(MusicPlayer.Track.openMenu);
+            if (music.getShouldPlaySFX()){
+                MusicPlayer music2 = new MusicPlayer();
+                music2.playSFX(MusicPlayer.Track.openMenu);
+            }
 
             OptionsController optionsMenu = optionsMenuFXML.getController();
-            optionsMenu.acceptCaller(caller);
+            optionsMenu.acceptCaller(caller, music);
             optionsMenu.setMainMenuCB(this);
             optionsMenu.setReturnToCB(() -> {closeMenu(optionsMenu.getRoot());});
             openMenu(optionsMenu.getRoot());
@@ -167,11 +169,13 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     @Override
     public void launchShapePicker(Player player) {
         try{
-            MusicPlayer musicSFX = new MusicPlayer();
-            // musicSFX.playSFX(MusicPlayer.Track.openMenu);
+            if (music.getShouldPlaySFX()){
+                MusicPlayer music2 = new MusicPlayer();
+                music2.playSFX(MusicPlayer.Track.openMenu);
+            }
 
             ShapeColorController markerMenu = markerPickerFXML.getController();
-            markerMenu.acceptPlayer(player);
+            markerMenu.acceptPlayer(player, music);
             markerMenu.setReturnCB(() -> {closeMenu(markerMenu.getRoot());});
             openMenu(markerMenu.getRoot());
         } catch(Exception e){
