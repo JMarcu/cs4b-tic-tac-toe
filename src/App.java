@@ -19,6 +19,7 @@ import javafx.scene.text.Font;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import models.Ai;
 import models.GameState;
 import models.MarkerShape;
 import models.Player;
@@ -34,18 +35,17 @@ import models.MusicPlayer;
 
 public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback, LaunchScoreBoardCallback {
 
-    private FXMLLoader gameBoardFXML;
+    private FXMLLoader   gameBoardFXML;
     private Subscription gameStateSubscription;
-    private FXMLLoader scoreboardFXML; 
-    private FXMLLoader mainMenuFXML;
-    private FXMLLoader markerPickerFXML;
-    private FXMLLoader optionsMenuFXML;
-    private Player     playerOne;
-    private Player     playerTwo;
-    private StackPane  rootPane;
-    private FXMLLoader splashScreenFXML;
-    private MusicPlayer music = new MusicPlayer();
-
+    private FXMLLoader   scoreboardFXML; 
+    private FXMLLoader   mainMenuFXML;
+    private FXMLLoader   markerPickerFXML;
+    private MusicPlayer  music;
+    private FXMLLoader   optionsMenuFXML;
+    private Player       playerOne;
+    private Player       playerTwo;
+    private StackPane    rootPane;
+    private FXMLLoader   splashScreenFXML;
     private final long FADE_DURATION = 200;
 
     public static void main(String[] args) {
@@ -55,8 +55,11 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     @Override
     public void start(Stage primaryStage) {
         try {
-            System.out.println(Color.BLACK.toString());
+            music = new MusicPlayer();            
+            playerOne = new Player(Color.BLACK, UUID.randomUUID(), "Player 1", MarkerShape.X);
+            playerTwo = new Ai(Color.BLACK, "Player 2", MarkerShape.O);
             rootPane = new StackPane();
+
             Font.loadFont(App.class.getResource("/assets/fonts/Pixeboy.ttf").toExternalForm(), 10);
 
             gameBoardFXML = new FXMLLoader(getClass().getResource("/views/game-board.fxml"));
@@ -72,9 +75,6 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             optionsMenuFXML.load();
             scoreboardFXML.load();
             splashScreenFXML.load();
-
-            playerOne = new Player(Color.BLACK, UUID.randomUUID(), "Player 1", MarkerShape.X);
-            playerTwo = new Player(Color.BLACK, UUID.randomUUID(), "Player 2", MarkerShape.O);
 
             primaryStage.setTitle("Tic Tac Toe");
             primaryStage.setScene(new Scene(rootPane));
@@ -97,13 +97,14 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
 
     @Override
     public void launchMainMenu() {
-
+        System.out.println("launchMainMenu");
         music.playMusic(Track.title);
 
         MainMenu mainMenu = mainMenuFXML.getController();
         mainMenu.setLaunchGameCB(this);
         mainMenu.setOptionsMenuCB(this);
         mainMenu.setShapePickerCB(this);
+        System.out.println("playerTwo.getIsAi(): " + playerTwo.getIsAI());
         mainMenu.setPlayers(playerOne, playerTwo);
 
         if(rootPane.getChildren().size()  > 0){
@@ -116,8 +117,11 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     @Override
     public void launchGame(GameState gameState) {
         try {
-
+            System.out.println("launchGame");
             music.playMusic(Track.waiting);
+            playerOne = gameState.getPlayers().getValue0();
+            playerTwo = gameState.getPlayers().getValue1();
+            System.out.println("playerTwo.getIsAi(): " + playerTwo.getIsAI());
 
             GameBoard gameBoard = gameBoardFXML.getController();
             gameBoard.setGameState(gameState);
@@ -235,6 +239,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             splashScreen.setSplashType(SplashType.DRAW);
             openMenu(splashScreen.getRoot());
         } else if(patch.getWinner() != null){
+            System.out.println("winner: " + patch.getWinner());
             SplashScreen splashScreen = splashScreenFXML.getController();
             splashScreen.setReturnCB(new ReturnToCallback(){
                 @Override

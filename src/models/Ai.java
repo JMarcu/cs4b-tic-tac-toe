@@ -1,243 +1,183 @@
-// package models;
-// import java.util.ArrayList;
-// import java.util.UUID;
+package models;
+import java.util.ArrayList;
+import java.util.UUID;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javafx.scene.paint.Color;
+import org.javatuples.Pair;
+import org.javatuples.Triplet;
 
-// import javax.swing.tree.DefaultMutableTreeNode;
-// import javax.swing.tree.DefaultTreeModel;
-// import javax.swing.tree.MutableTreeNode;
-// import javax.swing.tree.TreeNode;
+public class Ai extends Player{
 
-// import javafx.scene.paint.Color;
-// import org.javatuples.Pair;
-// import org.javatuples.Triplet;
-// import org.junit.Ignore;
+    /*==========================================================================================================
+     * CLASS VARIABLES
+     *==========================================================================================================*/
 
-// import java.util.ArrayList;
+     /** 
+     * Constructs a new Ai object by using the super class constructor.
+     * @param color The color of the Ai's marker.
+     * @param id    The Ai's uuid.
+     * @param name  The name of the Ai.
+     * @param shape The shape of the Ai's marker.
+     */
+    public Ai(Color color, String name, MarkerShape shape) {
+        super(color, UUID.randomUUID(), name, shape);
+        this.isAi = true;
+    }
 
-// public class Ai extends Player{
+    public Ai(Player player){
+        this(player.getColor(), player.getName(), player.getShape());
+    }
 
-//     /*==========================================================================================================
-//      * CLASS VARIABLES
-//      *==========================================================================================================*/
+    public Player toPlayer(){
+        return new Player(getColor(), UUID.randomUUID(), getName(), getShape());
+    }
 
-//      /** 
-//      * Constructs a new Ai object by using the super class constructor.
-//      * @param color The color of the Ai's marker.
-//      * @param id    The Ai's uuid.
-//      * @param name  The name of the Ai.
-//      * @param shape The shape of the Ai's marker.
-//      */
-//      public Ai(Color color, UUID id, String name, MarkerShape shape) {
-//         super(color, id, name, shape);
-//     }
+    /*==========================================================================================================
+     * ACCESSORS & MUTATORS
+     *==========================================================================================================*/
 
-//     /*==========================================================================================================
-//      * ACCESSORS & MUTATORS
-//      *==========================================================================================================*/
+    /**
+     * This method will determine the best play that the AI can make with the current state of the board.
+     * Returns the best pair of x and y values for the AI player to play.
+     * @param gameState The current state  of the game.
+     * @return the best pair of x and y values for the AI player to play.
+     */
+    @SuppressWarnings("unchecked")
+    public Pair<Integer, Integer> generateMove(GameState gameState){
+        System.out.println("============================== GENERATE MOVE ==============================");
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(new Triplet<Integer, Integer, Integer>(null, null, null));
 
-//     /**
-//      * Returns whether the player is an Ai.
-//      * @return True if the player is an Ai, false if they are not.
-//      */
-//     @Override
-//     public boolean getIsAI() {return true;}
+        ArrayList<Pair<Integer, Integer>> emptyCells = new ArrayList<Pair<Integer, Integer>>();
+        for(int i = 0; i < gameState.getGridSize(); i++){
+            for(int j = 0; j < gameState.getGridSize(); j++){
+                if(gameState.getCell(i, j) == null){
+                    emptyCells.add(new Pair<Integer, Integer>(Integer.valueOf(i), Integer.valueOf(j)));
+                }
+            }
+        }
 
-//     /**
-//      * Returns whether there are any available cells on the board.
-//      * @param  board A model of the playable board by using player objects.
-//      * @return True if there are any available cells, false if all cells are taken.
-//      */
-//     static boolean isMovesLeft(Player[][] board){
-//         for(int i = 0; i < 3; i ++){
-//             for(int j = 0; j < 3; j++){
-//                 if(board[i][j] == null)
-//                     return true;
-//             }
-//         }
-//         return false;
-//     }
+        populateTree(root, emptyCells, gameState.getVictoryArr(), gameState.getGridSize(), true);
+        System.out.println("done populating tree");
 
-//     /**
-//      * Returns Returns a value based on who is winning.
-//      * @param  board A model of the playable board by using player objects.
-//      * @return Returns a value based on who is winning.
-//      */
-//     static int evaluate(Player[][] board){
+        miniMax(root, true, -1);
+        System.out.println("done miniMax");
 
-//         //Checks rows for a victory.
-//         for(int i = 0; i < 3; i++){
-
-//             if (board[i][0] == board[i][1] && board[i][1] == board[i][2])
-//             {
-//                 if (board[i][0] == ai)
-//                 return +10;
-//                 else if (board[i][0] == opponentPlayer)
-//                 return -10;
-//             }
-//         } 
-
-//         //Checks columns for a victory.
-//         for(int i = 0; i < 3; i++){
-
-//             if (board[0][i] == board[1][i] && board[1][i] == board[2][i])
-//             {
-//                 if (board[0][i] == ai)
-//                 return +10;
-//                 else if (board[0][i] == opponentPlayer)
-//                 return -10;
-//             }
-//         } 
-
-//         //Checking for Diagonals for X or O victory.
-//         if (board[0][0] == board[1][1] && board[1][1] == board[2][2])
-//         {
-//             if (board[0][0] == ai)
-//                 return +10;
-//             else if (board[0][0] == opponentPlayer)
-//                 return -10;
-//         }
-
-//         if (board[0][2] == board[1][1] && board[1][1] == board[2][0])
-//         {
-//             if (board[0][2] == ai)
-//                 return +10;
-//             else if (board[0][2] == opponentPlayer)
-//                 return -10;
-//         }
-
-//         //Returns zero if no winning condition was met.
-//         return 0;
-//     }
-
-//     /** */
-//     @SuppressWarnings("unchecked")
-//     static int miniMax(DefaultTreeModel tree, boolean isMax){
-//         DefaultMutableTreeNode root = (DefaultMutableTreeNode)tree.getRoot();
-//         Triplet<Integer, Integer, Integer> rootData = (Triplet<Integer, Integer, Integer>)root.getUserObject();
-//         if(root.isLeaf()){
-//             return rootData.getValue2();
-//         } else{            
-//             int childIndex = 1;
-//             boolean prune = false;
-//             while(!prune && childIndex < root.getChildCount()){
-//                 rootData.setAt2(0);
-//                 DefaultTreeModel childTree = new DefaultTreeModel(root.getChildAt(childIndex));
-//                 int childWeight = miniMax(childTree, !isMax);
-//                 if((isMax && childWeight > 0) || (!isMax && childWeight < 0)){
-//                     rootData.setAt2(childWeight);
-//                     prune = true;
-//                     root.removeAllChildren();
-//                     root.add((DefaultMutableTreeNode)childTree.getRoot());
-//                 }
-//             }
-//             return rootData.getValue2();
-//         }
-//     }
-
-//     /**
-//      * This method will determine the best play that the AI can make with the current state of the board.
-//      * Returns the best pair of x and y values for the AI player to play.
-//      * @param gameState The current state  of the game.
-//      * @return the best pair of x and y values for the AI player to play.
-//      */
-//     public Pair<Integer, Integer> generateMove(GameState gameState){
+        Triplet<Integer, Integer, Integer> bestMove = new Triplet<Integer, Integer, Integer>(null, null, -100);
+        for(int i = 0; i < root.getChildCount(); i++){
+            DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(i);
+            Triplet<Integer, Integer, Integer> childData = (Triplet<Integer, Integer, Integer>) child.getUserObject();
+            if(childData.getValue2() > bestMove.getValue2()){
+                bestMove = childData;
+            }
+        }
         
-//         int bestVal = Integer.MIN_VALUE; //
+        return bestMove.removeFrom2();
+    }
+     
+    /** */
+    @SuppressWarnings("unchecked")
+    private void miniMax(DefaultMutableTreeNode node, boolean isMax, int depth){
+        if(depth == 0){
+            System.out.println("Move: " + node.getUserObject());
+            System.out.println("Child Count: " + node.getChildCount());
+        }
+        if(!node.isLeaf()){
+            int bestWeight = isMax ? -100 : 100;
+            int childIndex = 0;
+            boolean prune = false;
+            ArrayList<DefaultMutableTreeNode> children = new ArrayList<DefaultMutableTreeNode>();
+            do{
+                DefaultMutableTreeNode child = (DefaultMutableTreeNode) node.getChildAt(childIndex);
+                miniMax(child, !isMax, depth + 1);
+                int childWeight = ((Triplet<Integer, Integer, Integer>)child.getUserObject()).getValue2();
 
-//         int x = 0;
-//         int y = 0;
+                if(depth == 0){
+                    children.add(child);
+                }
 
-//         for(int i = 0; i < 3; i ++){
-//             for(int j = 0; j < 3; j ++){
-                
-//                 //checks if the cell is empty.
-//                 if(gameState.getCell(i, j) == null){
+                if((isMax && childWeight > bestWeight) || (!isMax && childWeight < bestWeight)){
+                    bestWeight = childWeight;
+                }
 
-//                     //making a move.
-//                     gameState.getCell(i, j) = ;
+                if((isMax && bestWeight == 10) || (!isMax && bestWeight == -10)){
+                    prune = true;
+                } else{
+                    childIndex++;
+                }
+            } while(!prune && childIndex < node.getChildCount());
 
-//                     //evaluting the played move.
-//                     int moveVal = miniMax(board, 0, false, gameState);
+            if(depth == 0){
+                System.out.print("children: ");
+                for(DefaultMutableTreeNode child : children){
+                    System.out.print(child.getUserObject() + " ");
+                }
+                System.out.println("");
+                System.out.println((isMax ? "Maximizing" : "Minimizing") + " our best weight is " + bestWeight);
+                System.out.println();
+            }
 
-//                     //Undoing move.
-//                     board[i][j] = null;
+            node.setUserObject(
+                ((Triplet<Integer, Integer, Integer>)node.getUserObject()).setAt2(bestWeight)
+            );
+        }
+    }
 
-//                     // If the value of the current move is
-//                     // more than the best value, then update
-//                     // best.
-//                     if (moveVal > bestVal)
-//                     {
-//                         x=i;
-//                         y=j;
-
-//                         bestVal = moveVal;
-//                     }
-//                 }
-//             }
-//         }  
-
-//         Pair<Integer, Integer> bestMove = new Pair<Integer,Integer>(x, y); //The xy pair for the best cell placement for the Ai.
-//         return bestMove;
-//     }
-
-//     /**
-//      * The methods creates a tree of all the permutations of the current board state 
-//      * and sets weight to the leaf nodes.
-//      * @param tree The tree that represents all of the permutations of the current board state.  
-//      * @param emptyCells An arraylist of empty cells from the board.
-//      * @param victoryArr And arraylist that holds number values that determine if a win condition has been met.
-//      */
-//     @SuppressWarnings ("unchecked")
-//     public void populateTree(DefaultTreeModel tree, ArrayList<Pair<Integer, Integer>> emptyCells, ArrayList<Integer> victoryArr){
-
-//         DefaultMutableTreeNode root = (DefaultMutableTreeNode)tree.getRoot();
-
-//         if(emptyCells.size() == 1){
+    /**
+     * The methods creates a tree of all the permutations of the current board state 
+     * and sets weight to the leaf nodes.
+     * @param tree The tree that represents all of the permutations of the current board state.  
+     * @param emptyCells An arraylist of empty cells from the board.
+     * @param victoryArr And arraylist that holds number values that determine if a win condition has been met.
+     */
+    private void populateTree(DefaultMutableTreeNode node, ArrayList<Pair<Integer, Integer>> emptyCells, ArrayList<Integer> victoryArr, int gridSize, boolean isPlayerOne){
+        for(int cellIndex = 0; cellIndex < emptyCells.size(); cellIndex++){
+            Pair<Integer, Integer> cell = emptyCells.get(cellIndex);
             
-//             Triplet <Integer, Integer, Integer> nodeVal;
+            ArrayList<Integer> vArrClone = new ArrayList<Integer>();
+            for(Integer i : victoryArr){
+                vArrClone.add(Integer.valueOf(i.intValue()));
+            }
 
+            boolean isVictory = GameState.checkVictoryArr(vArrClone, cell, isPlayerOne);
 
-//             boolean status = GameState.checkVictoryArr(victoryArr, emptyCells.get(0), false);
+            DefaultMutableTreeNode child = new DefaultMutableTreeNode();
+            node.add(child);
 
-//             if(status){
-//                 int absMaxIndex = 0;
+            if(isVictory || node.getChildCount() == 1){
+                int weight = evaluate(vArrClone, cell, gridSize);
+                child.setUserObject(cell.add(Integer.valueOf(weight)));
+            } else{
+                ArrayList<Pair<Integer, Integer>> emptyCellsClone = new ArrayList<Pair<Integer, Integer>>();
+                for(Pair<Integer, Integer> emptyCell : emptyCells){
+                    if(emptyCell != cell){
+                        emptyCellsClone.add(emptyCell);
+                    }
+                }
+                child.setUserObject(cell.add((Integer)null));
 
-//                 for(int i = 0; i < victoryArr.size(); i++){
-//                     if(Math.abs(victoryArr.get(i))  > victoryArr.get(absMaxIndex)){
-//                         absMaxIndex = i;
-//                     }
-//                 }
-                
-//                 nodeVal =  emptyCells.get(0).add(10 * (victoryArr.get(absMaxIndex) > 0 ? -1 : 1));
-//             }
-//             else{     
-//                 nodeVal = emptyCells.get(0).add(0);
-//             }
+                populateTree(child, emptyCellsClone, vArrClone, gridSize, !isPlayerOne);
+            }
+        }
+    }
 
-//             root.setUserObject(emptyCells.get(0));
-//         }
-//         else{  
-            
-//             int index = 0;
-//             for(Pair<Integer, Integer> cell: emptyCells){
+    private int evaluate(ArrayList<Integer> victoryArr, Pair<Integer, Integer> move, int gridSize){
+        int i = 0;
+        boolean keepSearching = true;
 
-//                 ArrayList <Integer> vArClone = (ArrayList<Integer>)victoryArr.clone();
-
-
-//                 boolean status = GameState.checkVictoryArr(victoryArr, cell, false);
-
-//                 if(status){
-//                     final ArrayList<Pair<Integer, Integer>> cellClone =  (ArrayList<Pair<Integer, Integer>>)victoryArr.clone();
-//                     cellClone.remove(cell);
-//                     DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-//                     node.setUserObject(cell);
-//                     root.add(node);  
-//                     populateTree((DefaultTreeModel)root.getChildAt(index), cellClone, vArClone);
-//                 }
-
-//                 index++;
-//             }
-//         }
-//     }
-
-// }
+        while(keepSearching && i < victoryArr.size()){
+            if(Math.abs(victoryArr.get(i)) >= gridSize){
+                keepSearching = false;
+            } else{
+                i++;
+            }
+        }
+        
+        if(i == victoryArr.size()){
+            return 0;
+        } else if(victoryArr.get(i) > 0){
+            return -10;
+        } else{
+            return 10;
+        }
+    }
+}

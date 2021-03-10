@@ -20,6 +20,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import models.Ai;
 import models.ColorScheme;
 import models.GameMode;
 import models.GameState;
@@ -251,6 +252,7 @@ public class MainMenu {
     @FXML
     private void onAiAction(){
         if(!singlePlayer){
+            playerTwo = new Ai(playerTwo);
             singlePlayer = true;
             animateSinglePlayerButtons();
         }
@@ -281,6 +283,7 @@ public class MainMenu {
     @FXML
     private void onHumanAction(){
         if(singlePlayer){
+            playerTwo = ((Ai)playerTwo).toPlayer();
             singlePlayer = false;
             animateSinglePlayerButtons();
         }

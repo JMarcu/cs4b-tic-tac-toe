@@ -1,6 +1,9 @@
 package controllers;
 
 import java.util.concurrent.Flow.*;
+
+import org.javatuples.Pair;
+
 import java.util.Vector;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 //import javafx.scene.layout.BorderPane;
 import javafx.scene.control.ScrollPane;
+import models.Ai;
 import models.ColorScheme;
 import models.GameState;
 import models.Player;
@@ -22,6 +26,7 @@ import models.TTTScene;
 public class GameBoard{
     
     private GameState                 gameState;
+    private Subscription              gameStateSubscription;
     private LaunchOptionsMenuCallback optionsMenuCB;
     private Subscription              playerOneSubscription;
     private Subscription              playerTwoSubscription;
@@ -45,6 +50,7 @@ public class GameBoard{
     
     public GameBoard(){
         this.gameState = null;
+        this.gameStateSubscription = null;
         this.optionsMenuCB = null;
         this.playerOneSubscription = null;
         this.playerTwoSubscription = null;
@@ -90,8 +96,22 @@ public class GameBoard{
     public void setGameState(GameState gameState){
         this.gameState = gameState;
 
+        if(gameStateSubscription != null){ gameStateSubscription.cancel(); }
         if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
         if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
+        
+        this.gameState.subscribe(new Subscriber<GameState.Patch>(){
+			@Override public void onSubscribe(Subscription subscription) { 
+                gameStateSubscription = subscription; 
+                gameStateSubscription.request(1);
+            }
+			@Override public void onNext(GameState.Patch item) { 
+                onGameStatePatch(item); 
+                gameStateSubscription.request(1);
+            }
+			@Override public void onError(Throwable throwable) { }
+			@Override public void onComplete() { }
+        });
         
         gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
 			@Override public void onSubscribe(Subscription subscription) { playerOneSubscription = subscription; }
@@ -169,6 +189,22 @@ public class GameBoard{
     /************************************************************************************************************
      * SUBSCRIPTION HANDLERS
      ************************************************************************************************************/
+
+    private void onGameStatePatch(GameState.Patch patch){
+        System.out.println("onGameStatePatch");
+        if(patch.getCurrentPlayer() != null){
+            System.out.println("patch.getCurrentPlayer.getIsAi(): " + patch.getCurrentPlayer().getIsAI());
+        } else{
+            System.out.println("patch.getCurrentPlayer: " + patch.getCurrentPlayer());
+        }
+        if(patch.getCurrentPlayer() != null && patch.getCurrentPlayer().getIsAI()){
+            System.out.println("is AI");
+            Ai aiPlayer = (Ai)patch.getCurrentPlayer();
+            Pair<Integer, Integer> move = aiPlayer.generateMove(gameState);
+            System.out.println(move);
+            gameState.setCell(move.getValue0(), move.getValue1());
+        }
+    }
 
     private void onPlayerPatch(Player player, ImageView iv, Player.Patch patch){
         if(patch.getColor() != null || patch.getShape() != null){

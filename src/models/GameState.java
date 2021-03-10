@@ -38,6 +38,7 @@ public class GameState implements Publisher<GameState.Patch>  {
     public class Patch {
         /** The player who's turn it is. */
         protected Player currentPlayer;
+
         /** The players in this game. */
         protected Pair<Player, Player> players;
         /** 
@@ -204,6 +205,12 @@ public class GameState implements Publisher<GameState.Patch>  {
      */
     public GameMode getGameMode() { return this.gameMode; }
 
+    /**
+     * Returns the size of the grid in this game.
+     * @return The grid size.
+     */
+    public int getGridSize() { return this.GRID_SIZE; }
+
     /** 
      * Returns the players in the game. 
      * @returns A 2-tuple containing the players in the game.
@@ -227,6 +234,19 @@ public class GameState implements Publisher<GameState.Patch>  {
      * @returns The game's lifecycle status.
      */
     public Status getStatus() { return this.status; }
+
+    /** 
+     * Returns a victoryArray for the current game state. This array is a clone of the internal array and
+     * is safe to mutate.
+     * @returns A victoryArray for the current game state.
+     */
+    public ArrayList<Integer> getVictoryArr() { 
+        ArrayList<Integer> clone = new ArrayList<Integer>();
+        for(Integer i : victoryCounts){
+            clone.add(Integer.valueOf(i.intValue()));
+        }
+        return clone; 
+    }
     
     /** 
      * Returns the game's winner. 
@@ -318,7 +338,7 @@ public class GameState implements Publisher<GameState.Patch>  {
                 //Update subscribers of the move and that the current player has changed.
                 notifySubscribers(new Patch(){
                     {
-                        currentPlayer = getCurrentPlayer();
+                        currentPlayer = GameState.this.getCurrentPlayer();
                         move = new Triplet<Player, Integer, Integer>(playerWhoMoved, Integer.valueOf(x), Integer.valueOf(y));
                     }
                 });
@@ -347,38 +367,31 @@ public class GameState implements Publisher<GameState.Patch>  {
         return GameState.checkVictoryArr(victoryArr, move, isPlayerOne, 3);
     }
 
-    public static boolean checkVictoryArr(ArrayList<Integer> victoryArr, Pair<Integer, Integer> move, boolean isPlayerOne, int gridSize){        
+    public static boolean checkVictoryArr(ArrayList<Integer> victoryArr, Pair<Integer, Integer> move, boolean isPlayerOne, int gridSize){ 
+        
         //The value by which to modify elements in the victoryCounts array.
         final int victoryMod = isPlayerOne ? 1 : -1;
-
-        //The value a cell in the victoryCounts array must reach to trigger a victory for the current player.
-        final int victoryCondition = victoryMod * gridSize;
 
         //Conveniance variables for offsets of the grid size.
         final int gridSizeLessOne = gridSize - 1;
         final int doubleGridSize = 2 * gridSize;
 
+        //Increment/decrement (as appropriate) the row, column, and diagonals that the player's move was in.
+        victoryArr.set(move.getValue0(), victoryArr.get(move.getValue0()) + victoryMod);
+        victoryArr.set(gridSize + move.getValue1(), victoryArr.get(gridSize + move.getValue1()) + victoryMod);
+        if(move.getValue0() == move.getValue1()){
+            victoryArr.set(doubleGridSize, victoryArr.get(doubleGridSize) + victoryMod);
+        }
+        if(move.getValue0() + move.getValue1() == gridSizeLessOne){
+            victoryArr.set(doubleGridSize + 1, victoryArr.get(doubleGridSize + 1) + victoryMod);
+        }
+
         //First check for victory in the row, column, and (if applicable) diagonals that contain the cell the player
         //has just made a move to. 
-        if(
-            victoryArr.get(move.getValue0()) + victoryMod == victoryCondition || 
-            victoryArr.get(gridSize + move.getValue1()) + victoryMod == victoryCondition ||
-            (move.getValue0() == move.getValue1() && victoryArr.get(doubleGridSize) + victoryMod == victoryCondition) ||
-            (move.getValue0() + move.getValue1() == gridSizeLessOne && victoryArr.get((doubleGridSize) + 1) + victoryMod == victoryCondition)
-        ) {
-            return true;
-        } else {
-            //Increment/decrement (as appropriate) the row, column, and diagonals that the player's move was in.
-            victoryArr.set(move.getValue0(), victoryArr.get(move.getValue0()) + victoryMod);
-            victoryArr.set(gridSize + move.getValue1(), victoryArr.get(gridSize + move.getValue1()) + victoryMod);
-            if(move.getValue0() == move.getValue1()){
-                victoryArr.set(doubleGridSize, victoryArr.get(doubleGridSize) + victoryMod);
-            }
-            if(move.getValue0() + move.getValue1() == gridSizeLessOne){
-                victoryArr.set(doubleGridSize + 1, victoryArr.get(doubleGridSize + 1) + victoryMod);
-            }
-            return false;
-        }
-        
+        return 
+            Math.abs(victoryArr.get(move.getValue0())) >= gridSize || 
+            Math.abs(victoryArr.get(gridSize + move.getValue1())) >= gridSize ||
+            (move.getValue0() == move.getValue1() && Math.abs(victoryArr.get(doubleGridSize)) >= gridSize) ||
+            (move.getValue0() + move.getValue1() == gridSizeLessOne && Math.abs(victoryArr.get((doubleGridSize + 1))) >= gridSize);
     }
 }
