@@ -131,18 +131,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             gameBoard.setOptionsMenuCB(this);
             gameBoard.setScoreBoardCB(this);
 
-            if(gameStateSubscription != null){
-                gameStateSubscription.cancel();
-            }
-            gameState.subscribe(new Subscriber<GameState.Patch>(){
-                @Override public void onSubscribe(Subscription subscription) { 
-                    gameStateSubscription = subscription; 
-                    subscription.request(1);
-                }
-                @Override public void onNext(GameState.Patch item) { onGameStatePatch(item); };
-                @Override public void onError(Throwable throwable) { }
-                @Override public void onComplete() { }
-            });
+            subscribeToGameState(gameState);
             
             launchScene(gameBoard.getRoot());
         } catch (Exception e) {
@@ -247,12 +236,14 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             @Override
             public void launchGame(GameState gameState) {
                 GameBoard gameBoard = (GameBoard) gameBoardFXML.getController();
-                gameBoard.setGameState(new GameState(
+                GameState newGameState = new GameState(
                     gameState.getGameMode(),
                     gameState.getPlayers(),
                     gameState.getSinglePlayer(),
                     gameState.getSecondaryOption()
-                ));
+                );
+                gameBoard.setGameState(newGameState);
+                subscribeToGameState(newGameState);
 
                 closeMenu(splashScreen.getRoot());
             }
@@ -291,5 +282,20 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             openMenu(splashScreen.getRoot());
         }
         gameStateSubscription.request(1);
+    }
+
+    private void subscribeToGameState(GameState gameState){
+        if(gameStateSubscription != null){
+            gameStateSubscription.cancel();
+        }
+        gameState.subscribe(new Subscriber<GameState.Patch>(){
+            @Override public void onSubscribe(Subscription subscription) { 
+                gameStateSubscription = subscription; 
+                subscription.request(1);
+            }
+            @Override public void onNext(GameState.Patch item) { onGameStatePatch(item); };
+            @Override public void onError(Throwable throwable) { }
+            @Override public void onComplete() { }
+        });
     }
 }
