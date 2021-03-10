@@ -13,6 +13,10 @@ public class Ai extends Player{
      * CLASS VARIABLES
      *==========================================================================================================*/
 
+    public Ai(){
+        this(Color.BLACK, "Player 2", MarkerShape.O);
+    }
+
      /** 
      * Constructs a new Ai object by using the super class constructor.
      * @param color The color of the Ai's marker.

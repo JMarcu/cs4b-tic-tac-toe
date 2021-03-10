@@ -335,11 +335,21 @@ public class GameState implements Publisher<GameState.Patch>  {
                 final Player playerWhoMoved = getCurrentPlayer();
                 currentPlayerIndex = currentPlayerIndex == 0 ? 1 : 0;
     
+                //Update the game status, if necessary.
+                boolean wasNew;
+                if(status == GameState.Status.NEW){
+                    wasNew = true;
+                    status = GameState.Status.IN_PROGRESS;
+                } else{
+                    wasNew = false;
+                }
+
                 //Update subscribers of the move and that the current player has changed.
                 notifySubscribers(new Patch(){
                     {
                         currentPlayer = GameState.this.getCurrentPlayer();
                         move = new Triplet<Player, Integer, Integer>(playerWhoMoved, Integer.valueOf(x), Integer.valueOf(y));
+                        status = wasNew ? status : null;
                     }
                 });
             }
