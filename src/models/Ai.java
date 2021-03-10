@@ -58,19 +58,22 @@ public class Ai extends Player{
             }
         }
 
-        populateTree(root, emptyCells, gameState.getVictoryArr(), gameState.getGridSize(), true);
+        System.out.println("emptyCells: " + emptyCells);
+
+        populateTree(root, emptyCells, gameState.getVictoryArr(), gameState.getGridSize(), false);
         System.out.println("done populating tree");
 
-        miniMax(root, true, -1);
+        miniMax(root, true);
         System.out.println("done miniMax");
 
-        Triplet<Integer, Integer, Integer> bestMove = new Triplet<Integer, Integer, Integer>(null, null, -100);
+        Triplet<Integer, Integer, Integer> bestMove = new Triplet<Integer, Integer, Integer>(null, null, 100);
         for(int i = 0; i < root.getChildCount(); i++){
             DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(i);
             Triplet<Integer, Integer, Integer> childData = (Triplet<Integer, Integer, Integer>) child.getUserObject();
-            if(childData.getValue2() != null && childData.getValue2() > bestMove.getValue2()){
+            if(childData.getValue2() != null && childData.getValue2() < bestMove.getValue2()){
                 bestMove = childData;
             }
+            System.out.println("child " + i + ": " + child);
         }
 
         System.out.println("Best Move: " + bestMove.removeFrom2());
@@ -80,24 +83,18 @@ public class Ai extends Player{
      
     /** */
     @SuppressWarnings("unchecked")
-    private void miniMax(DefaultMutableTreeNode node, boolean isMax, int depth){
-        if(depth == 0){
-            // System.out.println("Move: " + node.getUserObject());
-            // System.out.println("Child Count: " + node.getChildCount());
-        }
+    private void miniMax(DefaultMutableTreeNode node, boolean isMax){
+        isMax = (node.getPath().length % 2) == 0;
+
         if(!node.isLeaf()){
             int bestWeight = isMax ? -100 : 100;
             int childIndex = 0;
             boolean prune = false;
-            ArrayList<DefaultMutableTreeNode> children = new ArrayList<DefaultMutableTreeNode>();
+
             do{
                 DefaultMutableTreeNode child = (DefaultMutableTreeNode) node.getChildAt(childIndex);
-                miniMax(child, !isMax, depth + 1);
+                miniMax(child, !isMax);
                 int childWeight = ((Triplet<Integer, Integer, Integer>)child.getUserObject()).getValue2();
-
-                if(depth == 0){
-                    children.add(child);
-                }
 
                 if((isMax && childWeight > bestWeight) || (!isMax && childWeight < bestWeight)){
                     bestWeight = childWeight;
@@ -110,14 +107,14 @@ public class Ai extends Player{
                 // }
             } while(!prune && childIndex < node.getChildCount());
 
-            if(depth == 0){
-                // System.out.print("children: ");
-                // for(DefaultMutableTreeNode child : children){
-                //     System.out.print(child.getUserObject() + " ");
-                // }
-                // System.out.println("");
-                // System.out.println((isMax ? "Maximizing" : "Minimizing") + " our best weight is " + bestWeight);
-                // System.out.println();
+
+            Triplet<Integer, Integer, Integer> nodeData = (Triplet<Integer, Integer, Integer>)node.getUserObject();
+            if(node.getPath().length == 2 && nodeData.getValue0() == 1 && nodeData.getValue1() == 0){
+                System.out.println("isMax: " + isMax);
+                System.out.println(((Triplet<Integer, Integer, Integer>)node.getUserObject()).setAt2(bestWeight));
+                for(int i = 0; i < node.getChildCount(); i++){
+                    System.out.println("    child: " + node.getChildAt(i));
+                }
             }
 
             node.setUserObject(
@@ -134,8 +131,19 @@ public class Ai extends Player{
      * @param victoryArr And arraylist that holds number values that determine if a win condition has been met.
      */
     private void populateTree(DefaultMutableTreeNode node, ArrayList<Pair<Integer, Integer>> emptyCells, ArrayList<Integer> victoryArr, int gridSize, boolean isPlayerOne){
-        for(int cellIndex = 0; cellIndex < emptyCells.size(); cellIndex++){
+        int cellIndex = 0;
+        boolean shortCircuit = false;
+
+        Triplet<Integer, Integer, Integer> nodeData = (Triplet<Integer, Integer, Integer>)node.getUserObject();
+        if(node.getPath().length == 2 && nodeData.getValue0() == 1 && nodeData.getValue1() == 0){
+            System.out.println("Node: " + node);
+        }
+
+        while(cellIndex < emptyCells.size() && !shortCircuit){
             Pair<Integer, Integer> cell = emptyCells.get(cellIndex);
+            if(node.getPath().length == 1){
+                System.out.println("Cell: " + cell);
+            }
             
             ArrayList<Integer> vArrClone = new ArrayList<Integer>();
             for(Integer i : victoryArr){
@@ -147,23 +155,33 @@ public class Ai extends Player{
             DefaultMutableTreeNode child = new DefaultMutableTreeNode();
             node.add(child);
 
-            if(isVictory || node.getChildCount() == 1){
+            if(node.getPath().length == 2 && nodeData.getValue0() == 1 && nodeData.getValue1() == 0){
+                System.out.println("isVictory: " + isVictory);
+            }
+
+            if(node.getPath().length == 1){
+                System.out.println("Cell isVictory: " + isVictory);
+            }
+
+            if(isVictory || emptyCells.size() == 1){
                 int weight = evaluate(vArrClone, cell, gridSize);
                 child.setUserObject(cell.add(Integer.valueOf(weight)));
+                shortCircuit = isVictory;
 
-                Triplet<Integer, Integer, Integer> data = (Triplet<Integer, Integer, Integer>)child.getUserObject();
-                if(data.getValue0() == 1 && data.getValue1() == 2){
-                    System.out.println("Is Leaf");
-                    for(TreeNode n : child.getPath()){
-                        System.out.print(((DefaultMutableTreeNode)n).getUserObject() + " ");
-                    }
-                    System.out.println();
-                    System.out.println(vArrClone);
-                    System.out.println(child.getUserObject());
-                }
+                // Triplet<Integer, Integer, Integer> data = (Triplet<Integer, Integer, Integer>)child.getUserObject();
+                // if(data.getValue0() == 1 && data.getValue1() == 2){
+                //     System.out.println("Is Leaf");
+                //     for(TreeNode n : child.getPath()){
+                //         System.out.print(((DefaultMutableTreeNode)n).getUserObject() + " ");
+                //     }
+                //     System.out.println();
+                //     System.out.println(vArrClone);
+                //     System.out.println(child.getUserObject());
+                // }
 
             } else{
                 ArrayList<Pair<Integer, Integer>> emptyCellsClone = new ArrayList<Pair<Integer, Integer>>();
+                
                 for(Pair<Integer, Integer> emptyCell : emptyCells){
                     if(emptyCell != cell){
                         emptyCellsClone.add(emptyCell);
@@ -173,6 +191,17 @@ public class Ai extends Player{
 
                 populateTree(child, emptyCellsClone, vArrClone, gridSize, !isPlayerOne);
             }
+
+            if(node.getPath().length == 1){
+                System.out.println("Cell child: " + child);
+            }
+
+            if(node.getPath().length == 2 && nodeData.getValue0() == 1 && nodeData.getValue1() == 0){
+                System.out.println("node child: " + child);
+            }
+
+
+            cellIndex++;
         }
     }
 
