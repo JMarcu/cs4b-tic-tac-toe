@@ -23,9 +23,9 @@
       </Label>
       <HBox fx:id="buttons" alignment="CENTER" prefHeight="62.0" prefWidth="440.0" stylesheets="@../styles/color-theme.css">
          <children>
-            <Button fx:id="continueButton" mnemonicParsing="false" onAction="#handleReplayButton" styleClass="arcade-font" text="Replay" />
+            <Button fx:id="playAgainBtn" mnemonicParsing="false" onAction="#onPlayAgainAction" styleClass="arcade-font" text="Play Again" />
             <Separator fx:id="spacer" onMouseClicked="#closeSplash" opacity="0.0" orientation="VERTICAL" prefHeight="78.0" prefWidth="86.0" />
-            <Button fx:id="continueButton" mnemonicParsing="false" onMouseClicked="#closeSplash" styleClass="arcade-font" text="Continue" />
+            <Button fx:id="backToMenuBtn" mnemonicParsing="false" onAction="#onBackToMenuAction" styleClass="arcade-font" text="Back to Menu" />
          </children>
       </HBox>
    </children>

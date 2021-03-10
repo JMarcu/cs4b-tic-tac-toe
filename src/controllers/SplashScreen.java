@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -9,8 +10,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import models.SceneCallback.LaunchGameCallback;
+import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.ReturnToCallback;
-import models.Player;
 import models.GameState;
 
 public class SplashScreen {
@@ -34,6 +36,8 @@ public class SplashScreen {
         public String getFilename(){ return this.filename; }
     };
 
+    private LaunchGameCallback launchGameCB;
+    private LaunchMainMenuCallback launchMainMenuCB;
     private ReturnToCallback returnToCB;
 
     private final String SPLASH_DIRECTORY = "/assets/images/splash/";
@@ -66,8 +70,20 @@ public class SplashScreen {
         return this.root;
     }
 
+    public void setLaunchGameCB(LaunchGameCallback launchGameCB){
+        this.launchGameCB = launchGameCB;
+    }
+
+    public void setLaunchMainMenuCB(LaunchMainMenuCallback launchMainMenuCB){
+        this.launchMainMenuCB = launchMainMenuCB;
+    }
+
     public void setReturnCB(ReturnToCallback returnToCB){
         this.returnToCB = returnToCB;
+    }
+
+    public void setGameState(GameState gameState){
+        this.gameState = gameState;
     }
     
     public void setSplashType(SplashType splashType){
@@ -98,5 +114,15 @@ public class SplashScreen {
         if(returnToCB != null){
             returnToCB.returnTo();
         }
+    }
+
+    @FXML
+    private void onPlayAgainAction(ActionEvent event){
+        launchGameCB.launchGame(gameState);
+    }
+
+    @FXML
+    private void onBackToMenuAction(ActionEvent event){
+        launchMainMenuCB.launchMainMenu();
     }
 }
