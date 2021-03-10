@@ -5,7 +5,7 @@ import javax.sound.sampled.*;
 
 public class MusicPlayer {
     public enum Track{
-        adjustSound, changeMarker, clickSquare, exitMenu, openMenu, title, waiting, lose, tie, win;
+        adjustSound, changeMarker, clickSquare, exitMenu, openMenu, title, waiting, lose, tie, win, vsAi, vsHuman, tickTock;
     }
 
     private final String SOUND_DIRECTORY = "src/assets/sounds/";
@@ -43,6 +43,11 @@ public class MusicPlayer {
                 break;
             case win:           musicLocation = SOUND_DIRECTORY.concat("you-won.wav");
                 break;
+            case vsAi:          musicLocation = SOUND_DIRECTORY.concat("vs-ai.wav");
+                break;
+            case vsHuman:       musicLocation = SOUND_DIRECTORY.concat("vs-human.wav");
+                break;
+            case tickTock:      musicLocation = SOUND_DIRECTORY.concat("tick-tock.wav");
             default:
                 break;
         }//end switch

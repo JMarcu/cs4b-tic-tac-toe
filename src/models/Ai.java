@@ -1,9 +1,16 @@
 // package models;
 // import java.util.ArrayList;
 // import java.util.UUID;
+
+// import javax.swing.tree.DefaultMutableTreeNode;
+// import javax.swing.tree.DefaultTreeModel;
+// import javax.swing.tree.MutableTreeNode;
+// import javax.swing.tree.TreeNode;
+
 // import javafx.scene.paint.Color;
 // import org.javatuples.Pair;
-
+// import org.javatuples.Triplet;
+// import org.junit.Ignore;
 
 // import java.util.ArrayList;
 
@@ -102,87 +109,28 @@
 //         return 0;
 //     }
 
-//     /**
-//      * This methods considers all possible choice and determines the best play for the Ai.
-//      * Returns The value of the board. 
-//      * @param depth The depth of the search 
-//      * @param isMax A boolean that determines if the current object is a maximizer or minimizer
-//      * @param gameState gameState The current state  of the game.
-//      * @return The value of the board.
-//      */
-//     static int miniMax(int depth, boolean isMax, GameState gameState){
-
-//         ArrayList<Pair<Integer,Integer>> emptySpaces = new ArrayList<Pair<Integer,Integer>>();
-
-//         int score = evaluate(board);
-
-//         //If maximizer has won return the score.
-//         if(score == 10){
-//             return score;
-//         }
-
-//         //If minimizer has won return the score.
-//         if(score == -10){
-//             return score;
-//         }
-
-//         if(isMovesLeft(board) == false){
-//             return 0;
-//         }
-
-//         // If this maximizer's move
-//         if (isMax)
-//         {
-//             int best = Integer.MIN_VALUE;
-    
-//             // Traverse all cells.
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 for (int j = 0; j < 3; j++)
-//                 {
-//                     // Check if cell is empty.
-//                     if (board[i][j]== null)
-//                     {
-//                         // Make the move.
-//                         board[i][j] = ai;
-    
-//                         // Call minimax recursively and choose the maximum value.
-//                         best = Math.max(best, miniMax(board, depth + 1, !isMax, gameState));
-    
-//                         // Undo the move.
-//                         board[i][j] = null;
-//                     }
+//     /** */
+//     @SuppressWarnings("unchecked")
+//     static int miniMax(DefaultTreeModel tree, boolean isMax){
+//         DefaultMutableTreeNode root = (DefaultMutableTreeNode)tree.getRoot();
+//         Triplet<Integer, Integer, Integer> rootData = (Triplet<Integer, Integer, Integer>)root.getUserObject();
+//         if(root.isLeaf()){
+//             return rootData.getValue2();
+//         } else{            
+//             int childIndex = 1;
+//             boolean prune = false;
+//             while(!prune && childIndex < root.getChildCount()){
+//                 rootData.setAt2(0);
+//                 DefaultTreeModel childTree = new DefaultTreeModel(root.getChildAt(childIndex));
+//                 int childWeight = miniMax(childTree, !isMax);
+//                 if((isMax && childWeight > 0) || (!isMax && childWeight < 0)){
+//                     rootData.setAt2(childWeight);
+//                     prune = true;
+//                     root.removeAllChildren();
+//                     root.add((DefaultMutableTreeNode)childTree.getRoot());
 //                 }
 //             }
-//             return best;
-//         }
- 
-//         // If this minimizer's move.
-//         else
-//         {
-//             int best = Integer.MAX_VALUE;
-    
-//             // Traverse all cells.
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 for (int j = 0; j < 3; j++)
-//                 {
-//                     // Check if cell is empty.
-//                     if (board[i][j] == null)
-//                     {
-//                         // Make the move.
-//                        board[i][j] = opponentPlayer;
-    
-//                         // Call minimax recursively and choose the minimum value.
-//                         best = Math.min(best, miniMax(board, 
-//                                         depth + 1, !isMax, gameState));
-    
-//                         // Undo the move.
-//                         board[i][j] = null;
-//                     }
-//                 }
-//             }
-//             return best;
+//             return rootData.getValue2();
 //         }
 //     }
 
@@ -231,4 +179,65 @@
 //         Pair<Integer, Integer> bestMove = new Pair<Integer,Integer>(x, y); //The xy pair for the best cell placement for the Ai.
 //         return bestMove;
 //     }
+
+//     /**
+//      * The methods creates a tree of all the permutations of the current board state 
+//      * and sets weight to the leaf nodes.
+//      * @param tree The tree that represents all of the permutations of the current board state.  
+//      * @param emptyCells An arraylist of empty cells from the board.
+//      * @param victoryArr And arraylist that holds number values that determine if a win condition has been met.
+//      */
+//     @SuppressWarnings ("unchecked")
+//     public void populateTree(DefaultTreeModel tree, ArrayList<Pair<Integer, Integer>> emptyCells, ArrayList<Integer> victoryArr){
+
+//         DefaultMutableTreeNode root = (DefaultMutableTreeNode)tree.getRoot();
+
+//         if(emptyCells.size() == 1){
+            
+//             Triplet <Integer, Integer, Integer> nodeVal;
+
+
+//             boolean status = GameState.checkVictoryArr(victoryArr, emptyCells.get(0), false);
+
+//             if(status){
+//                 int absMaxIndex = 0;
+
+//                 for(int i = 0; i < victoryArr.size(); i++){
+//                     if(Math.abs(victoryArr.get(i))  > victoryArr.get(absMaxIndex)){
+//                         absMaxIndex = i;
+//                     }
+//                 }
+                
+//                 nodeVal =  emptyCells.get(0).add(10 * (victoryArr.get(absMaxIndex) > 0 ? -1 : 1));
+//             }
+//             else{     
+//                 nodeVal = emptyCells.get(0).add(0);
+//             }
+
+//             root.setUserObject(emptyCells.get(0));
+//         }
+//         else{  
+            
+//             int index = 0;
+//             for(Pair<Integer, Integer> cell: emptyCells){
+
+//                 ArrayList <Integer> vArClone = (ArrayList<Integer>)victoryArr.clone();
+
+
+//                 boolean status = GameState.checkVictoryArr(victoryArr, cell, false);
+
+//                 if(status){
+//                     final ArrayList<Pair<Integer, Integer>> cellClone =  (ArrayList<Pair<Integer, Integer>>)victoryArr.clone();
+//                     cellClone.remove(cell);
+//                     DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+//                     node.setUserObject(cell);
+//                     root.add(node);  
+//                     populateTree((DefaultTreeModel)root.getChildAt(index), cellClone, vArClone);
+//                 }
+
+//                 index++;
+//             }
+//         }
+//     }
+
 // }

@@ -89,6 +89,7 @@ public class GameBoard{
     //Loads data from launchGame
     public void setGameState(GameState gameState){
         this.gameState = gameState;
+        if(!read){ gameHistory.add(gameState); read = true;}
 
         if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
         if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
@@ -99,6 +100,7 @@ public class GameBoard{
 			@Override public void onError(Throwable throwable) { }
 			@Override public void onComplete() { }
         });
+        if(!read){ gameHistory.add(gameState); read = true;}
 
         gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
 			@Override public void onSubscribe(Subscription subscription) { playerTwoSubscription = subscription; }
