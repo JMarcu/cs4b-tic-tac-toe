@@ -2,6 +2,8 @@ package models;
 import java.util.ArrayList;
 import java.util.UUID;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
+
 import javafx.scene.paint.Color;
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
@@ -66,10 +68,12 @@ public class Ai extends Player{
         for(int i = 0; i < root.getChildCount(); i++){
             DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(i);
             Triplet<Integer, Integer, Integer> childData = (Triplet<Integer, Integer, Integer>) child.getUserObject();
-            if(childData.getValue2() > bestMove.getValue2()){
+            if(childData.getValue2() != null && childData.getValue2() > bestMove.getValue2()){
                 bestMove = childData;
             }
         }
+
+        System.out.println("Best Move: " + bestMove.removeFrom2());
         
         return bestMove.removeFrom2();
     }
@@ -78,8 +82,8 @@ public class Ai extends Player{
     @SuppressWarnings("unchecked")
     private void miniMax(DefaultMutableTreeNode node, boolean isMax, int depth){
         if(depth == 0){
-            System.out.println("Move: " + node.getUserObject());
-            System.out.println("Child Count: " + node.getChildCount());
+            // System.out.println("Move: " + node.getUserObject());
+            // System.out.println("Child Count: " + node.getChildCount());
         }
         if(!node.isLeaf()){
             int bestWeight = isMax ? -100 : 100;
@@ -99,21 +103,21 @@ public class Ai extends Player{
                     bestWeight = childWeight;
                 }
 
-                if((isMax && bestWeight == 10) || (!isMax && bestWeight == -10)){
-                    prune = true;
-                } else{
+                // if((isMax && bestWeight == 10) || (!isMax && bestWeight == -10)){
+                //     prune = true;
+                // } else{
                     childIndex++;
-                }
+                // }
             } while(!prune && childIndex < node.getChildCount());
 
             if(depth == 0){
-                System.out.print("children: ");
-                for(DefaultMutableTreeNode child : children){
-                    System.out.print(child.getUserObject() + " ");
-                }
-                System.out.println("");
-                System.out.println((isMax ? "Maximizing" : "Minimizing") + " our best weight is " + bestWeight);
-                System.out.println();
+                // System.out.print("children: ");
+                // for(DefaultMutableTreeNode child : children){
+                //     System.out.print(child.getUserObject() + " ");
+                // }
+                // System.out.println("");
+                // System.out.println((isMax ? "Maximizing" : "Minimizing") + " our best weight is " + bestWeight);
+                // System.out.println();
             }
 
             node.setUserObject(
@@ -146,6 +150,18 @@ public class Ai extends Player{
             if(isVictory || node.getChildCount() == 1){
                 int weight = evaluate(vArrClone, cell, gridSize);
                 child.setUserObject(cell.add(Integer.valueOf(weight)));
+
+                Triplet<Integer, Integer, Integer> data = (Triplet<Integer, Integer, Integer>)child.getUserObject();
+                if(data.getValue0() == 1 && data.getValue1() == 2){
+                    System.out.println("Is Leaf");
+                    for(TreeNode n : child.getPath()){
+                        System.out.print(((DefaultMutableTreeNode)n).getUserObject() + " ");
+                    }
+                    System.out.println();
+                    System.out.println(vArrClone);
+                    System.out.println(child.getUserObject());
+                }
+
             } else{
                 ArrayList<Pair<Integer, Integer>> emptyCellsClone = new ArrayList<Pair<Integer, Integer>>();
                 for(Pair<Integer, Integer> emptyCell : emptyCells){
@@ -174,7 +190,7 @@ public class Ai extends Player{
         
         if(i == victoryArr.size()){
             return 0;
-        } else if(victoryArr.get(i) > 0){
+        } else if(victoryArr.get(i) < 0){
             return -10;
         } else{
             return 10;
