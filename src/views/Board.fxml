@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Board">
+<AnchorPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Board">
    <children>
-      <GridPane layoutX="2.0" layoutY="2.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0">
+      <GridPane fx:id="grid" layoutX="2.0" layoutY="2.0" minHeight="-Infinity" minWidth="-Infinity">
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" minWidth="-Infinity" prefWidth="133.0" />
             <ColumnConstraints hgrow="ALWAYS" minWidth="-Infinity" prefWidth="133.0" />
@@ -22,34 +22,41 @@
           <RowConstraints minHeight="-Infinity" prefHeight="133.0" vgrow="ALWAYS" />
         </rowConstraints>
          <children>
-            <StackPane minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleLeftTop" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;">
+            <StackPane fx:id="tile1" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleLeftTop" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;">
                <ImageView fx:id="leftTop" fitHeight="100.0" fitWidth="100.0">
                   <StackPane.margin>
                      <Insets />
                   </StackPane.margin></ImageView>
             </StackPane>
-            <StackPane minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleCenterTop" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1">
+            <StackPane fx:id="tile2" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleCenterTop" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1">
                <ImageView fx:id="centerTop" fitHeight="100" fitWidth="100" />
             </StackPane>
-            <StackPane minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleRightTop" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2">
+            <StackPane fx:id="tile3" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleRightTop" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2">
                <ImageView fx:id="rightTop" fitHeight="100" fitWidth="100" />
             </StackPane>
-            <StackPane minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleLeftMid" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.rowIndex="1">
+            <StackPane fx:id="tile4" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleLeftMid" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.rowIndex="1">
                <ImageView fx:id="leftMid" fitHeight="100" fitWidth="100" />
             </StackPane>
-            <StackPane minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleCenterMid" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <StackPane fx:id="tile5" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleCenterMid" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <ImageView fx:id="centerMid" fitHeight="100" fitWidth="100" />
             </StackPane>
-            <StackPane minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleRightMid" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2" GridPane.rowIndex="1">
-               <ImageView fx:id="rightMid" fitHeight="100" fitWidth="100" />
+            <StackPane fx:id="tile6" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleRightMid" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <ImageView fx:id="rightMid" fitHeight="100.0" fitWidth="100.0">
+                  <StackPane.margin>
+                     <Insets left="1.0" />
+                  </StackPane.margin>
+               </ImageView>
             </StackPane>
-            <StackPane minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleLeftBtm" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.rowIndex="2">
-               <ImageView fx:id="leftBtm" fitHeight="100" fitWidth="100" />
+            <StackPane fx:id="tile7" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleLeftBtm" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.rowIndex="2">
+               <ImageView fx:id="leftBtm" fitHeight="100" fitWidth="100">
+                  <StackPane.margin>
+                     <Insets />
+                  </StackPane.margin></ImageView>
             </StackPane>
-            <StackPane minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleCenterBtm" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <StackPane fx:id="tile8" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleCenterBtm" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <ImageView fx:id="centerBtm" fitHeight="100" fitWidth="100" />
             </StackPane>
-            <StackPane minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleRightBtm" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <StackPane fx:id="tile9" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleRightBtm" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2;" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <ImageView fx:id="rightBtm" fitHeight="100" fitWidth="100" />
             </StackPane>
          </children>

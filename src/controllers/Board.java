@@ -9,6 +9,9 @@ import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import models.ColorScheme;
 import models.GameState;
 import models.Player;
@@ -22,6 +25,8 @@ public class Board {
     private Subscription                        playerTwoSubscription;
     private boolean                             viewInit;
 
+    @FXML private AnchorPane root;
+    @FXML private GridPane grid;
     @FXML private ImageView leftTop;
     @FXML private ImageView centerTop;
     @FXML private ImageView rightTop;
@@ -31,6 +36,15 @@ public class Board {
     @FXML private ImageView leftBtm;
     @FXML private ImageView centerBtm;
     @FXML private ImageView rightBtm;
+    @FXML private StackPane tile1;
+    @FXML private StackPane tile2;
+    @FXML private StackPane tile3;
+    @FXML private StackPane tile4;
+    @FXML private StackPane tile5;
+    @FXML private StackPane tile6;
+    @FXML private StackPane tile7;
+    @FXML private StackPane tile8;
+    @FXML private StackPane tile9;
 
     private final String ASSETS_DIRECTORY = "/assets/images/";
 
@@ -60,6 +74,25 @@ public class Board {
         if(this.gameState != null){
             this.initializeIVGrid();
         }
+        leftTop.fitWidthProperty().bind(tile1.widthProperty());
+        centerTop.fitWidthProperty().bind(tile2.widthProperty());
+        rightTop.fitWidthProperty().bind(tile3.widthProperty());
+        leftMid.fitWidthProperty().bind(tile4.widthProperty());
+        centerMid.fitWidthProperty().bind(tile5.widthProperty());
+        rightMid.fitWidthProperty().bind(tile6.widthProperty());
+        leftBtm.fitWidthProperty().bind(tile7.widthProperty());
+        centerBtm.fitWidthProperty().bind(tile8.widthProperty());
+        rightBtm.fitWidthProperty().bind(tile9.widthProperty());
+        leftTop.fitHeightProperty().bind(tile1.heightProperty());
+        centerTop.fitHeightProperty().bind(tile2.heightProperty());
+        rightTop.fitHeightProperty().bind(tile3.heightProperty());
+        leftMid.fitHeightProperty().bind(tile4.heightProperty());
+        centerMid.fitHeightProperty().bind(tile5.heightProperty());
+        rightMid.fitHeightProperty().bind(tile6.heightProperty());
+        leftBtm.fitHeightProperty().bind(tile7.heightProperty());
+        centerBtm.fitHeightProperty().bind(tile8.heightProperty());
+        rightBtm.fitHeightProperty().bind(tile9.heightProperty());
+        root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
     }
 
     /************************************************************************************************************
