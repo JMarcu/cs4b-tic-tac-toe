@@ -114,17 +114,29 @@ public class GameBoard{
 			@Override public void onComplete() { }
         });
         
-        gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
-			@Override public void onSubscribe(Subscription subscription) { playerOneSubscription = subscription; }
-			@Override public void onNext(Player.Patch item) { onPlayerPatch(gameState.getPlayers().getValue0(), playerOneShapeIV, item); }
+        this.gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
+			@Override public void onSubscribe(Subscription subscription) { 
+                playerOneSubscription = subscription; 
+                playerOneSubscription.request(1);
+            }
+			@Override public void onNext(Player.Patch item) { 
+                onPlayerPatch(gameState.getPlayers().getValue0(), playerOneShapeIV, item); 
+                playerOneSubscription.request(1);
+            }
 			@Override public void onError(Throwable throwable) { }
 			@Override public void onComplete() { }
         });
         if(!read){ gameHistory.add(gameState); read = true;}
 
-        gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
-			@Override public void onSubscribe(Subscription subscription) { playerTwoSubscription = subscription; }
-			@Override public void onNext(Player.Patch item) { onPlayerPatch(gameState.getPlayers().getValue1(), playerTwoShapeIV, item); }
+        this.gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
+			@Override public void onSubscribe(Subscription subscription) { 
+                playerTwoSubscription = subscription; 
+                playerTwoSubscription.request(1);
+            }
+			@Override public void onNext(Player.Patch item) { 
+                onPlayerPatch(gameState.getPlayers().getValue1(), playerTwoShapeIV, item); 
+                playerTwoSubscription.request(1);
+            }
 			@Override public void onError(Throwable throwable) { }
 			@Override public void onComplete() { }
         });
@@ -209,6 +221,7 @@ public class GameBoard{
     }
 
     private void onPlayerPatch(Player player, ImageView iv, Player.Patch patch){
+        System.out.println("onPlayerPatch");
         if(patch.getColor() != null || patch.getShape() != null){
             updateImage(iv, player);
         }
