@@ -193,6 +193,14 @@ public class GameState implements Publisher<GameState.Patch>  {
      * ACCESSORS & MUTATORS
      *==========================================================================================================*/
 
+
+
+    public Player[][] getGrid(){return grid;}
+
+
+
+
+
     /** 
      * Returns the player whose turn it is. 
      * @returns The player whose turn it is.
