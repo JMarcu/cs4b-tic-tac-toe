@@ -1,6 +1,9 @@
 package controllers;
 
 import java.util.concurrent.Flow.*;
+
+import org.javatuples.Pair;
+
 import java.util.Vector;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 //import javafx.scene.layout.BorderPane;
 import javafx.scene.control.ScrollPane;
+import models.Ai;
 import models.ColorScheme;
 import models.GameState;
 import models.Player;
@@ -22,6 +26,7 @@ import models.TTTScene;
 public class GameBoard{
     
     private GameState                 gameState;
+    private Subscription              gameStateSubscription;
     private LaunchOptionsMenuCallback optionsMenuCB;
     private Subscription              playerOneSubscription;
     private Subscription              playerTwoSubscription;
@@ -45,6 +50,7 @@ public class GameBoard{
     
     public GameBoard(){
         this.gameState = null;
+        this.gameStateSubscription = null;
         this.optionsMenuCB = null;
         this.playerOneSubscription = null;
         this.playerTwoSubscription = null;
@@ -71,7 +77,8 @@ public class GameBoard{
     }
 
     private void finallyInitialize(){
-        if(!read){ gameHistory.add(gameState); read = true;}
+        //if(!read) gameHistory.add(gameState); 
+        read = false;
 
         boardController.setGameState(gameState);
 
@@ -92,22 +99,50 @@ public class GameBoard{
     public void setGameState(GameState gameState){
         this.gameState = gameState;
 
+        if(gameStateSubscription != null){ gameStateSubscription.cancel(); }
         if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
         if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
         
-        gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
-			@Override public void onSubscribe(Subscription subscription) { playerOneSubscription = subscription; }
-			@Override public void onNext(Player.Patch item) { onPlayerPatch(gameState.getPlayers().getValue0(), playerOneShapeIV, item); }
+        this.gameState.subscribe(new Subscriber<GameState.Patch>(){
+			@Override public void onSubscribe(Subscription subscription) { 
+                gameStateSubscription = subscription; 
+                gameStateSubscription.request(1);
+            }
+			@Override public void onNext(GameState.Patch item) { 
+                onGameStatePatch(item); 
+                gameStateSubscription.request(1);
+            }
+			@Override public void onError(Throwable throwable) { }
+			@Override public void onComplete() { }
+        });
+        
+        if(!read){ gameHistory.add(gameState); read = true;}
+
+        this.gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
+			@Override public void onSubscribe(Subscription subscription) { 
+                playerOneSubscription = subscription; 
+                playerOneSubscription.request(1);
+            }
+			@Override public void onNext(Player.Patch item) { 
+                onPlayerPatch(gameState.getPlayers().getValue0(), playerOneShapeIV, item); 
+                playerOneSubscription.request(1);
+            }
 			@Override public void onError(Throwable throwable) { }
 			@Override public void onComplete() { }
         });
 
-        if(!read){ gameHistory.add(gameState); read = true;}
 
-        gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
-			@Override public void onSubscribe(Subscription subscription) { playerTwoSubscription = subscription; }
-			@Override public void onNext(Player.Patch item) { onPlayerPatch(gameState.getPlayers().getValue1(), playerTwoShapeIV, item); }
-			@Override public void onError(Throwable throwable) { }
+        this.gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
+			@Override public void onSubscribe(Subscription subscription) { 
+                playerTwoSubscription = subscription; 
+                playerTwoSubscription.request(1);
+            }
+			@Override public void onNext(Player.Patch item) { 
+                onPlayerPatch(gameState.getPlayers().getValue1(), playerTwoShapeIV, item); 
+                playerTwoSubscription.request(1);
+            }
+
+            @Override public void onError(Throwable throwable) { }
 			@Override public void onComplete() { }
         });
 
@@ -115,7 +150,6 @@ public class GameBoard{
         
         if(viewInit){
             finallyInitialize();
-            read = false;
         }
     }
 
@@ -178,7 +212,24 @@ public class GameBoard{
      * SUBSCRIPTION HANDLERS
      ************************************************************************************************************/
 
+    private void onGameStatePatch(GameState.Patch patch){
+        System.out.println("onGameStatePatch");
+        if(patch.getCurrentPlayer() != null){
+            System.out.println("patch.getCurrentPlayer.getIsAi(): " + patch.getCurrentPlayer().getIsAI());
+        } else{
+            System.out.println("patch.getCurrentPlayer: " + patch.getCurrentPlayer());
+        }
+        if(patch.getCurrentPlayer() != null && patch.getCurrentPlayer().getIsAI()){
+            System.out.println("is AI");
+            Ai aiPlayer = (Ai)patch.getCurrentPlayer();
+            Pair<Integer, Integer> move = aiPlayer.generateMove(gameState);
+            System.out.println(move);
+            gameState.setCell(move.getValue0(), move.getValue1());
+        }
+    }
+
     private void onPlayerPatch(Player player, ImageView iv, Player.Patch patch){
+        System.out.println("onPlayerPatch");
         if(patch.getColor() != null || patch.getShape() != null){
             updateImage(iv, player);
         }

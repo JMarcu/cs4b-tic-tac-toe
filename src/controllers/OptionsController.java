@@ -13,6 +13,7 @@ public class OptionsController {
 
     private LaunchMainMenuCallback mainMenuCB;
     private ReturnToCallback returnToCB;
+    private MusicPlayer music;
 
     //private MusicPlayer music;
 
@@ -22,7 +23,7 @@ public class OptionsController {
     @FXML
     private Button MainMenuButton;
 
-    public void acceptCaller(String caller)
+    public void acceptCaller(String caller, MusicPlayer music)
     {
         //Load external style sheets.
         root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
@@ -38,6 +39,8 @@ public class OptionsController {
             RestartButton.setDisable(false);
             MainMenuButton.setDisable(false);
         }
+
+        this.music = music;
     }
 
     @FXML private StackPane root;
@@ -45,8 +48,10 @@ public class OptionsController {
     public StackPane getRoot(){ return this.root; }
     
     @FXML protected void ReturnButtonClicked(ActionEvent event) {
-        MusicPlayer music = new MusicPlayer();
-        music.playSFX(MusicPlayer.Track.exitMenu);
+        if (music.getShouldPlaySFX()){
+            MusicPlayer music2 = new MusicPlayer();
+            music2.playSFX(MusicPlayer.Track.exitMenu);
+        }
         returnToCB.returnTo();
     }
 
@@ -54,8 +59,12 @@ public class OptionsController {
         // changes sound effects volume
 
         //play sound effect to show effect
-        MusicPlayer music = new MusicPlayer();
-        music.playSFX(MusicPlayer.Track.adjustSound);
+        if (music.getShouldPlaySFX()){
+            MusicPlayer music2 = new MusicPlayer();
+            music2.playSFX(MusicPlayer.Track.adjustSound);
+        }
+
+        music.setShouldPlaySFX(!music.getShouldPlaySFX());
     }
 
     @FXML protected void VolumeButtonClicked(ActionEvent event) {
@@ -63,8 +72,12 @@ public class OptionsController {
         // CycleVolume();
 
         //play sound effect to show effect
-        MusicPlayer music = new MusicPlayer();
-        music.playSFX(MusicPlayer.Track.adjustSound);
+        if (music.getShouldPlaySFX()){
+            MusicPlayer music2 = new MusicPlayer();
+            music2.playSFX(MusicPlayer.Track.adjustSound);
+        }
+
+        music.setShouldPlay(!music.getShouldPlay());
     }
 
     @FXML protected void RestartButtonClicked(ActionEvent event) {

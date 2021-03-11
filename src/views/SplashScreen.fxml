@@ -2,18 +2,31 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="363.0" prefWidth="440.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SplashScreen">
+<VBox fx:id="root" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#closeSplash" prefHeight="363.0" prefWidth="440.0" style="-fx-background-color: -primary-light;" stylesheets="@../styles/color-theme.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SplashScreen">
    <children>
       <ImageView fx:id="splashImageView" fitHeight="250.0" fitWidth="413.0" pickOnBounds="true" preserveRatio="true" />
-      <Label fx:id="splashText" prefHeight="54.0" prefWidth="177.0" text="TEXT HERE">
+      <Label fx:id="personName" text=" ">
          <font>
-            <Font size="36.0" />
+            <Font size="18.0" />
          </font>
       </Label>
-      <Button fx:id="splashButton" onMouseClicked="#handleSplashButton" mnemonicParsing="false" text="OK" />
+      <Label fx:id="splashText" alignment="CENTER" prefHeight="27.0" prefWidth="434.0" stylesheets="@../styles/main-menu.css" text="TEXT HERE">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <HBox fx:id="buttons" alignment="CENTER" prefHeight="62.0" prefWidth="440.0" stylesheets="@../styles/color-theme.css">
+         <children>
+            <Button fx:id="playAgainBtn" mnemonicParsing="false" onAction="#onPlayAgainAction" styleClass="arcade-font" text="Play Again" />
+            <Separator fx:id="spacer" onMouseClicked="#closeSplash" opacity="0.0" orientation="VERTICAL" prefHeight="78.0" prefWidth="86.0" />
+            <Button fx:id="backToMenuBtn" mnemonicParsing="false" onAction="#onBackToMenuAction" styleClass="arcade-font" text="Back to Menu" />
+         </children>
+      </HBox>
    </children>
 </VBox>

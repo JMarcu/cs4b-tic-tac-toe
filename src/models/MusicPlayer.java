@@ -5,10 +5,14 @@ import javax.sound.sampled.*;
 
 public class MusicPlayer {
     public enum Track{
-        adjustSound, changeMarker, clickSquare, exitMenu, openMenu, title, waiting, lose, tie, win;
+        adjustSound, changeMarker, clickSquare, exitMenu, openMenu, title, waiting, lose, tie, win, vsAi, vsHuman, tickTock;
     }
 
     private final String SOUND_DIRECTORY = "src/assets/sounds/";
+    private boolean shouldPlay = true;
+    private boolean shouldPlaySFX = true;
+    private String musicLocation = "";
+
     Clip clip;
 
     {
@@ -43,6 +47,11 @@ public class MusicPlayer {
                 break;
             case win:           musicLocation = SOUND_DIRECTORY.concat("you-won.wav");
                 break;
+            case vsAi:          musicLocation = SOUND_DIRECTORY.concat("vs-ai.wav");
+                break;
+            case vsHuman:       musicLocation = SOUND_DIRECTORY.concat("vs-human.wav");
+                break;
+            case tickTock:      musicLocation = SOUND_DIRECTORY.concat("tick-tock.wav");
             default:
                 break;
         }//end switch
@@ -51,26 +60,29 @@ public class MusicPlayer {
     }
 
     public void playMusic(Track track){
-        String musicLocation = getMusicLocation(track);
+        musicLocation = getMusicLocation(track);
 
-        if(clip.isRunning()){
-            clip.close();
-        }
+        if(shouldPlay){
 
-        File musicPath = new File(musicLocation);
-        try{
-            if(musicPath.exists()){
-                AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
-                //clip = AudioSystem.getClip();
-                clip.open(audioInput);
-                clip.start();
-                clip.loop(Clip.LOOP_CONTINUOUSLY);
+            if(clip.isRunning()){
+                clip.close();
             }
-            else{
-                System.out.println("Can't find the file");
-            }
-        } catch(Exception ex){
 
+            File musicPath = new File(musicLocation);
+            try{
+                if(musicPath.exists()){
+                    AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                    //clip = AudioSystem.getClip();
+                    clip.open(audioInput);
+                    clip.start();
+                    clip.loop(Clip.LOOP_CONTINUOUSLY);
+                }
+                else{
+                    System.out.println("Can't find the file");
+                }
+            } catch(Exception ex){
+
+            }
         }
     }
 
@@ -92,6 +104,50 @@ public class MusicPlayer {
         } catch(Exception ex){
 
         }
+    }
+
+    public void setShouldPlay(boolean bool)
+    {
+        shouldPlay = bool;
+        if (shouldPlay)
+        {
+            File musicPath = new File(musicLocation);
+            try{
+                if(musicPath.exists()){
+                    AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                    //clip = AudioSystem.getClip();
+                    clip.open(audioInput);
+                    clip.start();
+                    clip.loop(Clip.LOOP_CONTINUOUSLY);
+                }
+                else{
+                    System.out.println("Can't find the file");
+                }
+            } catch(Exception ex){
+    
+            }
+        }
+        else
+        {
+            if(clip.isRunning()){
+                clip.close();
+            }
+        }
+    }
+    
+    public boolean getShouldPlay()
+    {
+        return shouldPlay;
+    }
+
+    public void setShouldPlaySFX(boolean bool)
+    {
+        shouldPlaySFX = bool;
+    }
+
+    public boolean getShouldPlaySFX()
+    {
+        return shouldPlaySFX;
     }
 
     /*

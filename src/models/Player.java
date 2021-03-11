@@ -49,6 +49,9 @@ public class Player {
      * CLASS VARIABLES
      ************************************************************************************************************/
 
+    /** Whether or not the player is an AI. */
+    protected boolean isAi;
+
     /** The color of the player's marker. */
     private Color color;
 
@@ -73,6 +76,7 @@ public class Player {
     public Player(Color color, UUID id, String name, MarkerShape shape) {
         this.color = color == null ? Color.BLACK : color;
         this.id = id;
+        this.isAi = false;
         this.name = name;
         this.publisher = new SubmissionPublisher<Player.Patch>(Runnable::run, Flow.defaultBufferSize());
         this.shape = shape == null ? MarkerShape.X : shape;
@@ -110,7 +114,7 @@ public class Player {
      * Returns whether the player is an AI.
      * @return True if the player is an AI, false if they are not.
      */
-    public boolean getIsAI() {return false;}
+    public boolean getIsAI() {return isAi;}
 
     /**
      * Sets the color of the player's marker. Subscribers are notified.
