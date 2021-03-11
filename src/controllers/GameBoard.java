@@ -65,6 +65,7 @@ public class GameBoard{
     @FXML 
     private void initialize(){ 
         this.viewInit = true; 
+        this.read = false;
 
         if(gameState != null){
             finallyInitialize();
@@ -77,9 +78,7 @@ public class GameBoard{
     }
 
     private void finallyInitialize(){
-        //if(!read) gameHistory.add(gameState); 
         read = false;
-
         boardController.setGameState(gameState);
 
         playerOneTF.setText(gameState.getPlayers().getValue0().getName());
@@ -115,9 +114,7 @@ public class GameBoard{
 			@Override public void onError(Throwable throwable) { }
 			@Override public void onComplete() { }
         });
-        
-        if(!read){ gameHistory.add(gameState); read = true;}
-
+           
         this.gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
 			@Override public void onSubscribe(Subscription subscription) { 
                 playerOneSubscription = subscription; 
@@ -131,6 +128,10 @@ public class GameBoard{
 			@Override public void onComplete() { }
         });
 
+        if(!read){ 
+            gameHistory.remove(gameHistory.lastElement());
+            gameHistory.add(gameState); read = true;
+        }
 
         this.gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
 			@Override public void onSubscribe(Subscription subscription) { 
@@ -146,10 +147,12 @@ public class GameBoard{
 			@Override public void onComplete() { }
         });
 
-        if(!read){ gameHistory.add(gameState); read = true;}
+        //if(!gameState.getPlayers().getValue1().getIsAI() && !read){ gameHistory.add(gameState); read = true;
+        gameHistory.add(gameState); read = true;
         
         if(viewInit){
             finallyInitialize();
+            read = false;
         }
     }
 
