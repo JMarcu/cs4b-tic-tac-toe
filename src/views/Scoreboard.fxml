@@ -7,8 +7,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: rgba(0, 100, 100, 0.8); -fx-background-radius: 10;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ScoreBoard">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="1350.0" style="-fx-background-color: rgba(0, 0, 0, 0);" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ScoreBoard">
   <children>
+  <AnchorPane fx:id="center" layoutX="375.0" layoutY="225" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: rgba(0, 100, 100, 0.8); -fx-background-radius: 10;">
+     <children>
       <Text fx:id="scoreDisplay" layoutX="180" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="5.0" style="-fx-font-size: 40; -fx-fill: goldenrod; -fx-font-weight: bold;" text="Game History"/> 
       <ScrollPane fx:id="scrollPaneMain" layoutX="63.0" layoutY="71.0" prefHeight="220.0" prefWidth="490.0">
         <content>
@@ -19,7 +21,9 @@
             </AnchorPane>
         </content>
       </ScrollPane>
-      <Button fx:id="Return" layoutX="180.0" layoutY="330.0" style="-fx-font: 20px;-fx-padding: 8 20; -fx-font: bold 20pt; -fx-background-color: slateblue; -fx-text-fill: white;" onAction="#ReturnButtonClicked" text="Return"/>
-      <Button fx:id="Reset" layoutX="350.0" layoutY="330.0" style="-fx-font: 20px;-fx-padding: 8 20; -fx-font: bold 20pt; -fx-background-color: slateblue; -fx-text-fill: white;" onAction="#ResetButtonClicked" text="Reset"/>
+      <Button fx:id="Return" layoutX="180.0" layoutY="330.0" style="-fx-padding: 8 20; -fx-background-color: slateblue; -fx-text-fill: white;" onAction="#ReturnButtonClicked" text="Return"/>
+      <Button fx:id="Reset" layoutX="350.0" layoutY="330.0" style="-fx-padding: 8 20; -fx-background-color: slateblue; -fx-text-fill: white;" onAction="#ResetButtonClicked" text="Reset"/>
+     </children>
+   </AnchorPane>
    </children>
 </AnchorPane>

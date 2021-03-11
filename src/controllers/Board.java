@@ -21,6 +21,7 @@ public class Board {
     private Subscription                        playerOneSubscription;
     private Subscription                        playerTwoSubscription;
     private boolean                             viewInit;
+    private boolean                             boardDisable;
 
     @FXML private ImageView leftTop;
     @FXML private ImageView centerTop;
@@ -140,19 +141,22 @@ public class Board {
         }
     }
 
+    public void setDisable(){ boardDisable = true;}
+    public void setEnable(){ boardDisable = false;}
+
     /************************************************************************************************************
      * EVENT HANDLERS
      ************************************************************************************************************/
 
-    @FXML private void handleLeftTop(MouseEvent e)   { gameState.setCell(0, 0); }
-    @FXML private void handleCenterTop(MouseEvent e) { gameState.setCell(0, 1); }
-    @FXML private void handleRightTop(MouseEvent e)  { gameState.setCell(0, 2); }
-    @FXML private void handleLeftMid(MouseEvent e)   { gameState.setCell(1, 0); }
-    @FXML private void handleCenterMid(MouseEvent e) { gameState.setCell(1, 1); }
-    @FXML private void handleRightMid(MouseEvent e)  { gameState.setCell(1, 2); }
-    @FXML private void handleLeftBtm(MouseEvent e)   { gameState.setCell(2, 0); }
-    @FXML private void handleCenterBtm(MouseEvent e) { gameState.setCell(2, 1); }
-    @FXML private void handleRightBtm(MouseEvent e)  { gameState.setCell(2, 2); }
+    @FXML private void handleLeftTop(MouseEvent e)   { if(!boardDisable) gameState.setCell(0, 0); }
+    @FXML private void handleCenterTop(MouseEvent e) { if(!boardDisable) gameState.setCell(0, 1); }
+    @FXML private void handleRightTop(MouseEvent e)  { if(!boardDisable) gameState.setCell(0, 2); }
+    @FXML private void handleLeftMid(MouseEvent e)   { if(!boardDisable) gameState.setCell(1, 0); }
+    @FXML private void handleCenterMid(MouseEvent e) { if(!boardDisable) gameState.setCell(1, 1); }
+    @FXML private void handleRightMid(MouseEvent e)  { if(!boardDisable) gameState.setCell(1, 2); }
+    @FXML private void handleLeftBtm(MouseEvent e)   { if(!boardDisable) gameState.setCell(2, 0); }
+    @FXML private void handleCenterBtm(MouseEvent e) { if(!boardDisable) gameState.setCell(2, 1); }
+    @FXML private void handleRightBtm(MouseEvent e)  { if(!boardDisable) gameState.setCell(2, 2); }
     
     // private void AiPlay(){
         

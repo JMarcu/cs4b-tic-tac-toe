@@ -149,6 +149,7 @@ public class GameState implements Publisher<GameState.Patch>  {
     /** Creates a default game: single player, free play, and with both players set to null. */
     public GameState(){
         this(GameMode.FREE_PLAY, new Pair<Player, Player>(new Player(), new Player()), true, 0);
+        this.status = GameState.Status.NEW;
     }
 
     /** 

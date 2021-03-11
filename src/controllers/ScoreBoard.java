@@ -18,7 +18,7 @@ public class ScoreBoard {
     private String playerTwo;
     private String winner;
     private Pair<Player, Player> players;
-    private String display;
+    private String display = String.format("PLAY A GAME! NO HISTORY YET!");
     private boolean firstGame;
     private int gameNum;
 
@@ -64,12 +64,12 @@ public class ScoreBoard {
 
             if(!firstGame){
                 gameNum = 1;
-                display = String.format("%d.\t%15s  VS  %-15s\t%s\n", gameNum, playerOne, playerTwo, winner); 
+                display = String.format("%d.\t%15s  VS  %-17s\t%s\n", gameNum, playerOne, playerTwo, winner); 
                 firstGame = true;
             }
             else{
                 gameNum++;
-                display += String.format("%d.\t%15s  VS  %-15s\t%s\n", gameNum, playerOne, playerTwo, winner); 
+                display += String.format("%d.\t%15s  VS  %-17s\t%s\n", gameNum, playerOne, playerTwo, winner); 
             }
         }
 
@@ -80,19 +80,19 @@ public class ScoreBoard {
 
             if(!firstGame){
                 gameNum = 1;
-                display = String.format("%d.\t%15s  VS  %-15s\t%s\n", gameNum, playerOne, playerTwo, winner); 
+                display = String.format("%d.\t%15s  VS  %-17s\t%s\n", gameNum, playerOne, playerTwo, winner); 
                 firstGame = true;
             }
             else{
                 gameNum++;
-                display += String.format("%d.\t%15s  VS  %-15s\t%s\n", gameNum, playerOne, playerTwo, winner); 
+                display += String.format("%d.\t%15s  VS  %-17s\t%s\n", gameNum, playerOne, playerTwo, winner); 
             }
         }
 
         scoreDisplay.setText(display);
     }
 
-    // public void addPlayer(GameState.Patch gameState){
+    // public void addPlayer(GameState gameState){
     //     players = gameState.getPlayers();
     //     if(gameState.getStatus() == GameState.Status.DRAW){
     //         if(index >= 5){

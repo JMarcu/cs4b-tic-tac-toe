@@ -51,6 +51,9 @@ public class GameBoard{
         this.shapePickerCB = null;
         this.scoreBoardCB = null;
         this.viewInit = false;
+
+        GameState none = new GameState();
+        this.gameHistory.add(none);
     }
     
     @FXML 
@@ -68,8 +71,7 @@ public class GameBoard{
     }
 
     private void finallyInitialize(){
-        if(!read) gameHistory.add(gameState);
-        read = false;
+        if(!read){ gameHistory.add(gameState); read = true;}
 
         boardController.setGameState(gameState);
 
@@ -100,6 +102,8 @@ public class GameBoard{
 			@Override public void onComplete() { }
         });
 
+        if(!read){ gameHistory.add(gameState); read = true;}
+
         gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
 			@Override public void onSubscribe(Subscription subscription) { playerTwoSubscription = subscription; }
 			@Override public void onNext(Player.Patch item) { onPlayerPatch(gameState.getPlayers().getValue1(), playerTwoShapeIV, item); }
@@ -111,6 +115,7 @@ public class GameBoard{
         
         if(viewInit){
             finallyInitialize();
+            read = false;
         }
     }
 
@@ -161,9 +166,12 @@ public class GameBoard{
     @FXML //Allows playerone to access the scoreboard by pressing the scoreboard button
     private void onScoreBoard(ActionEvent event){
         // System.out.println("onScoreBoard");
-        this.scoreBoardCB.launchScoreBoard(gameState.getPlayers().getValue0().getUuid(), TTTScene.GAME_BOARD, gameHistory);
+        this.scoreBoardCB.launchScoreBoard(TTTScene.GAME_BOARD, gameHistory);
+        
         for(int i=0; i<gameHistory.size(); i++)    
             this.gameHistory.remove(i);
+        GameState none = new GameState();
+        this.gameHistory.add(none);
     }
 
     /************************************************************************************************************
