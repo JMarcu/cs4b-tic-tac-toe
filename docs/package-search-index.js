@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"controllers"},{"l":"models.SceneCallback"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"controllers"},{"l":"models"},{"l":"models.SceneCallback"}]
