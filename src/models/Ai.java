@@ -70,9 +70,9 @@ public class Ai extends Player{
         Triplet<Integer, Integer, Integer> bestMove = new Triplet<Integer, Integer, Integer>(null, null, isMax ? -100 : 100);
 
         int cellIndex = 0;
-        boolean shortCircuit = false;
+        boolean prune = false;
 
-        while(cellIndex < emptyCells.size() && !shortCircuit){
+        while(cellIndex < emptyCells.size() && !prune){
             Pair<Integer, Integer> cell = emptyCells.get(cellIndex);
             
             ArrayList<Integer> vArrClone = new ArrayList<Integer>();
@@ -86,9 +86,9 @@ public class Ai extends Player{
             node.add(child);
 
             if(isVictory){
-                int weight = evaluate(vArrClone, cell, gridSize);
+                int weight = isMax ? 10 : -10;
                 child.setUserObject(cell.add(Integer.valueOf(weight)));
-                shortCircuit = true;
+                prune = true;
             } else if(emptyCells.size() == 1){
                 child.setUserObject(cell.add(Integer.valueOf(0)));
             } else{
@@ -115,26 +115,5 @@ public class Ai extends Player{
         Triplet<Integer, Integer, Integer> currentData = (Triplet<Integer, Integer, Integer>)node.getUserObject();
         node.setUserObject(currentData.setAt2(bestMove.getValue2()));
         return bestMove;
-    }
-
-    private int evaluate(ArrayList<Integer> victoryArr, Pair<Integer, Integer> move, int gridSize){
-        int i = 0;
-        boolean keepSearching = true;
-
-        while(keepSearching && i < victoryArr.size()){
-            if(Math.abs(victoryArr.get(i)) >= gridSize){
-                keepSearching = false;
-            } else{
-                i++;
-            }
-        }
-        
-        if(i == victoryArr.size()){
-            return 0;
-        } else if(victoryArr.get(i) < 0){
-            return -10;
-        } else{
-            return 10;
-        }
     }
 }

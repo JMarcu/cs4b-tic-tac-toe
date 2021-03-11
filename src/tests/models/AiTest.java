@@ -80,7 +80,7 @@ public class AiTest {
                 gameState.setCell(playerMove.getValue0(), playerMove.getValue1());
             } 
         }while(gameState.getStatus() == GameState.Status.IN_PROGRESS);
-        System.out.println("status: " + gameState.getStatus());
+        
         if(gameState.getWinner() != null){
             assertEquals(gameState.getWinner(), ai);
         } else{
