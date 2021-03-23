@@ -57,11 +57,15 @@ public class GameBoard{
         this.shapePickerCB = null;
         this.scoreBoardCB = null;
         this.viewInit = false;
+
+        GameState none = new GameState();
+        this.gameHistory.add(none);
     }
     
     @FXML 
     private void initialize(){ 
         this.viewInit = true; 
+        this.read = false;
 
         if(gameState != null){
             finallyInitialize();
@@ -74,9 +78,7 @@ public class GameBoard{
     }
 
     private void finallyInitialize(){
-        if(!read) gameHistory.add(gameState);
         read = false;
-
         boardController.setGameState(gameState);
 
         playerOneTF.setText(gameState.getPlayers().getValue0().getName());
@@ -95,7 +97,6 @@ public class GameBoard{
     //Loads data from launchGame
     public void setGameState(GameState gameState){
         this.gameState = gameState;
-        if(!read){ gameHistory.add(gameState); read = true;}
 
         if(gameStateSubscription != null){ gameStateSubscription.cancel(); }
         if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
@@ -113,7 +114,7 @@ public class GameBoard{
 			@Override public void onError(Throwable throwable) { }
 			@Override public void onComplete() { }
         });
-        
+           
         this.gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
 			@Override public void onSubscribe(Subscription subscription) { 
                 playerOneSubscription = subscription; 
@@ -126,7 +127,11 @@ public class GameBoard{
 			@Override public void onError(Throwable throwable) { }
 			@Override public void onComplete() { }
         });
-        if(!read){ gameHistory.add(gameState); read = true;}
+
+        if(!read){ 
+            gameHistory.remove(gameHistory.lastElement());
+            gameHistory.add(gameState); read = true;
+        }
 
         this.gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
 			@Override public void onSubscribe(Subscription subscription) { 
@@ -137,14 +142,17 @@ public class GameBoard{
                 onPlayerPatch(gameState.getPlayers().getValue1(), playerTwoShapeIV, item); 
                 playerTwoSubscription.request(1);
             }
-			@Override public void onError(Throwable throwable) { }
+
+            @Override public void onError(Throwable throwable) { }
 			@Override public void onComplete() { }
         });
 
-        if(!read){ gameHistory.add(gameState); read = true;}
+        //if(!gameState.getPlayers().getValue1().getIsAI() && !read){ gameHistory.add(gameState); read = true;
+        gameHistory.add(gameState); read = true;
         
         if(viewInit){
             finallyInitialize();
+            read = false;
         }
     }
 
@@ -195,9 +203,12 @@ public class GameBoard{
     @FXML //Allows playerone to access the scoreboard by pressing the scoreboard button
     private void onScoreBoard(ActionEvent event){
         // System.out.println("onScoreBoard");
-        this.scoreBoardCB.launchScoreBoard(gameState.getPlayers().getValue0().getUuid(), TTTScene.GAME_BOARD, gameHistory);
+        this.scoreBoardCB.launchScoreBoard(TTTScene.GAME_BOARD, gameHistory);
+        
         for(int i=0; i<gameHistory.size(); i++)    
             this.gameHistory.remove(i);
+        GameState none = new GameState();
+        this.gameHistory.add(none);
     }
 
     /************************************************************************************************************

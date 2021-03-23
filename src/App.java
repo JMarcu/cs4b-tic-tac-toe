@@ -175,12 +175,16 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     }
 
     @Override
-    public void launchScoreBoard(UUID topCandidate, TTTScene returnTo, Vector<GameState> gameState){
+    public void launchScoreBoard(TTTScene returnTo, Vector<GameState> gameHistory){
         try{
             ScoreBoard scoreboard = scoreboardFXML.getController();
-            if(gameState.size()==0) scoreboard.set();
-            for(int i=0; i<gameState.size(); i++)
-                scoreboard.addPlayer(gameState.get(i));
+            if(gameHistory.size()==0) {
+                scoreboard.set();
+                GameState none = new GameState();
+                scoreboard.addPlayer(none);
+            }
+            for(int i=0; i<gameHistory.size(); i++)
+                scoreboard.addPlayer(gameHistory.get(i));
             scoreboard.setReturnCB(() -> {closeMenu(scoreboard.getRoot());});
             openMenu(scoreboard.getRoot());
         } catch(Exception e){
