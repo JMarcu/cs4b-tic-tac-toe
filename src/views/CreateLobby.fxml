@@ -9,20 +9,20 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CreateLobby">
    <children>
-      <TextField layoutX="225.0" layoutY="187.0" text="Your Name Here" />
-      <Button layoutX="224.0" layoutY="227.0" mnemonicParsing="false" prefHeight="149.0" prefWidth="150.0" />
-      <ImageView fitHeight="136.0" fitWidth="135.0" layoutX="232.0" layoutY="235.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="386.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
-      <Button layoutX="22.0" layoutY="14.0" mnemonicParsing="false" prefHeight="63.0" prefWidth="72.0" text="Go Back" />
-      <Label alignment="CENTER" layoutX="125.0" layoutY="27.0" prefHeight="65.0" prefWidth="257.0" text="Online Match">
+      <Button fx:id="returnBtn" layoutX="22.0" layoutY="14.0" mnemonicParsing="false" prefHeight="63.0" prefWidth="72.0" text="Go Back" />
+      <Label fx:id="title" alignment="CENTER" layoutX="125.0" layoutY="27.0" prefHeight="65.0" prefWidth="257.0" text="Online Match">
          <font>
             <Font size="35.0" />
          </font>
       </Label>
-      <MenuButton layoutX="442.0" layoutY="235.0" mnemonicParsing="false" text="Match Length">
+      <ImageView fx:id="icon" fitHeight="200.0" fitWidth="200.0" layoutX="386.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="joinBtn" layoutX="40.0" layoutY="277.0" mnemonicParsing="false" prefHeight="86.0" prefWidth="135.0" text="Join Match" />
+      <TextField fx:id="playerName" layoutX="225.0" layoutY="187.0" text="Your Name Here" />
+      <Button fx:id="markerBtn" layoutX="224.0" layoutY="227.0" mnemonicParsing="false" prefHeight="149.0" prefWidth="150.0" />
+      <ImageView fx:id="marker" fitHeight="136.0" fitWidth="135.0" layoutX="232.0" layoutY="235.0" pickOnBounds="true" preserveRatio="true" />
+      <MenuButton fx:id="timeMenu" layoutX="442.0" layoutY="235.0" mnemonicParsing="false" text="Match Length">
         <items>
           <MenuItem mnemonicParsing="false" text="∞" />
             <MenuItem mnemonicParsing="false" text="1 min" />
@@ -30,7 +30,6 @@
           <MenuItem mnemonicParsing="false" text="5 min" />
         </items>
       </MenuButton>
-      <Button layoutX="423.0" layoutY="277.0" mnemonicParsing="false" prefHeight="99.0" prefWidth="135.0" text="Create Lobby" />
-      <Button layoutX="40.0" layoutY="277.0" mnemonicParsing="false" prefHeight="86.0" prefWidth="135.0" text="Join Match" />
+      <Button fx:id="createBtn" layoutX="423.0" layoutY="277.0" mnemonicParsing="false" prefHeight="99.0" prefWidth="135.0" text="Create Lobby" />
    </children>
 </AnchorPane>
