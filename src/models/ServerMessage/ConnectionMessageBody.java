@@ -19,6 +19,7 @@ public class ConnectionMessageBody implements Serializable {
         this.type = type;
     }
 
+    public UUID getLobbyId(){ return this.lobbyId; }
     public UUID getPlayerId(){ return this.playerId; }
     public Type getType(){ return this.type; }
 }
