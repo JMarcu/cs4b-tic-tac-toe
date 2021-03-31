@@ -10,6 +10,7 @@ public class ConnectionMessageBody implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private UUID lobbyId;
     private UUID playerId;
     private Type type;
 
