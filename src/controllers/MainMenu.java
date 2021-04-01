@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -26,6 +27,7 @@ import models.GameState;
 import models.MarkerShape;
 import models.Player;
 import models.SceneCallback.LaunchGameCallback;
+import models.SceneCallback.LaunchLobbyCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
 import org.javatuples.Pair;
@@ -395,5 +397,12 @@ public class MainMenu {
         sb.append("');");
         pane.setStyle(sb.toString());
         ColorScheme.adjustImageColor(pane, player.getColor());
+    }
+
+    private LaunchLobbyCallback launchLobbyCB;
+
+    @FXML
+    void goOnline(ActionEvent event) {
+        launchLobbyCB.launchLobbyCallback(playerOne);
     }
 }

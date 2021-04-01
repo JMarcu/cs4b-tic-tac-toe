@@ -5,6 +5,7 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -17,11 +18,16 @@
             <Font size="35.0" />
          </font>
       </Label>
-      <ImageView fx:id="icon" fitHeight="200.0" fitWidth="200.0" layoutX="386.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="joinBtn" layoutX="40.0" layoutY="277.0" mnemonicParsing="false" prefHeight="86.0" prefWidth="135.0" text="Join Match" />
+      <ImageView fx:id="icon" fitHeight="200.0" fitWidth="200.0" layoutX="386.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../assets/images/splash/globe.png" />
+         </image></ImageView>
+      <Button fx:id="joinBtn" layoutX="40.0" layoutY="277.0" mnemonicParsing="false" onAction="#joinLobbyAction" prefHeight="86.0" prefWidth="135.0" text="Join Match" />
       <TextField fx:id="playerName" layoutX="225.0" layoutY="187.0" text="Your Name Here" />
-      <Button fx:id="markerBtn" layoutX="224.0" layoutY="227.0" mnemonicParsing="false" prefHeight="149.0" prefWidth="150.0" />
-      <ImageView fx:id="marker" fitHeight="136.0" fitWidth="135.0" layoutX="232.0" layoutY="235.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="markerBtn" layoutX="224.0" layoutY="227.0" mnemonicParsing="false" prefHeight="149.0" prefWidth="150.0">
+         <graphic>
+            <ImageView fx:id="marker" fitHeight="136.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true" />
+         </graphic></Button>
       <MenuButton fx:id="timeMenu" layoutX="442.0" layoutY="235.0" mnemonicParsing="false" text="Match Length">
         <items>
           <MenuItem mnemonicParsing="false" text="∞" />
@@ -31,5 +37,10 @@
         </items>
       </MenuButton>
       <Button fx:id="createBtn" layoutX="423.0" layoutY="277.0" mnemonicParsing="false" prefHeight="99.0" prefWidth="135.0" text="Create Lobby" />
+      <ImageView fitHeight="56.0" fitWidth="62.0" layoutX="66.0" layoutY="159.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../assets/images/splash/ced.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

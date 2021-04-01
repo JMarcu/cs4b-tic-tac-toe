@@ -21,11 +21,31 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="root" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="425.0" prefWidth="625.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainMenu">
+<ScrollPane fx:id="root" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="425.0" prefWidth="625.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainMenu">
    <content>
       <BorderPane minHeight="400.0" minWidth="600.0" style="-fx-background-color: -primary; -fx-border-color: -primary;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <bottom>
-            <Pane minHeight="100.0" BorderPane.alignment="CENTER" />
+            <Pane minHeight="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button layoutX="14.0" layoutY="11.0" mnemonicParsing="false" onAction="#goOnline" prefHeight="10.0" prefWidth="10.0">
+                     <graphic>
+                        <ImageView fx:id="globeIV" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../assets/images/splash/globe.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Label alignment="CENTER_RIGHT" layoutX="271.0" layoutY="32.0" prefHeight="33.0" prefWidth="82.0" text="Local Play">
+                     <font>
+                        <Font size="15.0" />
+                     </font></Label>
+                  <ImageView fitHeight="29.0" fitWidth="26.0" layoutX="360.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../assets/images/splash/dced.png" />
+                     </image>
+                  </ImageView>
+               </children></Pane>
          </bottom>
          <center>
             <VBox maxHeight="900.0" maxWidth="1400.0" BorderPane.alignment="CENTER">
