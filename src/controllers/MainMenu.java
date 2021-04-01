@@ -399,7 +399,13 @@ public class MainMenu {
         ColorScheme.adjustImageColor(pane, player.getColor());
     }
 
+    // - NEW STUFF HERE! - //
     private LaunchLobbyCallback launchLobbyCB;
+
+    /** Sets the callback to be invoked when the MainMenu wishes to open the lobby system. */
+    public void setLaunchLobbyCB(LaunchLobbyCallback launchLobbyCB){
+        this.launchLobbyCB = launchLobbyCB;
+    }
 
     @FXML
     void goOnline(ActionEvent event) {

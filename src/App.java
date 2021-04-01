@@ -1,3 +1,4 @@
+import controllers.CreateLobby;
 import controllers.GameBoard;
 import controllers.MainMenu;
 import controllers.OptionsController;
@@ -250,5 +251,23 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             openMenu(splashScreen.getRoot());
         }
         gameStateSubscription.request(1);
+    }
+
+
+    //NEW STUFF//
+    private FXMLLoader lobbyFXML;
+
+    public void launchLobby(Player player){
+        try{
+            MusicPlayer musicSFX = new MusicPlayer();
+            musicSFX.playSFX(MusicPlayer.Track.openMenu);
+
+            CreateLobby lobby = lobbyFXML.getController();
+            lobby.acceptPlayer(player);
+            lobby.setReturnCB(() -> {closeMenu(lobby.getRoot());});
+            openMenu(lobby.getRoot());
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
