@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
+import models.ServerMessage.ChatMessageBody;
 import models.ServerMessage.Message;
 import models.ServerMessage.MessageType;
 import models.ServerMessage.MoveMessageBody;
@@ -24,11 +25,11 @@ public class ServerConnection extends Thread{
     private UUID ownPlayerId;
     private Socket socket;
 
-    ServerConnection(){
-        this("localhost", 8080);
+    public ServerConnection(){
+        this("localhost", 4210);
     }
 
-    ServerConnection(String host, int port){
+    public ServerConnection(String host, int port){
         this.host = host;
         this.in = null;
         this.out = null;
@@ -44,6 +45,9 @@ public class ServerConnection extends Thread{
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Thread clientThread = new Thread(this);
+        clientThread.start();
     }
 
     public void setGameState(GameState gameState, UUID ownPlayerId){
@@ -69,13 +73,13 @@ public class ServerConnection extends Thread{
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void run() {
         while(true) {
             try {
                 Object data = in.readObject();
+                System.out.println("data" + data);
                 if(data instanceof Message){
-                    final Message<? extends Serializable> message = (Message<? extends Serializable>)data;
+                    final Message message = (Message)data;
                     this.onMessage(message);
                 } else{
                     System.err.println("Unrecognised message format ::" + data);
@@ -93,7 +97,7 @@ public class ServerConnection extends Thread{
         if(patch.getMove() != null && !patch.getMove().getValue0().getUuid().equals(this.ownPlayerId)){
             try {
                 this.out.writeObject(
-                    new Message<MoveMessageBody>(
+                    new Message(
                         new MoveMessageBody(
                             patch.getMove().removeFrom0(), 
                             patch.getMove().getValue0().getUuid()
@@ -107,13 +111,19 @@ public class ServerConnection extends Thread{
         }
     }
 
-    private void onMessage(Message<? extends Serializable> message){
+    private void onMessage(Message message){
+        System.out.println(message);
         switch(message.getType()){
             case CHAT:
                 break;
             case CONNECTION:
                 break;
             case LOBBY_LIST:
+                try {
+                    this.out.writeObject(new Message(new ChatMessageBody(UUID.randomUUID(), "some chat message"), MessageType.CHAT));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
             case MOVE:
                 final MoveMessageBody body = (MoveMessageBody)message.getBody();

@@ -23,6 +23,7 @@ import models.Ai;
 import models.GameState;
 import models.MarkerShape;
 import models.Player;
+import models.ServerConnection;
 import models.SceneCallback.LaunchGameCallback;
 import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
@@ -50,7 +51,9 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     private final long FADE_DURATION = 200;
 
     public static void main(String[] args) {
-        launch(args);
+        // launch(args);
+
+        new ServerConnection();
     }
 
     @Override
