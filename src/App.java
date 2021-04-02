@@ -257,13 +257,12 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     //NEW STUFF//
     private FXMLLoader lobbyFXML;
 
-    public void launchLobby(Player player){
+    public void launchLobby(){
         try{
             MusicPlayer musicSFX = new MusicPlayer();
             musicSFX.playSFX(MusicPlayer.Track.openMenu);
 
             CreateLobby lobby = lobbyFXML.getController();
-            lobby.acceptPlayer(player);
             lobby.setReturnCB(() -> {closeMenu(lobby.getRoot());});
             openMenu(lobby.getRoot());
         } catch(Exception e){

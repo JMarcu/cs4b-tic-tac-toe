@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import models.MusicPlayer;
 import models.Player;
+import models.SceneCallback.LaunchLobbyCallback;
 import models.SceneCallback.ReturnToCallback;
 
 public class CreateLobby {
@@ -28,6 +29,7 @@ public class CreateLobby {
 
     private ReturnToCallback returnCB;
     private MusicPlayer musicSFX;
+    private LaunchLobbyCallback launchLobbyCB;
 
     public CreateLobby(){
         // icon.setImage(new Image("/assets/images/splash/globe.png"));
@@ -39,6 +41,7 @@ public class CreateLobby {
         //Load external style sheets
         root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
         root.getStylesheets().add(getClass().getResource("/styles/create-lobby.css").toExternalForm());
+        setLaunchLobbyCallback(launchLobbyCB);
 
         musicSFX = new MusicPlayer();
     }
@@ -57,4 +60,6 @@ public class CreateLobby {
     }
 
     public AnchorPane getRoot(){ return this.root; }
+
+    public void setLaunchLobbyCallback(LaunchLobbyCallback launchLobbyCB){ this.launchLobbyCB = launchLobbyCB;}
 }

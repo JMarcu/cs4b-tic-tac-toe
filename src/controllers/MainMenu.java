@@ -400,15 +400,15 @@ public class MainMenu {
     }
 
     // - NEW STUFF HERE! - //
-    private LaunchLobbyCallback launchLobbyCB;
+    private LaunchLobbyCallback lobbyCB;
 
     /** Sets the callback to be invoked when the MainMenu wishes to open the lobby system. */
-    public void setLaunchLobbyCB(LaunchLobbyCallback launchLobbyCB){
-        this.launchLobbyCB = launchLobbyCB;
+    public void setLaunchLobbyCB(LaunchLobbyCallback lobbyCB){
+        this.lobbyCB = lobbyCB;
     }
 
     @FXML
     void goOnline(ActionEvent event) {
-        launchLobbyCB.launchLobbyCallback(playerOne);
+        lobbyCB.launchLobbyCallback();
     }
 }
