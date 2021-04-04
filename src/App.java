@@ -19,7 +19,9 @@ import javafx.scene.text.Font;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import models.Ai;
+import models.GameMode;
 import models.GameState;
 import models.MarkerShape;
 import models.Player;
@@ -53,7 +55,10 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     public static void main(String[] args) {
         // launch(args);
 
-        new ServerConnection();
+        ServerConnection connection = new ServerConnection();
+
+        GameState gameState = new GameState();
+        connection.setGameState(gameState);
     }
 
     @Override

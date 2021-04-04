@@ -3,19 +3,19 @@ package models.ServerMessage;
 import java.io.Serializable;
 import java.util.UUID;
 
-import models.Player;
+import models.PlayerData;
 
 public class PlayerPropertiesMessageBody implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Player.Patch patch;
+    private PlayerData patch;
     private UUID playerId;
 
-    public PlayerPropertiesMessageBody(Player.Patch patch, UUID playerId){
+    public PlayerPropertiesMessageBody(PlayerData patch, UUID playerId){
         this.patch = patch;
         this.playerId = playerId;
     }
 
-    public Player.Patch getPatch(){ return this.patch; }
+    public PlayerData getPatch(){ return this.patch; }
     public UUID getPlayerId(){ return this.playerId; }
 }

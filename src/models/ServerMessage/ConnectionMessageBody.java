@@ -14,7 +14,8 @@ public class ConnectionMessageBody implements Serializable {
     private UUID playerId;
     private Type type;
 
-    public ConnectionMessageBody(UUID playerId, Type type){
+    public ConnectionMessageBody(UUID lobbyId, UUID playerId, Type type){
+        this.lobbyId = lobbyId;
         this.playerId = playerId;
         this.type = type;
     }

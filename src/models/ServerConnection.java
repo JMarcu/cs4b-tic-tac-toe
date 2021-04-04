@@ -3,17 +3,17 @@ package models;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.UUID;
+import java.util.ArrayList;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
-import models.ServerMessage.ChatMessageBody;
+import models.ServerMessage.ConnectionMessageBody;
 import models.ServerMessage.Message;
 import models.ServerMessage.MessageType;
 import models.ServerMessage.MoveMessageBody;
+import models.ServerMessage.PlayerPropertiesMessageBody;
 
 public class ServerConnection extends Thread{
     private GameState gameState;
@@ -22,7 +22,7 @@ public class ServerConnection extends Thread{
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private int port;
-    private UUID ownPlayerId;
+    private Player player;
     private Socket socket;
 
     public ServerConnection(){
@@ -50,9 +50,8 @@ public class ServerConnection extends Thread{
         clientThread.start();
     }
 
-    public void setGameState(GameState gameState, UUID ownPlayerId){
+    public void setGameState(GameState gameState){
         this.gameState = gameState;
-        this.ownPlayerId = ownPlayerId;
 
         if(this.gameStateSubscription != null){
             this.gameStateSubscription.cancel();
@@ -77,13 +76,12 @@ public class ServerConnection extends Thread{
         while(true) {
             try {
                 Object data = in.readObject();
-                System.out.println("data" + data);
+                System.out.println("data: " + data);
                 if(data instanceof Message){
                     final Message message = (Message)data;
                     this.onMessage(message);
                 } else{
-                    System.err.println("Unrecognised message format ::" + data);
-
+                    System.err.println("Unrecognised message format :: " + data);
                 }
             } catch(IOException e){
                 e.printStackTrace();
@@ -94,7 +92,7 @@ public class ServerConnection extends Thread{
     }
 
     private void onGameStatePatch(GameState.Patch patch){
-        if(patch.getMove() != null && !patch.getMove().getValue0().getUuid().equals(this.ownPlayerId)){
+        if(patch.getMove() != null && !patch.getMove().getValue0().getUuid().equals(this.player.getUuid())){
             try {
                 this.out.writeObject(
                     new Message(
@@ -111,23 +109,45 @@ public class ServerConnection extends Thread{
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void onMessage(Message message){
-        System.out.println(message);
+        System.out.println("Received Message: " + message);
         switch(message.getType()){
+            case AUTHENTICATION_ACKNOWLEDGED:
+                break;
+            case AUTHENTICATION_REQUEST:
+                break;
+            case AUTHENTICATION_SUCCESS:
+                System.out.println("Type: AUTHENTICATION_SUCCESS");
+                PlayerPropertiesMessageBody authSuccessBody = (PlayerPropertiesMessageBody) message.getBody();
+                this.player = new Player(authSuccessBody.getPatch(), authSuccessBody.getPlayerId());
+                try {
+                    out.writeObject(new Message(null, MessageType.AUTHENTICATION_ACKNOWLEDGED));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                break;
             case CHAT:
                 break;
             case CONNECTION:
+                System.out.println("Type: CONNECTION");
+                ConnectionMessageBody connectionBody = (ConnectionMessageBody) message.getBody();
+                System.out.println(connectionBody.getPlayerId() + " joined the lobby " + connectionBody.getLobbyId());
                 break;
             case LOBBY_LIST:
+                System.out.println("Type: LOBBY_LIST");
                 try {
-                    this.out.writeObject(new Message(new ChatMessageBody(UUID.randomUUID(), "some chat message"), MessageType.CHAT));
+                    ArrayList<Lobby> lobbies = (ArrayList<Lobby>) message.getBody();
+                    ConnectionMessageBody hardcodeJoinBody = new ConnectionMessageBody(lobbies.get(0).getId(), this.player.getUuid(), ConnectionMessageBody.Type.JOIN);
+                    this.out.writeObject(new Message(hardcodeJoinBody, MessageType.CONNECTION));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
             case MOVE:
+                System.out.println("Type: MOVE");
                 final MoveMessageBody body = (MoveMessageBody)message.getBody();
-                if(!body.getPlayerId().equals(ownPlayerId)){
+                if(!body.getPlayerId().equals( this.player.getUuid())){
                     this.gameState.setCell(body.getCell().getValue0(), body.getCell().getValue1());
                 }
                 break;

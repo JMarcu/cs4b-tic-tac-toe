@@ -17,7 +17,7 @@ public class Player implements Serializable {
      ************************************************************************************************************/
 
     /** Describes a differential and atomic update to the player's state. Objects of this type are dispatched to subscribers */
-    public class Patch implements Serializable {
+    public static class Patch implements Serializable {
         private static final long serialVersionUID = 1L;
 
         /** The color of the player's marker. */
@@ -73,6 +73,15 @@ public class Player implements Serializable {
     /** Constructs a default player object. */
     public Player() {
         this(Color.BLACK, UUID.randomUUID(), "Player", MarkerShape.X);
+    }
+
+    public Player(PlayerData fromPatch, UUID id){
+        this(
+            fromPatch.getColor() == null ? Color.BLACK : fromPatch.getColor(), 
+            id, 
+            fromPatch.getName() == null ? UUID.randomUUID().toString() : fromPatch.getName(), 
+            fromPatch.getShape() == null ? MarkerShape.X : fromPatch.getShape()
+        );
     }
 
     /** Constructs a new player object. */
