@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import models.ColorScheme;
 import models.GameState;
 import models.Player;
@@ -32,6 +33,7 @@ public class Board {
     @FXML private ImageView leftBtm;
     @FXML private ImageView centerBtm;
     @FXML private ImageView rightBtm;
+    @FXML private StackPane tile;
 
     private final String ASSETS_DIRECTORY = "/assets/images/";
 
@@ -61,6 +63,24 @@ public class Board {
         if(this.gameState != null){
             this.initializeIVGrid();
         }
+        leftTop.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        leftTop.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        centerTop.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        centerTop.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        rightTop.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        rightTop.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        leftMid.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        leftMid.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        centerMid.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        centerMid.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        rightMid.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        rightMid.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        leftBtm.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        leftBtm.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        centerBtm.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        centerBtm.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        rightBtm.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        rightBtm.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
     }
 
     /************************************************************************************************************

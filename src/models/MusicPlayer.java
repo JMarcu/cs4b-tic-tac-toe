@@ -74,6 +74,11 @@ public class MusicPlayer {
                     AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
                     //clip = AudioSystem.getClip();
                     clip.open(audioInput);
+                    //VOLUME ADJUSTMENT
+                    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                    double gain = 0.25; // % of max volume
+                    float dB = (float)(Math.log(gain) /  Math.log(10.0) * 20.0);
+                    gainControl.setValue(dB);
                     clip.start();
                     clip.loop(Clip.LOOP_CONTINUOUSLY);
                 }
@@ -95,6 +100,11 @@ public class MusicPlayer {
                 AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
                 Clip clip = AudioSystem.getClip();
                 clip.open(audioInput);
+                //VOLUME ADJUSTMENT
+                FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                double gain = 0.25; // % of max volume
+                float dB = (float)(Math.log(gain) /  Math.log(10.0) * 20.0);
+                gainControl.setValue(dB);
                 clip.start();
                 //clip.loop(Clip.LOOP_CONTINUOUSLY);
             }
