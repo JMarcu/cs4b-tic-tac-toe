@@ -57,8 +57,8 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
 
         ServerConnection connection = new ServerConnection();
 
-        GameState gameState = new GameState();
-        connection.setGameState(gameState);
+        // GameState gameState = new GameState();
+        // connection.setGameState(gameState);
     }
 
     @Override

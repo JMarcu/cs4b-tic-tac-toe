@@ -1,18 +1,15 @@
 package models.ServerMessage;
 
-import java.io.Serializable;
-
-public class Message implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    private Serializable body;
+public class Message {
     private MessageType type;
-    
-    public Message(Serializable body, MessageType type){
-        this.body = body;
-        this.type = type;
+
+    protected Message(){
+        this.type = MessageType.UNKNOWN;
     }
 
-    public Serializable getBody(){ return body; }
+    protected Message(MessageType type){
+        this.type = type;
+    }
+    
     public MessageType getType(){ return type; }
 }
