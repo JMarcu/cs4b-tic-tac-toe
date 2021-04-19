@@ -1,28 +1,6 @@
 package models;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.concurrent.Flow.Subscriber;
-import java.util.concurrent.Flow.Subscription;
-
 import com.google.gson.Gson;
-
-import models.ServerMessage.AuthenticationRequestMessage;
-import models.ServerMessage.AuthenticationResultMessage;
-import models.ServerMessage.ConnectionMessageBody;
-import models.ServerMessage.Message;
-import models.ServerMessage.MessageType;
-import models.ServerMessage.MoveMessageBody;
-import models.ServerMessage.PlayerPropertiesMessageBody;
-
-import org.apache.tomcat.util.json.ParseException;
-
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.ContainerProvider;
@@ -32,6 +10,23 @@ import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.WebSocketContainer;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.Flow.Subscription;
+
+import models.ServerMessage.AuthenticationRequestMessageBody;
+import models.ServerMessage.AuthenticationResultMessageBody;
+import models.ServerMessage.ConnectionMessageBody;
+import models.ServerMessage.Message;
+import models.ServerMessage.MessageType;
+import org.apache.tomcat.util.json.ParseException;
 
 @ClientEndpoint
 public class ServerConnection extends Thread{
@@ -39,18 +34,16 @@ public class ServerConnection extends Thread{
     private GameState gameState;
     private Subscription gameStateSubscription;
     private String host;
-    private int port;
     private Player player;
     private Session session;
 
     public ServerConnection(){
-        // this("ws://cs4b-tic-tac-toe-lobby-service.herokuapp.com/ws", 443);
-        this("ws://localhost:4205/ws", 4210);
+        this("ws://cs4b-tic-tac-toe-lobby-service.herokuapp.com/ws");
+        // this("ws://localhost:4205/ws");
     }
 
-    public ServerConnection(String host, int port){
+    public ServerConnection(String host){
         this.host = host;
-        this.port = port;
 
         Thread clientThread = new Thread(this);
         clientThread.start();
@@ -72,14 +65,15 @@ public class ServerConnection extends Thread{
 
     @OnMessage
     public void onMessage(Session session, String messageString){
-        Message message = new Gson().fromJson(messageString, Message.class);
+        Gson gson = new Gson();
+        Message message = gson.fromJson(messageString, Message.class);
         switch(message.getType()){
             case AUTHENTICATION_ACKNOWLEDGED:
                 break;
             case AUTHENTICATION_REQUEST:
                 break;
             case AUTHENTICATION_RESULT:
-                AuthenticationResultMessage authResultMsg = (AuthenticationResultMessage) message;
+                AuthenticationResultMessageBody authResultMsg = new Gson().fromJson(message.getBody(), AuthenticationResultMessageBody.class);
                 System.out.println("Success: " + authResultMsg.getSuccess());
                 break;
             case CHAT:
@@ -129,8 +123,7 @@ public class ServerConnection extends Thread{
             session = container.connectToServer(this, new URI(host));
 
             //HARDCODE
-            AuthenticationRequestMessage authRequest = new AuthenticationRequestMessage("token");
-            send(authRequest);
+            send(new Message(new AuthenticationRequestMessageBody("token"), MessageType.AUTHENTICATION_REQUEST));
         } catch (DeploymentException | IOException | URISyntaxException e) {
             e.printStackTrace();
         }
