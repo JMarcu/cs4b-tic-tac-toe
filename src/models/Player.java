@@ -17,11 +17,11 @@ public class Player implements Serializable {
      ************************************************************************************************************/
 
     /** Describes a differential and atomic update to the player's state. Objects of this type are dispatched to subscribers */
-    public class Patch implements Serializable {
+    public static class Patch implements Serializable {
         private static final long serialVersionUID = 1L;
 
         /** The color of the player's marker. */
-        protected Color color;
+        protected SerializeableColor color;
 
         /** The player's name. */
         protected String name;
@@ -33,7 +33,7 @@ public class Player implements Serializable {
          * Returns the color of the player's marker.
          * @return The color of the player's marker, or null if the color has not changed since the last patch.
          */
-        public Color getColor() { return color; }
+        public Color getColor() { return color.getColor(); }
 
         /**
          * Returns the player's name.
@@ -56,7 +56,7 @@ public class Player implements Serializable {
     protected boolean isAi;
 
     /** The color of the player's marker. */
-    private Color color;
+    private SerializeableColor color;
 
     /** A uuid for identifying the player. */
     private UUID id;
@@ -75,9 +75,18 @@ public class Player implements Serializable {
         this(Color.BLACK, UUID.randomUUID(), "Player", MarkerShape.X);
     }
 
+    public Player(PlayerData fromPatch, UUID id){
+        this(
+            fromPatch.getColor() == null ? Color.BLACK : fromPatch.getColor(), 
+            id, 
+            fromPatch.getName() == null ? UUID.randomUUID().toString() : fromPatch.getName(), 
+            fromPatch.getShape() == null ? MarkerShape.X : fromPatch.getShape()
+        );
+    }
+
     /** Constructs a new player object. */
     public Player(Color color, UUID id, String name, MarkerShape shape) {
-        this.color = color == null ? Color.BLACK : color;
+        this.color = new SerializeableColor(color == null ? Color.BLACK : color);
         this.id = id;
         this.isAi = false;
         this.name = name;
@@ -95,7 +104,7 @@ public class Player implements Serializable {
      * Returns the color of the player's marker.
      * @return The color of the player's marker.
      */
-    public Color getColor() {return this.color;}
+    public Color getColor() {return this.color.getColor();}
 
     /**
      * Returns player's UUID.
@@ -126,7 +135,7 @@ public class Player implements Serializable {
      * @param color The new color of the player's marker.
      */
     public void setColor(Color color){
-        this.color = color;
+        this.color = new SerializeableColor(color);
         this.notifySubscribers(new Patch(){
             {
                 color = Player.this.color;

@@ -19,10 +19,13 @@ import javafx.scene.text.Font;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import models.Ai;
+import models.GameMode;
 import models.GameState;
 import models.MarkerShape;
 import models.Player;
+import models.ServerConnection;
 import models.SceneCallback.LaunchGameCallback;
 import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
@@ -50,7 +53,12 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     private final long FADE_DURATION = 200;
 
     public static void main(String[] args) {
-        launch(args);
+        // launch(args);
+
+        ServerConnection connection = new ServerConnection();
+
+        // GameState gameState = new GameState();
+        // connection.setGameState(gameState);
     }
 
     @Override
