@@ -30,20 +30,27 @@ import org.apache.tomcat.util.json.ParseException;
 
 @ClientEndpoint
 public class ServerConnection extends Thread{
+    private Session authSession;
     private WebSocketContainer container;
+    private String domain;
     private GameState gameState;
     private Subscription gameStateSubscription;
-    private String host;
+    private Session lobbySession;
     private Player player;
     private Session session;
 
+    private final String AUTH_SUBDOMAIN = "cs4b-tic-tac-toe-auth-service";
+    private final String LOBBY_SUBDOMAIN = "cs4b-tic-tac-toe-lobby-service";
+    private final String WEBSOCKET_PROTOCOL;
+    private final String WEBSOCKET_ROUTE = "ws";
+
     public ServerConnection(){
-        this("ws://cs4b-tic-tac-toe-lobby-service.herokuapp.com/ws");
-        // this("ws://localhost:4205/ws");
+        this("herokuapp.com/");
     }
 
-    public ServerConnection(String host){
-        this.host = host;
+    public ServerConnection(String domain){
+        this.domain = domain;
+        this.WEBSOCKET_PROTOCOL = domain.contains("localhost") ? "ws://" : "wss://";
 
         Thread clientThread = new Thread(this);
         clientThread.start();
@@ -120,7 +127,14 @@ public class ServerConnection extends Thread{
         container = ContainerProvider.getWebSocketContainer();
 
         try {
-            session = container.connectToServer(this, new URI(host));
+            StringBuilder uriBuilder = new StringBuilder();
+            uriBuilder.append(WEBSOCKET_PROTOCOL);
+            uriBuilder.append(LOBBY_SUBDOMAIN);
+            uriBuilder.append(".");
+            uriBuilder.append(domain);
+            uriBuilder.append(WEBSOCKET_ROUTE);
+
+            session = container.connectToServer(this, new URI(uriBuilder.toString()));
 
             //HARDCODE
             send(new Message(new AuthenticationRequestMessageBody("token"), MessageType.AUTHENTICATION_REQUEST));

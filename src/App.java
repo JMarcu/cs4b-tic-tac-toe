@@ -53,12 +53,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     private final long FADE_DURATION = 200;
 
     public static void main(String[] args) {
-        // launch(args);
-
-        ServerConnection connection = new ServerConnection();
-
-        // GameState gameState = new GameState();
-        // connection.setGameState(gameState);
+        launch(args);
     }
 
     @Override

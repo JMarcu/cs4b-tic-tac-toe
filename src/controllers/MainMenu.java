@@ -26,6 +26,7 @@ import models.GameMode;
 import models.GameState;
 import models.MarkerShape;
 import models.Player;
+import models.ServerConnection;
 import models.SceneCallback.LaunchGameCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
@@ -271,6 +272,12 @@ public class MainMenu {
             animateSinglePlayerButtons();
             this.subscribeToPlayerTwo();
         }
+    }
+
+    @FXML
+    void onOnlineAction(ActionEvent event){
+        ServerConnection serverConnection = new ServerConnection();
+        // ServerConnection serverConnection = new ServerConnection("localhost:4205");
     }
 
     /** Invoke the {@link optionsMenuCB} when the user hits the options menu button. */
