@@ -1,54 +1,108 @@
 package models;
 
+import com.google.gson.Gson;
+import jakarta.websocket.ClientEndpoint;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.DeploymentException;
+import jakarta.websocket.OnClose;
+import jakarta.websocket.OnMessage;
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.Session;
+import jakarta.websocket.WebSocketContainer;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.UUID;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
+import models.ServerMessage.AuthenticationRequestMessageBody;
+import models.ServerMessage.AuthenticationResultMessageBody;
+import models.ServerMessage.ConnectionMessageBody;
 import models.ServerMessage.Message;
 import models.ServerMessage.MessageType;
-import models.ServerMessage.MoveMessageBody;
+import org.apache.tomcat.util.json.ParseException;
 
+@ClientEndpoint
 public class ServerConnection extends Thread{
+    private Session authSession;
+    private WebSocketContainer container;
+    private String domain;
     private GameState gameState;
     private Subscription gameStateSubscription;
-    private String host;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
-    private int port;
-    private UUID ownPlayerId;
-    private Socket socket;
+    private Session lobbySession;
+    private Player player;
+    private Session session;
 
-    ServerConnection(){
-        this("localhost", 8080);
+    private final String AUTH_SUBDOMAIN = "cs4b-tic-tac-toe-auth-service";
+    private final String LOBBY_SUBDOMAIN = "cs4b-tic-tac-toe-lobby-service";
+    private final String WEBSOCKET_PROTOCOL;
+    private final String WEBSOCKET_ROUTE = "ws";
+
+    public ServerConnection(){
+        this("herokuapp.com/");
     }
 
-    ServerConnection(String host, int port){
-        this.host = host;
-        this.in = null;
-        this.out = null;
-        this.port = port;
-        this.socket = null;
+    public ServerConnection(String domain){
+        this.domain = domain;
+        this.WEBSOCKET_PROTOCOL = domain.contains("localhost") ? "ws://" : "wss://";
 
-        try {
-            this.socket = new Socket(host, port);
-            in = new ObjectInputStream(socket.getInputStream());
-            out = new ObjectOutputStream(socket.getOutputStream());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        Thread clientThread = new Thread(this);
+        clientThread.start();
+    }
+
+    public void send(Message message) throws IOException{
+        session.getBasicRemote().sendText(new Gson().toJson(message));
+    }
+
+    @OnOpen
+    public void onOpen(Session session){
+        System.out.println("Connected: " + session);
+    }
+    
+    @OnClose
+    public void onClose(Session sesion, CloseReason closeReason){
+        System.out.println("Disconnected: " + closeReason);
+    }
+
+    @OnMessage
+    public void onMessage(Session session, String messageString){
+        Gson gson = new Gson();
+        Message message = gson.fromJson(messageString, Message.class);
+        switch(message.getType()){
+            case AUTHENTICATION_ACKNOWLEDGED:
+                break;
+            case AUTHENTICATION_REQUEST:
+                break;
+            case AUTHENTICATION_RESULT:
+                AuthenticationResultMessageBody authResultMsg = new Gson().fromJson(message.getBody(), AuthenticationResultMessageBody.class);
+                System.out.println("Success: " + authResultMsg.getSuccess());
+                break;
+            case CHAT:
+                break;
+            case CONNECTION:
+                break;
+            case LOBBY_LIST:
+                System.out.println("Type: LOBBY_LIST");
+                break;
+            case MOVE:
+                System.out.println("Type: MOVE");
+                break;
+            case PLAYER_PROPERTIES:
+                break;
+            default:
+                System.err.println("Unknown message type received from server :: " + message.getType());
+                break;
         }
     }
 
-    public void setGameState(GameState gameState, UUID ownPlayerId){
+    public void setGameState(GameState gameState){
         this.gameState = gameState;
-        this.ownPlayerId = ownPlayerId;
 
         if(this.gameStateSubscription != null){
             this.gameStateSubscription.cancel();
@@ -69,63 +123,41 @@ public class ServerConnection extends Thread{
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void run() {
-        while(true) {
-            try {
-                Object data = in.readObject();
-                if(data instanceof Message){
-                    final Message<? extends Serializable> message = (Message<? extends Serializable>)data;
-                    this.onMessage(message);
-                } else{
-                    System.err.println("Unrecognised message format ::" + data);
+        container = ContainerProvider.getWebSocketContainer();
 
-                }
-            } catch(IOException e){
-                e.printStackTrace();
-            } catch(ClassNotFoundException e){
-                e.printStackTrace();
-            }
+        try {
+            StringBuilder uriBuilder = new StringBuilder();
+            uriBuilder.append(WEBSOCKET_PROTOCOL);
+            uriBuilder.append(LOBBY_SUBDOMAIN);
+            uriBuilder.append(".");
+            uriBuilder.append(domain);
+            uriBuilder.append(WEBSOCKET_ROUTE);
+
+            session = container.connectToServer(this, new URI(uriBuilder.toString()));
+
+            //HARDCODE
+            send(new Message(new AuthenticationRequestMessageBody("token"), MessageType.AUTHENTICATION_REQUEST));
+        } catch (DeploymentException | IOException | URISyntaxException e) {
+            e.printStackTrace();
         }
     }
 
     private void onGameStatePatch(GameState.Patch patch){
-        if(patch.getMove() != null && !patch.getMove().getValue0().getUuid().equals(this.ownPlayerId)){
-            try {
-                this.out.writeObject(
-                    new Message<MoveMessageBody>(
-                        new MoveMessageBody(
-                            patch.getMove().removeFrom0(), 
-                            patch.getMove().getValue0().getUuid()
-                        ),
-                        MessageType.MOVE
-                    )
-                );
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void onMessage(Message<? extends Serializable> message){
-        switch(message.getType()){
-            case CHAT:
-                break;
-            case CONNECTION:
-                break;
-            case LOBBY_LIST:
-                break;
-            case MOVE:
-                final MoveMessageBody body = (MoveMessageBody)message.getBody();
-                if(!body.getPlayerId().equals(ownPlayerId)){
-                    this.gameState.setCell(body.getCell().getValue0(), body.getCell().getValue1());
-                }
-                break;
-            case PLAYER_PROPERTIES:
-                break;
-            default:
-                System.err.println("Unknown message type received from server :: " + message.getType());
-                break;
+        if(patch.getMove() != null && !patch.getMove().getValue0().getUuid().equals(this.player.getUuid())){
+            // try {
+            //     this.out.writeObject(
+            //         new Message(
+            //             new MoveMessageBody(
+            //                 patch.getMove().removeFrom0(), 
+            //                 patch.getMove().getValue0().getUuid()
+            //             ),
+            //             MessageType.MOVE
+            //         )
+            //     );
+            // } catch (IOException e) {
+            //     e.printStackTrace();
+            // }
         }
     }
 }

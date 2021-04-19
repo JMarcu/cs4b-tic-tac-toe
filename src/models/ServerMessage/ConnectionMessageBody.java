@@ -1,25 +1,21 @@
 package models.ServerMessage;
 
-import java.io.Serializable;
-import java.util.UUID;
-
-public class ConnectionMessageBody implements Serializable {
-    public enum Type {
+public class ConnectionMessageBody {
+    public enum  Type {
         JOIN, LEAVE
     }
-
-    private static final long serialVersionUID = 1L;
-
-    private UUID lobbyId;
-    private UUID playerId;
+    
+    private String lobbyId;
+    private String playerId;
     private Type type;
 
-    public ConnectionMessageBody(UUID playerId, Type type){
+    public ConnectionMessageBody(String lobbyId, String playerId, Type type){
+        this.lobbyId = lobbyId;
         this.playerId = playerId;
         this.type = type;
     }
 
-    public UUID getLobbyId(){ return this.lobbyId; }
-    public UUID getPlayerId(){ return this.playerId; }
-    public Type getType(){ return this.type; }
+    public String getLobbyId(){ return lobbyId; }
+    public String getPlayerId(){ return playerId; }
+    public Type getType(){ return type; }
 }

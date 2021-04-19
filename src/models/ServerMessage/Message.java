@@ -1,18 +1,25 @@
 package models.ServerMessage;
 
-import java.io.Serializable;
+import com.google.gson.Gson;
 
-public class Message<T extends Serializable> implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    private T body;
+public class Message {
+    private String body;
     private MessageType type;
-    
-    public Message(T body, MessageType type){
+
+    public Message(){
+        this.body = "";
+        this.type = MessageType.UNKNOWN;
+    }
+
+    public Message(Object body, MessageType type){
+        this(new Gson().toJson(body), type);
+    }
+
+    public Message(String body, MessageType type){
         this.body = body;
         this.type = type;
     }
-
-    public T getBody(){ return body; }
+    
+    public String getBody(){ return body; }
     public MessageType getType(){ return type; }
 }
