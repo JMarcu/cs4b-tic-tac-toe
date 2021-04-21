@@ -1,14 +1,14 @@
 package models.ServerMessage;
 
 public class RegisterMessageBody {
-    private String encryptedPassword;
+    private String password;
     private String username;
 
-    public RegisterMessageBody(String username, String encryptedPassword){
+    public RegisterMessageBody(String username, String password){
         this.username = username;
-        this.encryptedPassword = encryptedPassword;
+        this.password = password;
     }
 
-    public String getEncryptedPassword(){ return encryptedPassword; }
+    public String getPassword(){ return password; }
     public String getUsername(){ return username; }
 }
