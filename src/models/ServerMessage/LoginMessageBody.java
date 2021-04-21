@@ -1,14 +1,14 @@
 package models.ServerMessage;
 
 public class LoginMessageBody {
-    private String encryptedPassword;
+    private String password;
     private String username;
 
-    public LoginMessageBody(String username, String encryptedPassword){
+    public LoginMessageBody(String username, String password){
         this.username = username;
-        this.encryptedPassword = encryptedPassword;
+        this.password = password;
     }
 
-    public String getEncryptedPassword(){ return encryptedPassword; }
+    public String getPassword(){ return password; }
     public String getUsername(){ return username; }
 }

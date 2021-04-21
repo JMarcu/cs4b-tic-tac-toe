@@ -19,6 +19,7 @@ public enum MessageType {
     REFRESH_SUCCESS,
     REFRESH_TOKEN,
     REGISTER,
+    REGISTRATION_RESULT,
     REQUEST_PLAYER,
     UNKNOWN
 }
