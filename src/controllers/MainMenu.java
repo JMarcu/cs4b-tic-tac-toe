@@ -404,6 +404,8 @@ public class MainMenu {
     @FXML
     void goOnline(ActionEvent event) {
         lobbyCB.launchLobbyCallback();
+    }
+    
     private void subscribeToPlayerTwo(){
         this.playerTwo.subscribe(new Subscriber<Player.Patch>(){
             @Override public void onComplete() { }
