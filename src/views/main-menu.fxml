@@ -136,6 +136,12 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Button>
+                  <Separator layoutX="10.0" layoutY="85.0" maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onOnlineAction" styleClass="arcade-font, play-btn" text="Test Online" VBox.vgrow="ALWAYS">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
                </children>
             </VBox>
          </center>

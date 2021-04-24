@@ -24,6 +24,7 @@ public class Board {
     private Subscription                        playerOneSubscription;
     private Subscription                        playerTwoSubscription;
     private boolean                             viewInit;
+    private boolean                             boardDisable;
 
     @FXML private AnchorPane root;
     @FXML private GridPane grid;
@@ -36,15 +37,7 @@ public class Board {
     @FXML private ImageView leftBtm;
     @FXML private ImageView centerBtm;
     @FXML private ImageView rightBtm;
-    @FXML private StackPane tile1;
-    @FXML private StackPane tile2;
-    @FXML private StackPane tile3;
-    @FXML private StackPane tile4;
-    @FXML private StackPane tile5;
-    @FXML private StackPane tile6;
-    @FXML private StackPane tile7;
-    @FXML private StackPane tile8;
-    @FXML private StackPane tile9;
+    @FXML private StackPane tile;
 
     private final String ASSETS_DIRECTORY = "/assets/images/";
 
@@ -74,25 +67,24 @@ public class Board {
         if(this.gameState != null){
             this.initializeIVGrid();
         }
-        leftTop.fitWidthProperty().bind(tile1.widthProperty());
-        centerTop.fitWidthProperty().bind(tile2.widthProperty());
-        rightTop.fitWidthProperty().bind(tile3.widthProperty());
-        leftMid.fitWidthProperty().bind(tile4.widthProperty());
-        centerMid.fitWidthProperty().bind(tile5.widthProperty());
-        rightMid.fitWidthProperty().bind(tile6.widthProperty());
-        leftBtm.fitWidthProperty().bind(tile7.widthProperty());
-        centerBtm.fitWidthProperty().bind(tile8.widthProperty());
-        rightBtm.fitWidthProperty().bind(tile9.widthProperty());
-        leftTop.fitHeightProperty().bind(tile1.heightProperty());
-        centerTop.fitHeightProperty().bind(tile2.heightProperty());
-        rightTop.fitHeightProperty().bind(tile3.heightProperty());
-        leftMid.fitHeightProperty().bind(tile4.heightProperty());
-        centerMid.fitHeightProperty().bind(tile5.heightProperty());
-        rightMid.fitHeightProperty().bind(tile6.heightProperty());
-        leftBtm.fitHeightProperty().bind(tile7.heightProperty());
-        centerBtm.fitHeightProperty().bind(tile8.heightProperty());
-        rightBtm.fitHeightProperty().bind(tile9.heightProperty());
-        root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
+        leftTop.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        leftTop.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        centerTop.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        centerTop.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        rightTop.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        rightTop.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        leftMid.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        leftMid.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        centerMid.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        centerMid.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        rightMid.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        rightMid.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        leftBtm.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        leftBtm.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        centerBtm.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        centerBtm.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
+        rightBtm.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
+        rightBtm.fitWidthProperty().bind(tile.widthProperty().divide(10).multiply(9));
     }
 
     /************************************************************************************************************
@@ -173,19 +165,22 @@ public class Board {
         }
     }
 
+    public void setDisable(){ boardDisable = true;}
+    public void setEnable(){ boardDisable = false;}
+
     /************************************************************************************************************
      * EVENT HANDLERS
      ************************************************************************************************************/
 
-    @FXML private void handleLeftTop(MouseEvent e)   { gameState.setCell(0, 0); }
-    @FXML private void handleCenterTop(MouseEvent e) { gameState.setCell(0, 1); }
-    @FXML private void handleRightTop(MouseEvent e)  { gameState.setCell(0, 2); }
-    @FXML private void handleLeftMid(MouseEvent e)   { gameState.setCell(1, 0); }
-    @FXML private void handleCenterMid(MouseEvent e) { gameState.setCell(1, 1); }
-    @FXML private void handleRightMid(MouseEvent e)  { gameState.setCell(1, 2); }
-    @FXML private void handleLeftBtm(MouseEvent e)   { gameState.setCell(2, 0); }
-    @FXML private void handleCenterBtm(MouseEvent e) { gameState.setCell(2, 1); }
-    @FXML private void handleRightBtm(MouseEvent e)  { gameState.setCell(2, 2); }
+    @FXML private void handleLeftTop(MouseEvent e)   { if(!boardDisable) gameState.setCell(0, 0); }
+    @FXML private void handleCenterTop(MouseEvent e) { if(!boardDisable) gameState.setCell(0, 1); }
+    @FXML private void handleRightTop(MouseEvent e)  { if(!boardDisable) gameState.setCell(0, 2); }
+    @FXML private void handleLeftMid(MouseEvent e)   { if(!boardDisable) gameState.setCell(1, 0); }
+    @FXML private void handleCenterMid(MouseEvent e) { if(!boardDisable) gameState.setCell(1, 1); }
+    @FXML private void handleRightMid(MouseEvent e)  { if(!boardDisable) gameState.setCell(1, 2); }
+    @FXML private void handleLeftBtm(MouseEvent e)   { if(!boardDisable) gameState.setCell(2, 0); }
+    @FXML private void handleCenterBtm(MouseEvent e) { if(!boardDisable) gameState.setCell(2, 1); }
+    @FXML private void handleRightBtm(MouseEvent e)  { if(!boardDisable) gameState.setCell(2, 2); }
     
     // private void AiPlay(){
         

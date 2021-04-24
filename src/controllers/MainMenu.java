@@ -21,6 +21,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import models.Ai;
 import models.ColorScheme;
 import models.GameMode;
 import models.GameState;
@@ -31,6 +32,7 @@ import models.SceneCallback.LaunchLobbyCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
 import org.javatuples.Pair;
+import services.AuthService;
 
 /**
  * Controls the main menu view.
@@ -219,25 +221,7 @@ public class MainMenu {
                 playerOneSubscription.request(1);
             }
         });
-
-        this.playerTwo.subscribe(new Subscriber<Player.Patch>(){
-            @Override public void onComplete() { }
-            @Override public void onError(Throwable throwable) { }
-
-            @Override
-            public void onSubscribe(Subscription subscription) {
-                playerTwoSubscription = subscription;
-                playerTwoSubscription.request(1);
-            }
-
-            @Override
-            public void onNext(Player.Patch item) {
-                if(item.getColor() != null || item.getShape() != null){
-                    setMarker(playerTwoMarkerPane, playerTwo);
-                }
-                playerTwoSubscription.request(1);
-            }
-        });
+        this.subscribeToPlayerTwo();
     }
 
     /** Sets the callback to be invoked when the MainMenu wants to launch a marker picker menu. */
@@ -253,8 +237,10 @@ public class MainMenu {
     @FXML
     private void onAiAction(){
         if(!singlePlayer){
+            playerTwo = new Ai(playerTwo);
             singlePlayer = true;
             animateSinglePlayerButtons();
+            this.subscribeToPlayerTwo();
         }
     }
 
@@ -283,9 +269,17 @@ public class MainMenu {
     @FXML
     private void onHumanAction(){
         if(singlePlayer){
+            playerTwo = ((Ai)playerTwo).toPlayer();
             singlePlayer = false;
             animateSinglePlayerButtons();
+            this.subscribeToPlayerTwo();
         }
+    }
+
+    @FXML
+    void onOnlineAction(ActionEvent event){
+        AuthService authService = AuthService.getInstance();
+        // AuthService authService = AuthService.getInstance("localhost:4205");
     }
 
     /** Invoke the {@link optionsMenuCB} when the user hits the options menu button. */
@@ -410,5 +404,24 @@ public class MainMenu {
     @FXML
     void goOnline(ActionEvent event) {
         lobbyCB.launchLobbyCallback();
+    private void subscribeToPlayerTwo(){
+        this.playerTwo.subscribe(new Subscriber<Player.Patch>(){
+            @Override public void onComplete() { }
+            @Override public void onError(Throwable throwable) { }
+
+            @Override
+            public void onSubscribe(Subscription subscription) {
+                playerTwoSubscription = subscription;
+                playerTwoSubscription.request(1);
+            }
+
+            @Override
+            public void onNext(Player.Patch item) {
+                if(item.getColor() != null || item.getShape() != null){
+                    setMarker(playerTwoMarkerPane, playerTwo);
+                }
+                playerTwoSubscription.request(1);
+            }
+        });
     }
 }

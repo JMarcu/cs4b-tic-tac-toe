@@ -9,6 +9,10 @@ public class MusicPlayer {
     }
 
     private final String SOUND_DIRECTORY = "src/assets/sounds/";
+    private boolean shouldPlay = true;
+    private boolean shouldPlaySFX = true;
+    private String musicLocation = "";
+
     Clip clip;
 
     {
@@ -56,26 +60,34 @@ public class MusicPlayer {
     }
 
     public void playMusic(Track track){
-        String musicLocation = getMusicLocation(track);
+        musicLocation = getMusicLocation(track);
 
-        if(clip.isRunning()){
-            clip.close();
-        }
+        if(shouldPlay){
 
-        File musicPath = new File(musicLocation);
-        try{
-            if(musicPath.exists()){
-                AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
-                //clip = AudioSystem.getClip();
-                clip.open(audioInput);
-                clip.start();
-                clip.loop(Clip.LOOP_CONTINUOUSLY);
+            if(clip.isRunning()){
+                clip.close();
             }
-            else{
-                System.out.println("Can't find the file");
-            }
-        } catch(Exception ex){
 
+            File musicPath = new File(musicLocation);
+            try{
+                if(musicPath.exists()){
+                    AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                    //clip = AudioSystem.getClip();
+                    clip.open(audioInput);
+                    //VOLUME ADJUSTMENT
+                    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                    double gain = 0.25; // % of max volume
+                    float dB = (float)(Math.log(gain) /  Math.log(10.0) * 20.0);
+                    gainControl.setValue(dB);
+                    clip.start();
+                    clip.loop(Clip.LOOP_CONTINUOUSLY);
+                }
+                else{
+                    System.out.println("Can't find the file");
+                }
+            } catch(Exception ex){
+
+            }
         }
     }
 
@@ -88,6 +100,11 @@ public class MusicPlayer {
                 AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
                 Clip clip = AudioSystem.getClip();
                 clip.open(audioInput);
+                //VOLUME ADJUSTMENT
+                FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                double gain = 0.25; // % of max volume
+                float dB = (float)(Math.log(gain) /  Math.log(10.0) * 20.0);
+                gainControl.setValue(dB);
                 clip.start();
                 //clip.loop(Clip.LOOP_CONTINUOUSLY);
             }
@@ -97,6 +114,50 @@ public class MusicPlayer {
         } catch(Exception ex){
 
         }
+    }
+
+    public void setShouldPlay(boolean bool)
+    {
+        shouldPlay = bool;
+        if (shouldPlay)
+        {
+            File musicPath = new File(musicLocation);
+            try{
+                if(musicPath.exists()){
+                    AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                    //clip = AudioSystem.getClip();
+                    clip.open(audioInput);
+                    clip.start();
+                    clip.loop(Clip.LOOP_CONTINUOUSLY);
+                }
+                else{
+                    System.out.println("Can't find the file");
+                }
+            } catch(Exception ex){
+    
+            }
+        }
+        else
+        {
+            if(clip.isRunning()){
+                clip.close();
+            }
+        }
+    }
+    
+    public boolean getShouldPlay()
+    {
+        return shouldPlay;
+    }
+
+    public void setShouldPlaySFX(boolean bool)
+    {
+        shouldPlaySFX = bool;
+    }
+
+    public boolean getShouldPlaySFX()
+    {
+        return shouldPlaySFX;
     }
 
     /*

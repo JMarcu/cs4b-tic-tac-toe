@@ -3,6 +3,7 @@ package models;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.SubmissionPublisher;
+import java.io.Serializable;
 import java.util.UUID;
 import javafx.scene.paint.Color;
 
@@ -10,15 +11,17 @@ import javafx.scene.paint.Color;
  * Models a player in the game.
  * @author James Marcu
  */
-public class Player {
+public class Player implements Serializable {
     /************************************************************************************************************
      * NESTED OBJECTS
      ************************************************************************************************************/
 
     /** Describes a differential and atomic update to the player's state. Objects of this type are dispatched to subscribers */
-    public class Patch {
+    public static class Patch implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         /** The color of the player's marker. */
-        protected Color color;
+        protected SerializeableColor color;
 
         /** The player's name. */
         protected String name;
@@ -30,7 +33,7 @@ public class Player {
          * Returns the color of the player's marker.
          * @return The color of the player's marker, or null if the color has not changed since the last patch.
          */
-        public Color getColor() { return color; }
+        public Color getColor() { return color.getColor(); }
 
         /**
          * Returns the player's name.
@@ -49,8 +52,11 @@ public class Player {
      * CLASS VARIABLES
      ************************************************************************************************************/
 
+    /** Whether or not the player is an AI. */
+    protected boolean isAi;
+
     /** The color of the player's marker. */
-    private Color color;
+    private SerializeableColor color;
 
     /** A uuid for identifying the player. */
     private UUID id;
@@ -69,15 +75,27 @@ public class Player {
         this(Color.BLACK, UUID.randomUUID(), "Player", MarkerShape.X);
     }
 
+    public Player(PlayerData fromPatch, UUID id){
+        this(
+            fromPatch.getColor() == null ? Color.BLACK : fromPatch.getColor(), 
+            id, 
+            fromPatch.getName() == null ? UUID.randomUUID().toString() : fromPatch.getName(), 
+            fromPatch.getShape() == null ? MarkerShape.X : fromPatch.getShape()
+        );
+    }
+
     /** Constructs a new player object. */
     public Player(Color color, UUID id, String name, MarkerShape shape) {
-        this.color = color == null ? Color.BLACK : color;
+        this.color = new SerializeableColor(color == null ? Color.BLACK : color);
         this.id = id;
+        this.isAi = false;
         this.name = name;
         this.publisher = new SubmissionPublisher<Player.Patch>(Runnable::run, Flow.defaultBufferSize());
         this.shape = shape == null ? MarkerShape.X : shape;
     }
 
+    private static final long serialVersionUID = 1L;
+    
     /*==========================================================================================================
      * ACCESSORS & MUTATORS
      *==========================================================================================================*/
@@ -86,7 +104,7 @@ public class Player {
      * Returns the color of the player's marker.
      * @return The color of the player's marker.
      */
-    public Color getColor() {return this.color;}
+    public Color getColor() {return this.color.getColor();}
 
     /**
      * Returns player's UUID.
@@ -110,14 +128,14 @@ public class Player {
      * Returns whether the player is an AI.
      * @return True if the player is an AI, false if they are not.
      */
-    public boolean getIsAI() {return false;}
+    public boolean getIsAI() {return isAi;}
 
     /**
      * Sets the color of the player's marker. Subscribers are notified.
      * @param color The new color of the player's marker.
      */
     public void setColor(Color color){
-        this.color = color;
+        this.color = new SerializeableColor(color);
         this.notifySubscribers(new Patch(){
             {
                 color = Player.this.color;

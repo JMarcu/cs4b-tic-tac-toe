@@ -1,234 +1,192 @@
-// package models;
-// import java.util.ArrayList;
-// import java.util.UUID;
-// import javafx.scene.paint.Color;
-// import org.javatuples.Pair;
+package models;
 
+import java.util.ArrayList;
+import java.util.UUID;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javafx.scene.paint.Color;
+import org.javatuples.Pair;
+import org.javatuples.Triplet;
 
-// import java.util.ArrayList;
+/**
+ * Represents a player with built-in logic for playing moves, rather than one controlled by a human.
+ * @author Brendon
+ * @author James Marcu
+ */
+public class Ai extends Player{
 
-// public class Ai extends Player{
+    /*==========================================================================================================
+     * LIFECYCLE
+     *==========================================================================================================*/
 
-//     /*==========================================================================================================
-//      * CLASS VARIABLES
-//      *==========================================================================================================*/
+    /** Default constructor. Named "Player 2", with a black 'O' marker. */
+    public Ai(){
+        this(Color.BLACK, "Player 2", MarkerShape.O);
+    }
 
-//      /** 
-//      * Constructs a new Ai object by using the super class constructor.
-//      * @param color The color of the Ai's marker.
-//      * @param id    The Ai's uuid.
-//      * @param name  The name of the Ai.
-//      * @param shape The shape of the Ai's marker.
-//      */
-//      public Ai(Color color, UUID id, String name, MarkerShape shape) {
-//         super(color, id, name, shape);
-//     }
+     /** 
+     * Parameterized constructor.
+     * @param color The color of the AI's marker.
+     * @param name  The name displayed for the AI.
+     * @param shape The shape of the AI's marker.
+     */
+    public Ai(Color color, String name, MarkerShape shape) {
+        super(color, UUID.randomUUID(), name, shape);
+        this.isAi = true;
+    }
 
-//     /*==========================================================================================================
-//      * ACCESSORS & MUTATORS
-//      *==========================================================================================================*/
+    /** 
+     * Construct a new AI from a player object. The AI and the player will share a name, and will have the same
+     * marker (i.e. it's color and shape). They will not share an ID.
+     * @param player The player whose properties should be copied over.
+     */
+    public Ai(Player player){
+        this(player.getColor(), player.getName(), player.getShape());
+    }
 
-//     /**
-//      * Returns whether the player is an Ai.
-//      * @return True if the player is an Ai, false if they are not.
-//      */
-//     @Override
-//     public boolean getIsAI() {return true;}
+    /** 
+     * Constructs a new player object using the properties of the current AI. The player will be initialized with
+     * the same name and mark (i.e. color & shape) as the AI, as well as the same ID. This means that the AI and
+     * the created player object will be considered equivalent by program logic.
+     */
+    public Player toPlayer(){
+        return new Player(getColor(), UUID.randomUUID(), getName(), getShape());
+    }
 
-//     /**
-//      * Returns whether there are any available cells on the board.
-//      * @param  board A model of the playable board by using player objects.
-//      * @return True if there are any available cells, false if all cells are taken.
-//      */
-//     static boolean isMovesLeft(Player[][] board){
-//         for(int i = 0; i < 3; i ++){
-//             for(int j = 0; j < 3; j++){
-//                 if(board[i][j] == null)
-//                     return true;
-//             }
-//         }
-//         return false;
-//     }
+    /*==========================================================================================================
+     * GAME LOGIC
+     *==========================================================================================================*/
 
-//     /**
-//      * Returns Returns a value based on who is winning.
-//      * @param  board A model of the playable board by using player objects.
-//      * @return Returns a value based on who is winning.
-//      */
-//     static int evaluate(Player[][] board){
+    /**
+     * Computes the AI's move given a particular game state.
+     * @param gameState Describes the current board state, and any rules governing the game.
+     * @returns A tuple describing the AI's desired play in the for [x, y]. The first argument will be the
+     * x-coordinate of the play, and the second argument will be the y-coordinate.
+     */
+    public Pair<Integer, Integer> generateMove(GameState gameState){
+        //The root of the decision tree will be a dummy node. The children of this node are the plays the AI will be
+        //choosing from amongst.
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(new Triplet<Integer, Integer, Integer>(null, null, null));
 
-//         //Checks rows for a victory.
-//         for(int i = 0; i < 3; i++){
+        //Compile a list of all cells on the board that are empty.
+        ArrayList<Pair<Integer, Integer>> emptyCells = new ArrayList<Pair<Integer, Integer>>();
+        for(int i = 0; i < gameState.getGridSize(); i++){
+            for(int j = 0; j < gameState.getGridSize(); j++){
+                if(gameState.getCell(i, j) == null){
+                    emptyCells.add(new Pair<Integer, Integer>(Integer.valueOf(i), Integer.valueOf(j)));
+                }
+            }
+        }
 
-//             if (board[i][0] == board[i][1] && board[i][1] == board[i][2])
-//             {
-//                 if (board[i][0] == ai)
-//                 return +10;
-//                 else if (board[i][0] == opponentPlayer)
-//                 return -10;
-//             }
-//         } 
+        //Decide which move to make. The returned value takes the form [x-coordinate, y-coordinate, weight].
+        Triplet<Integer, Integer, Integer> bestMove = findBestMove(
+            root,
+            emptyCells,
+            gameState.getVictoryArr(),
+            gameState.getGridSize()
+        );
 
-//         //Checks columns for a victory.
-//         for(int i = 0; i < 3; i++){
-
-//             if (board[0][i] == board[1][i] && board[1][i] == board[2][i])
-//             {
-//                 if (board[0][i] == ai)
-//                 return +10;
-//                 else if (board[0][i] == opponentPlayer)
-//                 return -10;
-//             }
-//         } 
-
-//         //Checking for Diagonals for X or O victory.
-//         if (board[0][0] == board[1][1] && board[1][1] == board[2][2])
-//         {
-//             if (board[0][0] == ai)
-//                 return +10;
-//             else if (board[0][0] == opponentPlayer)
-//                 return -10;
-//         }
-
-//         if (board[0][2] == board[1][1] && board[1][1] == board[2][0])
-//         {
-//             if (board[0][2] == ai)
-//                 return +10;
-//             else if (board[0][2] == opponentPlayer)
-//                 return -10;
-//         }
-
-//         //Returns zero if no winning condition was met.
-//         return 0;
-//     }
-
-//     /**
-//      * This methods considers all possible choice and determines the best play for the Ai.
-//      * Returns The value of the board. 
-//      * @param depth The depth of the search 
-//      * @param isMax A boolean that determines if the current object is a maximizer or minimizer
-//      * @param gameState gameState The current state  of the game.
-//      * @return The value of the board.
-//      */
-//     static int miniMax(int depth, boolean isMax, GameState gameState){
-
-//         ArrayList<Pair<Integer,Integer>> emptySpaces = new ArrayList<Pair<Integer,Integer>>();
-
-//         int score = evaluate(board);
-
-//         //If maximizer has won return the score.
-//         if(score == 10){
-//             return score;
-//         }
-
-//         //If minimizer has won return the score.
-//         if(score == -10){
-//             return score;
-//         }
-
-//         if(isMovesLeft(board) == false){
-//             return 0;
-//         }
-
-//         // If this maximizer's move
-//         if (isMax)
-//         {
-//             int best = Integer.MIN_VALUE;
+        //The third value in the tuple is the weight of the move in the decision tree. Remove this and return only the
+        //move's [x, y] coodinate pair.
+        return bestMove.removeFrom2();
+    }
     
-//             // Traverse all cells.
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 for (int j = 0; j < 3; j++)
-//                 {
-//                     // Check if cell is empty.
-//                     if (board[i][j]== null)
-//                     {
-//                         // Make the move.
-//                         board[i][j] = ai;
-    
-//                         // Call minimax recursively and choose the maximum value.
-//                         best = Math.max(best, miniMax(board, depth + 1, !isMax, gameState));
-    
-//                         // Undo the move.
-//                         board[i][j] = null;
-//                     }
-//                 }
-//             }
-//             return best;
-//         }
- 
-//         // If this minimizer's move.
-//         else
-//         {
-//             int best = Integer.MAX_VALUE;
-    
-//             // Traverse all cells.
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 for (int j = 0; j < 3; j++)
-//                 {
-//                     // Check if cell is empty.
-//                     if (board[i][j] == null)
-//                     {
-//                         // Make the move.
-//                        board[i][j] = opponentPlayer;
-    
-//                         // Call minimax recursively and choose the minimum value.
-//                         best = Math.min(best, miniMax(board, 
-//                                         depth + 1, !isMax, gameState));
-    
-//                         // Undo the move.
-//                         board[i][j] = null;
-//                     }
-//                 }
-//             }
-//             return best;
-//         }
-//     }
+    /**
+     * For a given set of available plays in a given board state, select the best possible play.
+     * @param node The node in the decision tree representing the most recent move.
+     * @param emptyCells A list of empty cells on the board from which we are selecting the best possible play.
+     * @param victoryArr A victory array representing the current progress towards victory on the board.
+     * @param gridSize The board's dimensions.
+     * @return A tuple representing the best possible play from among the options. The tuple's first and second values
+     * represent (respectively) the play's x- and y-coordinates on the grid, while the tuple's third value is the weight
+     * of the play.
+     */
+    @SuppressWarnings("unchecked")
+    private Triplet<Integer, Integer, Integer> findBestMove(DefaultMutableTreeNode node, ArrayList<Pair<Integer, Integer>> emptyCells, ArrayList<Integer> victoryArr, int gridSize){
+        /* At even depths, we are choosing a play from amongst the node's children for the AI to make. We want to minimize
+        the weight of the selected play, since the AI is always player two and victories for player 2 are assigned a weight
+        of -10. For odd depths the opposite is true; we maximize to select a simulated play for player one. */
+        boolean isMax = (node.getPath().length % 2) == 0;
 
-//     /**
-//      * This method will determine the best play that the AI can make with the current state of the board.
-//      * Returns the best pair of x and y values for the AI player to play.
-//      * @param gameState The current state  of the game.
-//      * @return the best pair of x and y values for the AI player to play.
-//      */
-//     public Pair<Integer, Integer> generateMove(GameState gameState){
-        
-//         int bestVal = Integer.MIN_VALUE; //
+        //The default value of the best move is set to +100 or -100, so that all legal plays will be higher/lower than
+        //the default value's weight (with respect to whether we are maximizing or minimizing).
+        Triplet<Integer, Integer, Integer> bestMove = new Triplet<Integer, Integer, Integer>(null, null, isMax ? -100 : 100);
 
-//         int x = 0;
-//         int y = 0;
+        //We plan to iterate through every possible play (i.e. the list of empty cells), but this boolean allows us
+        //to break out early if we wish to prune the remaining options.
+        boolean prune = false;
 
-//         for(int i = 0; i < 3; i ++){
-//             for(int j = 0; j < 3; j ++){
-                
-//                 //checks if the cell is empty.
-//                 if(gameState.getCell(i, j) == null){
+        //Iterate over every empty cell on the board, as a list of possible plays.
+        int cellIndex = 0;
+        while(cellIndex < emptyCells.size() && !prune){
+            //Create a pair object to represent the move, and then house that pair inside a new tree node as a
+            //child of the current node.
+            Pair<Integer, Integer> cell = emptyCells.get(cellIndex);
+            DefaultMutableTreeNode child = new DefaultMutableTreeNode();
+            node.add(child);
 
-//                     //making a move.
-//                     gameState.getCell(i, j) = ;
+            
+            //Create a deep clone of the victory array so that the current node's descendants do not modify each
+            //other's victory arrays when applying moves to their own copies.
+            ArrayList<Integer> vArrClone = new ArrayList<Integer>();
+            for(Integer i : victoryArr){
+                vArrClone.add(Integer.valueOf(i.intValue()));
+            }
 
-//                     //evaluting the played move.
-//                     int moveVal = miniMax(board, 0, false, gameState);
+            /* Check whether the current cell is a winning play. This method updates the victory array to account
+            for the move. The isMax variable is being used as a proxy for isPlayerOne, since we know that if we 
+            are maximizing then we are choosing a play for player one, while if we are minimising we are
+            choosing a play for player two (i.e. the AI). */
+            boolean isVictory = GameState.checkVictoryArr(vArrClone, cell, isMax);
+            
+            if(isVictory){
+                /* If the game has ended in a victory, then we know the 'current' player is the winner. That will
+                be player one if we are maximizing and player two (ie the AI) if we are minimizing). Victories for
+                player one are given a weight of +10, while victories for player two are assigned -10. */ 
+                int weight = isMax ? 10 : -10;
+                child.setUserObject(cell.add(Integer.valueOf(weight)));
 
-//                     //Undoing move.
-//                     board[i][j] = null;
+                /* If one of the children of the current node results in a victory, then we can prune the other 
+                children since if the player is playing optimally they will never not select victory. In practice,
+                this means breaking out of the loop iterating over possible plays (ie empty cells) early. */
+                prune = true;
+            } else if(emptyCells.size() == 1){
+                /* If the game did not end in a victory, but there was only one legal play, then every cell has
+                 now been filled and the game is a draw. Draws are assigned a weight of zero. */
+                child.setUserObject(cell.add(Integer.valueOf(0)));
+            } else{
+                //If the game is neither a victory nor a draw, then the next player will need to choose a move.
 
-//                     // If the value of the current move is
-//                     // more than the best value, then update
-//                     // best.
-//                     if (moveVal > bestVal)
-//                     {
-//                         x=i;
-//                         y=j;
+                /* Create cloned list of empty cells, less the one that was just 'played'. These are the options
+                the other player will have to choose from. The copy can be shallow, since tuples are immutable. */
+                ArrayList<Pair<Integer, Integer>> emptyCellsClone = new ArrayList<Pair<Integer, Integer>>();
+                for(Pair<Integer, Integer> emptyCell : emptyCells){
+                    if(emptyCell != cell){
+                        emptyCellsClone.add(emptyCell);
+                    }
+                }
 
-//                         bestVal = moveVal;
-//                     }
-//                 }
-//             }
-//         }  
+                /* Set the child node's value as the [x, y] coordinate pair of the play we just selected, with an
+                undefined weight. Non-leaf nodes have no weight until they inherit one from a descendent. */
+                child.setUserObject(cell.add((Integer)null));
 
-//         Pair<Integer, Integer> bestMove = new Pair<Integer,Integer>(x, y); //The xy pair for the best cell placement for the Ai.
-//         return bestMove;
-//     }
-// }
+                //Start the move selection algorithm over with the play we just selected as the new parent node.
+                findBestMove(child, emptyCellsClone, vArrClone, gridSize);
+            }
+
+            /* Once we have a weight for the play, determine whether it is a better or worse play than our current
+            best known play */
+            Triplet<Integer, Integer, Integer> childData = (Triplet<Integer, Integer, Integer>)child.getUserObject();
+            if((isMax && childData.getValue2() > bestMove.getValue2()) || (!isMax && childData.getValue2() < bestMove.getValue2())){
+                bestMove = childData;
+            }
+
+            //Go to the next empty cell and check it too.
+            cellIndex++;
+        }
+
+        //Update the current node's weight to be equal to the weight of the best play among its children, then return it.
+        Triplet<Integer, Integer, Integer> currentData = (Triplet<Integer, Integer, Integer>)node.getUserObject();
+        node.setUserObject(currentData.setAt2(bestMove.getValue2()));
+        return bestMove;
+    }
+}
