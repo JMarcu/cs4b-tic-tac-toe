@@ -48,6 +48,10 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     private Player       playerTwo;
     private StackPane    rootPane;
     private FXMLLoader   splashScreenFXML;
+    private FXMLLoader   createLobbyFXML;
+    private FXMLLoader   joinLobbyFXML;
+    private FXMLLoader   loginFXML;
+    private FXMLLoader   registerFXML;
     private final long FADE_DURATION = 200;
 
     public static void main(String[] args) {
@@ -70,6 +74,10 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             optionsMenuFXML = new FXMLLoader(getClass().getResource("/views/OptionsMenu.fxml"));
             scoreboardFXML = new FXMLLoader(getClass().getResource("/views/Scoreboard.fxml"));
             splashScreenFXML = new FXMLLoader(getClass().getResource("/views/SplashScreen.fxml"));
+            createLobbyFXML = new FXMLLoader(getClass().getResource("/views/CreateLobby.fxml"));
+            joinLobbyFXML = new FXMLLoader(getClass().getResource("/views/JoinLobby.fxml"));
+            loginFXML = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
+            registerFXML = new FXMLLoader(getClass().getResource("/views/Register.fxml"));
 
             gameBoardFXML.load();
             mainMenuFXML.load();
@@ -77,6 +85,10 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             optionsMenuFXML.load();
             scoreboardFXML.load();
             splashScreenFXML.load();
+            createLobbyFXML.load();
+            joinLobbyFXML.load();
+            loginFXML.load();
+            registerFXML.load();
 
             primaryStage.setTitle("Tic Tac Toe");
             primaryStage.setScene(new Scene(rootPane));
