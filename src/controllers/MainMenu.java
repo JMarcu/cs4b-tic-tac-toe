@@ -51,6 +51,9 @@ public class MainMenu {
 
     /** Interface invoked to tell the scene controller to open the options menu. */
     private LaunchOptionsMenuCallback optionsMenuCB;
+
+    /** Interface invoked to tell the scene controller to open the online lobby system. */
+    private LaunchLobbyCallback launchLobbyCB;
     
     /** Player object describing the first player. */
     private Player playerOne;
@@ -280,6 +283,7 @@ public class MainMenu {
     void onOnlineAction(ActionEvent event){
         AuthService authService = AuthService.getInstance();
         // AuthService authService = AuthService.getInstance("localhost:4205");
+        launchLobbyCB.launchLobbyCallback();
     }
 
     /** Invoke the {@link optionsMenuCB} when the user hits the options menu button. */
