@@ -9,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import models.ColorScheme;
 import models.GameState;
@@ -24,6 +26,8 @@ public class Board {
     private boolean                             viewInit;
     private boolean                             boardDisable;
 
+    @FXML private AnchorPane root;
+    @FXML private GridPane grid;
     @FXML private ImageView leftTop;
     @FXML private ImageView centerTop;
     @FXML private ImageView rightTop;
