@@ -33,8 +33,8 @@ public class JoinLobby {
 
     @FXML protected void returnButtonClicked(ActionEvent event) {
         //System.out.println("currentColor: " + currentColor);
-        musicSFX.playSFX(MusicPlayer.Track.exitMenu);
+        // musicSFX.playSFX(MusicPlayer.Track.exitMenu);
 
-        returnCB.returnTo();
+        // returnCB.returnTo();
     }
 }

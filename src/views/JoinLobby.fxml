@@ -10,7 +10,7 @@
 
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.JoinLobby">
    <children>
-      <Button fx:id="returnBtn" layoutX="19.0" layoutY="19.0" mnemonicParsing="false" onAction="#ReturnButtonClicked" prefHeight="63.0" prefWidth="72.0" text="Go Back" />
+      <Button fx:id="returnBtn" layoutX="19.0" layoutY="19.0" mnemonicParsing="false" onAction="#returnButtonClicked" prefHeight="63.0" prefWidth="72.0" text="Go Back" />
       <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" layoutX="126.0" layoutY="25.0" prefHeight="50.0" prefWidth="243.0" text="Join Match" textAlignment="CENTER">
          <font>
             <Font size="33.0" />
