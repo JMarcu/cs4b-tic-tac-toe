@@ -54,6 +54,9 @@ public class MainMenu {
 
     /** Interface invoked to tell the scene controller to open the online lobby system. */
     private LaunchLobbyCallback launchLobbyCB;
+
+    /** */
+    private LaunchLobbyCallback lobbyCB;
     
     /** Player object describing the first player. */
     private Player playerOne;
@@ -190,6 +193,11 @@ public class MainMenu {
         this.optionsMenuCB = optionsMenuCB;
     }
 
+    /** Sets the callback to be invoked when the MainMenu wishes to open the lobby system. */
+    public void setLaunchLobbyCB(LaunchLobbyCallback lobbyCB){
+        this.lobbyCB = lobbyCB;
+    }
+
     /** Sets and binds the two players in the game. */
     public void setPlayers(Player playerOne, Player playerTwo){
         //Set the players.
@@ -281,9 +289,9 @@ public class MainMenu {
 
     @FXML
     void onOnlineAction(ActionEvent event){
-        AuthService authService = AuthService.getInstance();
+        // AuthService authService = AuthService.getInstance();
         // AuthService authService = AuthService.getInstance("localhost:4205");
-        launchLobbyCB.launchLobbyCallback();
+        launchLobbyCB.launchLobbyCallback("MainMenu");
     }
 
     /** Invoke the {@link optionsMenuCB} when the user hits the options menu button. */
@@ -398,16 +406,13 @@ public class MainMenu {
     }
 
     // - NEW STUFF HERE! - //
-    private LaunchLobbyCallback lobbyCB;
+    
 
-    /** Sets the callback to be invoked when the MainMenu wishes to open the lobby system. */
-    public void setLaunchLobbyCB(LaunchLobbyCallback lobbyCB){
-        this.lobbyCB = lobbyCB;
-    }
+    
 
     @FXML
     void goOnline(ActionEvent event) {
-        lobbyCB.launchLobbyCallback();
+        // lobbyCB.launchLobbyCallback();
     }
     
     private void subscribeToPlayerTwo(){

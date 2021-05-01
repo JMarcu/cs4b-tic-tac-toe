@@ -118,6 +118,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         mainMenu.setLaunchGameCB(this);
         mainMenu.setOptionsMenuCB(this);
         mainMenu.setShapePickerCB(this);
+        mainMenu.setLaunchLobbyCB(this);
         System.out.println("playerTwo.getIsAi(): " + playerTwo.getIsAI());
         mainMenu.setPlayers(playerOne, playerTwo);
 

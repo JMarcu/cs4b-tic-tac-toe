@@ -1,5 +1,5 @@
 package models.SceneCallback;
 
 public interface LaunchLobbyCallback {
-    public void launchLobbyCallback();
+    public void launchLobbyCallback(String caller);
 }
