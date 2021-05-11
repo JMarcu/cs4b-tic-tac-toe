@@ -13,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import models.MusicPlayer;
 import models.Player;
 import models.SceneCallback.LaunchLobbyCallback;
+import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.ReturnToCallback;
 
 public class CreateLobby {
@@ -27,12 +28,13 @@ public class CreateLobby {
     @FXML private Button createBtn;
     @FXML private AnchorPane root;
 
-    private ReturnToCallback returnCB;
-    private MusicPlayer musicSFX;
+    private ReturnToCallback returnToCB;
+    private MusicPlayer music;
     private LaunchLobbyCallback launchLobbyCB;
+    private LaunchOptionsMenuCallback optionsMenuCB;
 
     public CreateLobby(){
-        // icon.setImage(new Image("/assets/images/splash/globe.png"));
+        this.optionsMenuCB = null;
     }
 
     /** Sets the default state of the view's interactive elements. */
@@ -43,7 +45,7 @@ public class CreateLobby {
         root.getStylesheets().add(getClass().getResource("/styles/create-lobby.css").toExternalForm());
         setLaunchLobbyCallback(launchLobbyCB);
 
-        musicSFX = new MusicPlayer();
+        music = new MusicPlayer();
     }
 
     /** Closes the splash screen when the element is clicked on. */
@@ -52,14 +54,27 @@ public class CreateLobby {
 
     }
 
-    public void setReturnCB(ReturnToCallback returnCB){
-        this.returnCB = returnCB;
+    public void acceptPlayer(Player player) {
     }
 
-    public void acceptPlayer(Player player) {
+    @FXML protected void ReturnButtonClicked(ActionEvent event) {
+        if (music.getShouldPlaySFX()){
+            MusicPlayer music2 = new MusicPlayer();
+            music2.playSFX(MusicPlayer.Track.exitMenu);
+        }
+        returnToCB.returnTo();
     }
 
     public AnchorPane getRoot(){ return this.root; }
 
     public void setLaunchLobbyCallback(LaunchLobbyCallback launchLobbyCB){ this.launchLobbyCB = launchLobbyCB;}
+
+    public void setReturnCB(ReturnToCallback returnToCB){
+        this.returnToCB = returnToCB;
+    }
+
+    public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB){
+        this.optionsMenuCB = optionsMenuCB;
+    }
 }
+

@@ -29,12 +29,13 @@ import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchScoreBoardCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
+import models.SceneCallback.LaunchLobbyCallback;
 import models.SceneCallback.ReturnToCallback;
 import models.TTTScene;
 import models.MusicPlayer.Track;
 import models.MusicPlayer;
 
-public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback, LaunchScoreBoardCallback {
+public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback, LaunchScoreBoardCallback, LaunchLobbyCallback {
 
     private FXMLLoader   gameBoardFXML;
     private GameState    gameState;
@@ -144,6 +145,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             gameBoard.setShapePickerCB(this);
             gameBoard.setOptionsMenuCB(this);
             gameBoard.setScoreBoardCB(this);
+
 
             subscribeToGameState(gameState);
             
@@ -304,16 +306,16 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
 
 
     //NEW STUFF//
-    private FXMLLoader lobbyFXML;
 
     public void launchLobby(){
         try{
             MusicPlayer musicSFX = new MusicPlayer();
             musicSFX.playSFX(MusicPlayer.Track.openMenu);
 
-            CreateLobby lobby = lobbyFXML.getController();
-            lobby.setReturnCB(() -> {closeMenu(lobby.getRoot());});
-            openMenu(lobby.getRoot());
+            CreateLobby createLobby = createLobbyFXML.getController();
+            // createLobby.setReturnCB(() -> {closeMenu(createLobby.getRoot());});
+            createLobby.setOptionsMenuCB(this);
+            launchScene(createLobbyFXML.getRoot());
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -333,4 +335,5 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             @Override public void onComplete() { }
         });
     }
+
 }
