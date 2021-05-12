@@ -31,14 +31,15 @@ import models.SceneCallback.LaunchScoreBoardCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
 import models.SceneCallback.LaunchLobbyCallback;
 import models.SceneCallback.LaunchLobbyFinderCallback;
-
+import models.SceneCallback.LaunchLoginCallback;
+import models.SceneCallback.LaunchRegisterCallback;
 import models.SceneCallback.ReturnToCallback;
 import models.TTTScene;
 import models.MusicPlayer.Track;
 import models.MusicPlayer;
 
 public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback,
-        LaunchShapePickerCallback, LaunchScoreBoardCallback, LaunchLobbyCallback, LaunchLobbyFinderCallback {
+        LaunchShapePickerCallback, LaunchScoreBoardCallback, LaunchLobbyCallback, LaunchLobbyFinderCallback, LaunchLoginCallback, LaunchRegisterCallback {
 
     private FXMLLoader   gameBoardFXML;
     private GameState    gameState;
@@ -333,7 +334,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     }
 
     public void launchRegister(){
-        
+
     }
     
     private void subscribeToGameState(GameState gameState){
