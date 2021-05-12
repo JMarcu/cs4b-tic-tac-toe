@@ -8,27 +8,26 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-
-<Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Login.java">
    <children>
-      <Label layoutX="180.0" layoutY="192.0" text="Username: ">
+      <Label layoutX="180.0" layoutY="224.0" text="Username: ">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="180.0" layoutY="239.0" text="Password: ">
+      <Label layoutX="180.0" layoutY="271.0" text="Password: ">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="usernameField" layoutX="262.0" layoutY="191.0" />
-      <TextField fx:id="passwordField" layoutX="262.0" layoutY="238.0" />
-      <Button fx:id="loginBtn" layoutX="316.0" layoutY="277.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="94.0" text="Login" />
-      <ImageView fitHeight="180.0" fitWidth="227.0" layoutX="193.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
+      <TextField fx:id="usernameField" layoutX="262.0" layoutY="223.0" />
+      <TextField fx:id="passwordField" layoutX="262.0" layoutY="270.0" />
+      <Button fx:id="loginBtn" layoutX="316.0" layoutY="309.0" mnemonicParsing="false" onAction="#onLoginClicked" prefHeight="53.0" prefWidth="94.0" text="Login" />
+      <ImageView fitHeight="180.0" fitWidth="227.0" layoutX="210.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../assets/images/splash/wireless.png" />
+            <Image url="@../assets/images/splash/title.png" />
          </image>
       </ImageView>
-      <Button fx:id="registerBtn" layoutX="204.0" layoutY="277.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="94.0" text="Register" />
+      <Button fx:id="registerBtn" layoutX="204.0" layoutY="309.0" mnemonicParsing="false" onAction="#onRegisterClicked" prefHeight="53.0" prefWidth="94.0" text="Register" />
    </children>
 </Pane>

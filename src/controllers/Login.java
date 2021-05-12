@@ -47,4 +47,12 @@ public class Login {
             System.out.println("Boo!");
         }
     }
+
+    @FXML protected void onLoginClicked(){
+
+    }
+
+    @FXML protected void onRegisterClicked(){
+        
+    }
 }
