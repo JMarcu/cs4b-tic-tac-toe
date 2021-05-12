@@ -59,6 +59,9 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     private FXMLLoader   registerFXML;
     private final long FADE_DURATION = 200;
 
+    private LaunchLoginCallback     loginCB;
+    private LaunchRegisterCallback  registerCB;
+
     public static void main(String[] args) {
         launch(args);
     }

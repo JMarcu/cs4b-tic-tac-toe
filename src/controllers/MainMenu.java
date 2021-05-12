@@ -29,6 +29,7 @@ import models.MarkerShape;
 import models.Player;
 import models.SceneCallback.LaunchGameCallback;
 import models.SceneCallback.LaunchLobbyCallback;
+import models.SceneCallback.LaunchLobbyFinderCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
 import org.javatuples.Pair;
@@ -54,6 +55,9 @@ public class MainMenu {
 
     /** Interface invoked to tell the scene controller to open the online lobby system. */
     private LaunchLobbyCallback launchLobbyCB;
+
+    /** Interface invoked to tell the scene controller to open the online matchfinder. */
+    private LaunchLobbyFinderCallback launchLobbyFinderCB;
     
     /** Player object describing the first player. */
     private Player playerOne;

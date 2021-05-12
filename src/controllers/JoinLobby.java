@@ -8,10 +8,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
 import javafx.scene.layout.AnchorPane;
 import models.MusicPlayer;
+import models.SceneCallback.LaunchLobbyFinderCallback;
 import models.SceneCallback.ReturnToCallback;
 
 public class JoinLobby {
-    private ReturnToCallback returnCB;
     private MusicPlayer musicSFX;
 
     @FXML private Button returnBtn;
@@ -20,6 +20,9 @@ public class JoinLobby {
     @FXML private Button refreshBtn;
     @FXML private ListView<String> lobbyView;
     @FXML private AnchorPane root;
+
+    private ReturnToCallback returnToCB;
+    private LaunchLobbyFinderCallback launchLobbyFinderCB;
 
     /** Sets the default state of the view's interactive elements. */
     @FXML
@@ -36,5 +39,11 @@ public class JoinLobby {
         // musicSFX.playSFX(MusicPlayer.Track.exitMenu);
 
         // returnCB.returnTo();
+    }
+
+    public void setLaunchLobbyFinderCallback(LaunchLobbyFinderCallback launchLobbyFinderCB){ this.launchLobbyFinderCB = launchLobbyFinderCB;}
+
+    public void setReturnCB(ReturnToCallback returnToCB){
+        this.returnToCB = returnToCB;
     }
 }

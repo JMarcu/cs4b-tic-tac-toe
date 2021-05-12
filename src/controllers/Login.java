@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import models.SceneCallback.LaunchLobbyCallback;
+import models.SceneCallback.LaunchLoginCallback;
+import models.SceneCallback.ReturnToCallback;
 import services.AuthService;
 
 public class Login {
@@ -16,18 +18,21 @@ public class Login {
     @FXML private Button returnBtn;
     @FXML private Pane root;
 
+    private ReturnToCallback returnToCB;
+    private LaunchLoginCallback launchLoginCB;
+
     public void onLoginAction(){
         try {
-            AuthService.getInstance().login(
-                "some username",
-                "'some password'",
-                new Consumer<Boolean>(){
-                    @Override
-                    public void accept(Boolean success) {
-                        MainMenu.this.onLoginResult(success);
-                    }
-                }
-            );
+            // AuthService.getInstance().login(
+            //     "some username",
+            //     "'some password'",
+            //     new Consumer<Boolean>(){
+            //         @Override
+            //         public void accept(Boolean success) {
+            //             MainMenu.this.onLoginResult(success);
+            //         }
+            //     }
+            // );
             
             
             //Do something before the server responds to your attempt to log in.
@@ -54,5 +59,11 @@ public class Login {
 
     @FXML protected void onRegisterClicked(){
         
+    }
+
+    public void setLaunchLoginCallback(LaunchLoginCallback launchLoginCB){ this.launchLoginCB = launchLoginCB;}
+
+    public void setReturnCB(ReturnToCallback returnToCB){
+        this.returnToCB = returnToCB;
     }
 }
