@@ -1,0 +1,24 @@
+.arcade-font {
+    -fx-font-family: Pixeboy;
+}
+
+.title {
+    -fx-font-color: -text-on-primary;
+}
+
+.toggle-btn {
+    -fx-font-size: 26px;
+    -fx-border-radius: 4;
+    -fx-text-fill: -text-on-secondary;
+}
+
+Button {
+    -fx-background-color: -secondary;
+    -fx-font-size: 26px;
+    -fx-cursor: hand;
+    -fx-text-fill: -text-on-secondary;
+}
+
+Label{
+    -fx-font-family: Pixeboy;
+}

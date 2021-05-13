@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#closeSplash" prefHeight="363.0" prefWidth="440.0" style="-fx-background-color: -primary-light;" stylesheets="@../styles/color-theme.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SplashScreen">
+<VBox fx:id="root" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#closeSplash" opacity="0.5" prefHeight="363.0" prefWidth="440.0" style="-fx-background-color: -primary;" stylesheets="@../styles/color-theme.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SplashScreen">
    <children>
       <ImageView fx:id="splashImageView" fitHeight="250.0" fitWidth="413.0" pickOnBounds="true" preserveRatio="true" />
       <Label fx:id="personName" text=" ">

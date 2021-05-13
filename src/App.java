@@ -1,3 +1,4 @@
+import controllers.CreateLobby;
 import controllers.GameBoard;
 import controllers.MainMenu;
 import controllers.OptionsController;
@@ -5,6 +6,10 @@ import controllers.ScoreBoard;
 import controllers.ShapeColorController;
 import controllers.SplashScreen;
 import controllers.SplashScreen.SplashType;
+import controllers.CreateLobby;
+import controllers.JoinLobby;
+import controllers.Login;
+import controllers.Register;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.UUID;
@@ -28,12 +33,17 @@ import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchScoreBoardCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
+import models.SceneCallback.LaunchLobbyCallback;
+import models.SceneCallback.LaunchLobbyFinderCallback;
+import models.SceneCallback.LaunchLoginCallback;
+import models.SceneCallback.LaunchRegisterCallback;
 import models.SceneCallback.ReturnToCallback;
 import models.TTTScene;
 import models.MusicPlayer.Track;
 import models.MusicPlayer;
 
-public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback, LaunchShapePickerCallback, LaunchScoreBoardCallback {
+public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback,
+        LaunchShapePickerCallback, LaunchScoreBoardCallback, LaunchLobbyCallback, LaunchLobbyFinderCallback, LaunchLoginCallback, LaunchRegisterCallback {
 
     private FXMLLoader   gameBoardFXML;
     private GameState    gameState;
@@ -47,7 +57,15 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     private Player       playerTwo;
     private StackPane    rootPane;
     private FXMLLoader   splashScreenFXML;
+    private FXMLLoader   createLobbyFXML;
+    private FXMLLoader   joinLobbyFXML;
+    private FXMLLoader   loginFXML;
+    private FXMLLoader   registerFXML;
     private final long FADE_DURATION = 200;
+
+    private LaunchMainMenuCallback  launchMainMenuCB;
+    private LaunchLoginCallback     loginCB;
+    private LaunchRegisterCallback  registerCB;
 
     public static void main(String[] args) {
         launch(args);
@@ -69,6 +87,10 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             optionsMenuFXML = new FXMLLoader(getClass().getResource("/views/OptionsMenu.fxml"));
             scoreboardFXML = new FXMLLoader(getClass().getResource("/views/Scoreboard.fxml"));
             splashScreenFXML = new FXMLLoader(getClass().getResource("/views/SplashScreen.fxml"));
+            createLobbyFXML = new FXMLLoader(getClass().getResource("/views/CreateLobby.fxml"));
+            joinLobbyFXML = new FXMLLoader(getClass().getResource("/views/JoinLobby.fxml"));
+            loginFXML = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
+            registerFXML = new FXMLLoader(getClass().getResource("/views/Register.fxml"));
 
             gameBoardFXML.load();
             mainMenuFXML.load();
@@ -76,6 +98,10 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             optionsMenuFXML.load();
             scoreboardFXML.load();
             splashScreenFXML.load();
+            createLobbyFXML.load();
+            joinLobbyFXML.load();
+            loginFXML.load();
+            registerFXML.load();
 
             primaryStage.setTitle("Tic Tac Toe");
             primaryStage.setScene(new Scene(rootPane));
@@ -105,6 +131,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         mainMenu.setLaunchGameCB(this);
         mainMenu.setOptionsMenuCB(this);
         mainMenu.setShapePickerCB(this);
+        mainMenu.setLaunchLobbyCB(this);
         System.out.println("playerTwo.getIsAi(): " + playerTwo.getIsAI());
         mainMenu.setPlayers(playerOne, playerTwo);
 
@@ -130,6 +157,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             gameBoard.setShapePickerCB(this);
             gameBoard.setOptionsMenuCB(this);
             gameBoard.setScoreBoardCB(this);
+
 
             subscribeToGameState(gameState);
             
@@ -288,6 +316,70 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         gameStateSubscription.request(1);
     }
 
+
+    //NEW STUFF//
+
+    public void setLaunchMainMenuCB(LaunchMainMenuCallback launchMainMenuCB){
+        this.launchMainMenuCB = launchMainMenuCB;
+    }
+
+    public void launchLobby(){
+        try{
+            MusicPlayer musicSFX = new MusicPlayer();
+            musicSFX.playSFX(MusicPlayer.Track.openMenu);
+
+            CreateLobby createLobby = createLobbyFXML.getController();
+            createLobby.setLaunchLobbyFinderCB(this);
+            createLobby.setReturnToCB(new ReturnToCallback(){
+                @Override
+                public void returnTo() {launchMainMenu();}
+            });
+            createLobby.setOptionsMenuCB(this);
+            launchScene(createLobbyFXML.getRoot());
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void launchLobbyFinder(){
+        try{
+            JoinLobby joinLobby = joinLobbyFXML.getController();
+            joinLobby.setReturnToCB(new ReturnToCallback(){
+                @Override
+                public void returnTo() {launchLobby();}
+            });
+            launchScene(joinLobbyFXML.getRoot());
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void launchLogin(){
+        try{
+            Login login = loginFXML.getController();
+            login.setReturnToCB(new ReturnToCallback(){
+                @Override
+                public void returnTo() {}
+            });
+            launchScene(loginFXML.getRoot());
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void launchRegister(){
+        try{
+            Register register = registerFXML.getController();
+            register.setReturnToCB(new ReturnToCallback(){
+                @Override
+                public void returnTo() {launchLogin();}
+            });
+            launchScene(registerFXML.getRoot());
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
     private void subscribeToGameState(GameState gameState){
         if(gameStateSubscription != null){
             gameStateSubscription.cancel();
@@ -302,4 +394,5 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             @Override public void onComplete() { }
         });
     }
+
 }
