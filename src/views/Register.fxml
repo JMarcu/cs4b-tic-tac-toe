@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-
-<Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Register">
    <children>
       <Label layoutX="185.0" layoutY="99.0" text="New Account Registration">
          <font>
@@ -26,6 +25,7 @@
       </Label>
       <TextField fx:id="usernameField" layoutX="272.0" layoutY="161.0" />
       <TextField fx:id="passwordField" layoutX="272.0" layoutY="208.0" />
-      <Button fx:id="registerBtn" layoutX="253.0" layoutY="264.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="94.0" text="Register" />
+      <Button fx:id="registerBtn" layoutX="320.0" layoutY="263.0" mnemonicParsing="false" onAction="#registerButtonClicked" prefHeight="53.0" prefWidth="94.0" text="Register" />
+      <Button fx:id="returnBtn" layoutX="198.0" layoutY="263.0" mnemonicParsing="false" onAction="#returnButtonClicked" prefHeight="53.0" prefWidth="94.0" text="Go Back" />
    </children>
 </Pane>

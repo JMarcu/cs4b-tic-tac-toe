@@ -100,8 +100,8 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             splashScreenFXML.load();
             createLobbyFXML.load();
             joinLobbyFXML.load();
-            // loginFXML.load();
-            // registerFXML.load();
+            loginFXML.load();
+            registerFXML.load();
 
             primaryStage.setTitle("Tic Tac Toe");
             primaryStage.setScene(new Scene(rootPane));

@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import models.SceneCallback.LaunchLobbyCallback;
 import models.SceneCallback.LaunchLoginCallback;
+import models.SceneCallback.LaunchRegisterCallback;
 import models.SceneCallback.ReturnToCallback;
 import services.AuthService;
 
@@ -20,6 +21,7 @@ public class Login {
 
     private ReturnToCallback returnToCB;
     private LaunchLoginCallback launchLoginCB;
+    private LaunchRegisterCallback launchRegisterCB;
 
     public void onLoginAction(){
         try {
@@ -53,12 +55,16 @@ public class Login {
         }
     }
 
+    public void setLaunchRegisterCB(LaunchRegisterCallback launchRegisterCB){
+        this.launchRegisterCB = launchRegisterCB;
+    }
+
     @FXML protected void onLoginClicked(){
 
     }
 
     @FXML protected void onRegisterClicked(){
-        
+        launchRegisterCB.launchRegister();
     }
 
     public Pane getRoot(){ return this.root; }

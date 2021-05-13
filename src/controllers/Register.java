@@ -17,6 +17,14 @@ public class Register {
     private ReturnToCallback returnToCB;
     private LaunchRegisterCallback launchRegisterCB;
 
+    @FXML protected void returnButtonClicked(){
+
+    }
+
+    @FXML protected void registerButtonClicked(){
+        
+    }
+
     public Pane getRoot(){ return this.root; }
 
     public void setLaunchLoginCallback(LaunchRegisterCallback launchRegisterCB){ this.launchRegisterCB = launchRegisterCB;}
