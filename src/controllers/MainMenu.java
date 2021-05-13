@@ -199,6 +199,10 @@ public class MainMenu {
         this.launchLobbyCB = launchLobbyCB;
     }
 
+    public void setLaunchLobbyFinderCB(LaunchLobbyFinderCallback launchLobbyFinderCB){
+        this.launchLobbyFinderCB = launchLobbyFinderCB;
+    }
+
     /** Sets and binds the two players in the game. */
     public void setPlayers(Player playerOne, Player playerTwo){
         //Set the players.

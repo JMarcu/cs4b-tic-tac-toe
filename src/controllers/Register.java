@@ -17,7 +17,9 @@ public class Register {
     private ReturnToCallback returnToCB;
     private LaunchRegisterCallback launchRegisterCB;
 
+    public Pane getRoot(){ return this.root; }
+
     public void setLaunchLoginCallback(LaunchRegisterCallback launchRegisterCB){ this.launchRegisterCB = launchRegisterCB;}
 
-    public void setReturnCB(ReturnToCallback returnToCB){this.returnToCB = returnToCB;}
+    public void setReturnToCB(ReturnToCallback returnToCB){this.returnToCB = returnToCB;}
 }

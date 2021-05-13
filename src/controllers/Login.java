@@ -61,9 +61,11 @@ public class Login {
         
     }
 
+    public Pane getRoot(){ return this.root; }
+
     public void setLaunchLoginCallback(LaunchLoginCallback launchLoginCB){ this.launchLoginCB = launchLoginCB;}
 
-    public void setReturnCB(ReturnToCallback returnToCB){
+    public void setReturnToCB(ReturnToCallback returnToCB){
         this.returnToCB = returnToCB;
     }
 }

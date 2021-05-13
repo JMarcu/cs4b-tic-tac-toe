@@ -12,7 +12,7 @@ import models.SceneCallback.LaunchLobbyFinderCallback;
 import models.SceneCallback.ReturnToCallback;
 
 public class JoinLobby {
-    private MusicPlayer musicSFX;
+    private MusicPlayer music;
 
     @FXML private Button returnBtn;
     @FXML private Label title;
@@ -31,19 +31,22 @@ public class JoinLobby {
         root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
         root.getStylesheets().add(getClass().getResource("/styles/join-lobby.css").toExternalForm());
 
-        musicSFX = new MusicPlayer();
+        music = new MusicPlayer();
     }
 
     @FXML protected void returnButtonClicked(ActionEvent event) {
-        //System.out.println("currentColor: " + currentColor);
-        // musicSFX.playSFX(MusicPlayer.Track.exitMenu);
-
-        // returnCB.returnTo();
+        if (music.getShouldPlaySFX()){
+            MusicPlayer music2 = new MusicPlayer();
+            music2.playSFX(MusicPlayer.Track.exitMenu);
+        }
+        returnToCB.returnTo();
     }
+
+    public AnchorPane getRoot(){ return this.root; }
 
     public void setLaunchLobbyFinderCallback(LaunchLobbyFinderCallback launchLobbyFinderCB){ this.launchLobbyFinderCB = launchLobbyFinderCB;}
 
-    public void setReturnCB(ReturnToCallback returnToCB){
+    public void setReturnToCB(ReturnToCallback returnToCB){
         this.returnToCB = returnToCB;
     }
 }

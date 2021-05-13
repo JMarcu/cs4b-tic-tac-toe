@@ -13,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import models.MusicPlayer;
 import models.Player;
 import models.SceneCallback.LaunchLobbyCallback;
+import models.SceneCallback.LaunchLobbyFinderCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.ReturnToCallback;
 
@@ -31,6 +32,7 @@ public class CreateLobby {
     private ReturnToCallback returnToCB;
     private MusicPlayer music;
     private LaunchLobbyCallback launchLobbyCB;
+    private LaunchLobbyFinderCallback launchLobbyFinderCB;
     private LaunchOptionsMenuCallback optionsMenuCB;
 
     public CreateLobby(){
@@ -48,10 +50,13 @@ public class CreateLobby {
         music = new MusicPlayer();
     }
 
-    /** Closes the splash screen when the element is clicked on. */
+    public void setLaunchLobbyFinderCB(LaunchLobbyFinderCallback launchLobbyFinderCB){
+        this.launchLobbyFinderCB = launchLobbyFinderCB;
+    }
+
     @FXML
     private void joinLobbyAction(ActionEvent e){
-
+        launchLobbyFinderCB.launchLobbyFinder();
     }
 
     public void acceptPlayer(Player player) {
@@ -69,7 +74,7 @@ public class CreateLobby {
 
     public void setLaunchLobbyCallback(LaunchLobbyCallback launchLobbyCB){ this.launchLobbyCB = launchLobbyCB;}
 
-    public void setReturnCB(ReturnToCallback returnToCB){
+    public void setReturnToCB(ReturnToCallback returnToCB){
         this.returnToCB = returnToCB;
     }
 
