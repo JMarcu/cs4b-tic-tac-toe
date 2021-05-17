@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
@@ -17,17 +18,20 @@ public class Register {
     private ReturnToCallback returnToCB;
     private LaunchRegisterCallback launchRegisterCB;
 
-    @FXML protected void returnButtonClicked(){
-
+    @FXML protected void returnButtonClicked(ActionEvent e){
+        returnToCB.returnTo();
     }
 
-    @FXML protected void registerButtonClicked(){
-        
+    @FXML protected void registerButtonClicked(ActionEvent e){
+        //if the username is taken
+            //return error message
+        //else
+        returnToCB.returnTo();
     }
 
     public Pane getRoot(){ return this.root; }
 
-    public void setLaunchLoginCallback(LaunchRegisterCallback launchRegisterCB){ this.launchRegisterCB = launchRegisterCB;}
+    public void setLaunchRegisterCallback(LaunchRegisterCallback launchRegisterCB){ this.launchRegisterCB = launchRegisterCB;}
 
     public void setReturnToCB(ReturnToCallback returnToCB){this.returnToCB = returnToCB;}
 }

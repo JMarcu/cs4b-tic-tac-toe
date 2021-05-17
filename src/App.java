@@ -64,8 +64,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     private final long FADE_DURATION = 200;
 
     private LaunchMainMenuCallback  launchMainMenuCB;
-    private LaunchLoginCallback     loginCB;
-    private LaunchRegisterCallback  registerCB;
+    private LaunchLoginCallback     launchloginCB;
 
     public static void main(String[] args) {
         launch(args);
@@ -111,7 +110,10 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             SplashScreen splashScreen = splashScreenFXML.getController();
             splashScreen.setReturnCB(new ReturnToCallback(){
                 @Override
-                public void returnTo() { closeMenu(splashScreen.getRoot()); }
+                public void returnTo() { 
+                    // closeMenu(splashScreen.getRoot()); 
+                    launchLogin();  //force redirect to login screen, TEMPORARY?
+                }
             });
             splashScreen.setSplashType(SplashType.TITLE);
             openMenu(splashScreen.getRoot());
@@ -323,6 +325,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         this.launchMainMenuCB = launchMainMenuCB;
     }
 
+    @Override
     public void launchLobby(){
         try{
             MusicPlayer musicSFX = new MusicPlayer();
@@ -341,6 +344,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         }
     }
 
+    @Override
     public void launchLobbyFinder(){
         try{
             JoinLobby joinLobby = joinLobbyFXML.getController();
@@ -354,6 +358,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         }
     }
 
+    @Override
     public void launchLogin(){
         try{
             Login login = loginFXML.getController();
@@ -367,6 +372,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         }
     }
 
+    @Override
     public void launchRegister(){
         try{
             Register register = registerFXML.getController();
