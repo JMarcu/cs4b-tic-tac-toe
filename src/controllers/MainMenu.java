@@ -14,7 +14,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -28,12 +27,10 @@ import models.GameState;
 import models.MarkerShape;
 import models.Player;
 import models.SceneCallback.LaunchGameCallback;
-import models.SceneCallback.LaunchLobbyCallback;
 import models.SceneCallback.LaunchLobbyFinderCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
 import org.javatuples.Pair;
-import services.AuthService;
 
 /**
  * Controls the main menu view.
@@ -52,9 +49,6 @@ public class MainMenu {
 
     /** Interface invoked to tell the scene controller to open the options menu. */
     private LaunchOptionsMenuCallback optionsMenuCB;
-
-    /** Interface invoked to tell the scene controller to open the online lobby system. */
-    private LaunchLobbyCallback launchLobbyCB;
 
     /** Interface invoked to tell the scene controller to open the online matchfinder. */
     private LaunchLobbyFinderCallback launchLobbyFinderCB;
@@ -194,11 +188,6 @@ public class MainMenu {
         this.optionsMenuCB = optionsMenuCB;
     }
 
-    /** Sets the callback to be invoked when the MainMenu wishes to open the lobby system. */
-    public void setLaunchLobbyCB(LaunchLobbyCallback launchLobbyCB){
-        this.launchLobbyCB = launchLobbyCB;
-    }
-
     public void setLaunchLobbyFinderCB(LaunchLobbyFinderCallback launchLobbyFinderCB){
         this.launchLobbyFinderCB = launchLobbyFinderCB;
     }
@@ -260,27 +249,6 @@ public class MainMenu {
         }
     }
 
-    // @FXML
-    // void onGameModeAction(ActionEvent event) {
-        // this.gameMode = GameMode.fromString(this.gameModeCB.getValue());
-        // switch(this.gameMode){
-        //     case BEST_OF_X:
-        //     case BULLET:
-        //         this.secondaryOption = 0;
-        //         this.secondaryOptionTF.setDisable(false);
-        //         break;
-        //     case FREE_PLAY:
-        //     case MULTI:
-        //     case RECURSIVE:
-        //     default:
-        //         this.secondaryOption = -1;
-        //         this.secondaryOptionTF.setText("");
-        //         this.secondaryOptionTF.setDisable(true);
-        //         break;
-        // }
-    // }
-
-
     /** Set {@link singlePlayer} to false when the user clicks {@link humanBtn}. */
     @FXML
     private void onHumanAction(){
@@ -292,15 +260,9 @@ public class MainMenu {
         }
     }
 
-    /**
-     * 
-     * {@link launchLobbyCB}
-    */
     @FXML
-    void onOnlineAction(ActionEvent event){
-        // AuthService authService = AuthService.getInstance();
-        // AuthService authService = AuthService.getInstance("localhost:4205");
-        launchLobbyCB.launchLobby();
+    void onOnlineAction(ActionEvent event) {
+        this.launchLobbyFinderCB.launchLobbyFinder();
     }
 
     /** Invoke the {@link optionsMenuCB} when the user hits the options menu button. */
@@ -345,11 +307,6 @@ public class MainMenu {
         shapePickerCB.launchShapePicker(playerTwo);
     }
 
-    // @FXML
-    // void onSecondaryOptionKeyTyped(KeyEvent event) {
-        // final String text = this.secondaryOptionTF.getText();
-        // this.secondaryOption = text == "" ? 0 : Integer.valueOf(text);
-    // }
 
     /*==========================================================================================================
      * VIEW MANIPULATORS
@@ -414,16 +371,6 @@ public class MainMenu {
         ColorScheme.adjustImageColor(pane, player.getColor());
     }
 
-    // - NEW STUFF HERE! - //
-    
-
-    
-
-    @FXML
-    void goOnline(ActionEvent event) {
-        // lobbyCB.launchLobbyCallback();
-    }
-    
     private void subscribeToPlayerTwo(){
         this.playerTwo.subscribe(new Subscriber<Player.Patch>(){
             @Override public void onComplete() { }

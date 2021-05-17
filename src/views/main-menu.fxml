@@ -27,7 +27,7 @@
          <bottom>
             <Pane minHeight="100.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button layoutX="14.0" layoutY="11.0" mnemonicParsing="false" onAction="#goOnline" prefHeight="10.0" prefWidth="10.0">
+                  <Button layoutX="14.0" layoutY="11.0" mnemonicParsing="false" prefHeight="10.0" prefWidth="10.0">
                      <graphic>
                         <ImageView fx:id="globeIV" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                            <image>

@@ -28,39 +28,43 @@ import models.Ai;
 import models.GameState;
 import models.MarkerShape;
 import models.Player;
+import models.SceneCallback.InjectPlayerCallback;
+import models.SceneCallback.LaunchCreateLobbyCallback;
 import models.SceneCallback.LaunchGameCallback;
 import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchScoreBoardCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
-import models.SceneCallback.LaunchLobbyCallback;
 import models.SceneCallback.LaunchLobbyFinderCallback;
 import models.SceneCallback.LaunchLoginCallback;
 import models.SceneCallback.LaunchRegisterCallback;
 import models.SceneCallback.ReturnToCallback;
+import services.AuthService;
 import models.TTTScene;
 import models.MusicPlayer.Track;
 import models.MusicPlayer;
 
 public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback,
-        LaunchShapePickerCallback, LaunchScoreBoardCallback, LaunchLobbyCallback, LaunchLobbyFinderCallback, LaunchLoginCallback, LaunchRegisterCallback {
+        LaunchShapePickerCallback, LaunchScoreBoardCallback, LaunchLobbyFinderCallback, LaunchLoginCallback, LaunchRegisterCallback, 
+        LaunchCreateLobbyCallback, InjectPlayerCallback {
 
+    private CreateLobby  createLobby;
+    private FXMLLoader   createLobbyFXML;
     private FXMLLoader   gameBoardFXML;
-    private GameState    gameState;
-    private Subscription gameStateSubscription;
-    private FXMLLoader   scoreboardFXML; 
+    private FXMLLoader   joinLobbyFXML;
+    private FXMLLoader   loginFXML;
     private FXMLLoader   mainMenuFXML;
     private FXMLLoader   markerPickerFXML;
-    private MusicPlayer  music;
     private FXMLLoader   optionsMenuFXML;
+    private FXMLLoader   registerFXML;
+    private FXMLLoader   scoreboardFXML; 
+    private FXMLLoader   splashScreenFXML;
+    private GameState    gameState;
+    private MusicPlayer  music;
     private Player       playerOne;
     private Player       playerTwo;
     private StackPane    rootPane;
-    private FXMLLoader   splashScreenFXML;
-    private FXMLLoader   createLobbyFXML;
-    private FXMLLoader   joinLobbyFXML;
-    private FXMLLoader   loginFXML;
-    private FXMLLoader   registerFXML;
+    private Subscription gameStateSubscription;
     private final long FADE_DURATION = 200;
 
     private LaunchMainMenuCallback  launchMainMenuCB;
@@ -73,6 +77,8 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     @Override
     public void start(Stage primaryStage) {
         try {
+            AuthService.getInstance().start();
+
             music = new MusicPlayer();            
             playerOne = new Player(Color.BLACK, UUID.randomUUID(), "Player 1", MarkerShape.X);
             playerTwo = new Ai(Color.BLACK, "Player 2", MarkerShape.O);
@@ -80,27 +86,27 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
 
             Font.loadFont(App.class.getResource("/assets/fonts/Pixeboy.ttf").toExternalForm(), 10);
 
+            createLobbyFXML = new FXMLLoader(getClass().getResource("/views/CreateLobby.fxml"));
             gameBoardFXML = new FXMLLoader(getClass().getResource("/views/game-board.fxml"));
+            joinLobbyFXML = new FXMLLoader(getClass().getResource("/views/join-lobby.fxml"));
+            loginFXML = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
             mainMenuFXML = new FXMLLoader(getClass().getResource("/views/main-menu.fxml"));
             markerPickerFXML = new FXMLLoader(getClass().getResource("/views/ShapeColorPicker.fxml"));
             optionsMenuFXML = new FXMLLoader(getClass().getResource("/views/OptionsMenu.fxml"));
+            registerFXML = new FXMLLoader(getClass().getResource("/views/Register.fxml"));
             scoreboardFXML = new FXMLLoader(getClass().getResource("/views/Scoreboard.fxml"));
             splashScreenFXML = new FXMLLoader(getClass().getResource("/views/SplashScreen.fxml"));
-            createLobbyFXML = new FXMLLoader(getClass().getResource("/views/CreateLobby.fxml"));
-            joinLobbyFXML = new FXMLLoader(getClass().getResource("/views/JoinLobby.fxml"));
-            loginFXML = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
-            registerFXML = new FXMLLoader(getClass().getResource("/views/Register.fxml"));
 
+            createLobbyFXML.load();
             gameBoardFXML.load();
+            joinLobbyFXML.load();
+            loginFXML.load();
             mainMenuFXML.load();
             markerPickerFXML.load();
             optionsMenuFXML.load();
+            registerFXML.load();
             scoreboardFXML.load();
             splashScreenFXML.load();
-            createLobbyFXML.load();
-            joinLobbyFXML.load();
-            loginFXML.load();
-            registerFXML.load();
 
             primaryStage.setTitle("Tic Tac Toe");
             primaryStage.setScene(new Scene(rootPane));
@@ -124,35 +130,42 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         }
     }
 
+    @Override 
+    public void injectPlayer(Player player){
+        this.playerOne = player;
+    }
+
     @Override
-    public void launchMainMenu() {
-        System.out.println("launchMainMenu");
-        music.playMusic(Track.title);
+    public void launchCreateLobby(){
+        try{
+            MusicPlayer musicSFX = new MusicPlayer();
+            musicSFX.playSFX(MusicPlayer.Track.openMenu);
 
-        MainMenu mainMenu = mainMenuFXML.getController();
-        mainMenu.setLaunchGameCB(this);
-        mainMenu.setOptionsMenuCB(this);
-        mainMenu.setShapePickerCB(this);
-        mainMenu.setLaunchLobbyCB(this);
-        System.out.println("playerTwo.getIsAi(): " + playerTwo.getIsAI());
-        mainMenu.setPlayers(playerOne, playerTwo);
+            CreateLobby createLobby = createLobbyFXML.getController();
 
-        if(rootPane.getChildren().size()  > 0){
-            launchScene(mainMenu.getRoot());
-        } else{
-            rootPane.getChildren().add(mainMenu.getRoot());
+            createLobby.setReturnToCB(new ReturnToCallback(){
+                @Override
+                public void returnTo() {launchMainMenu();}
+            });
+
+            createLobby.setLaunchGameCB(this);
+            createLobby.setLaunchOptionsMenuCB(this);
+            createLobby.setLaunchShapePickerCB(this);
+            createLobby.setPlayer(this.playerOne);
+
+            launchScene(createLobbyFXML.getRoot());
+        } catch(Exception e){
+            e.printStackTrace();
         }
     }
 
     @Override
     public void launchGame(GameState gameState) {
         try {
-            System.out.println("launchGame");
             this.gameState = gameState;
             music.playMusic(Track.waiting);
             playerOne = gameState.getPlayers().getValue0();
             playerTwo = gameState.getPlayers().getValue1();
-            System.out.println("playerTwo.getIsAi(): " + playerTwo.getIsAI());
 
             GameBoard gameBoard = gameBoardFXML.getController();
             gameBoard.setGameState(gameState);
@@ -160,12 +173,69 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             gameBoard.setOptionsMenuCB(this);
             gameBoard.setScoreBoardCB(this);
 
-
             subscribeToGameState(gameState);
             
             launchScene(gameBoard.getRoot());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void launchLogin(){
+        try{
+            Login login = loginFXML.getController();
+            login.setReturnToCB(new ReturnToCallback(){
+                @Override
+                public void returnTo() {}
+            });
+            login.setInjectPlayerCB(this);
+            login.setLaunchMainMenuCB(this);
+            login.setLaunchRegisterCallback(this);
+            launchScene(loginFXML.getRoot());
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public void launchLobbyFinder(){
+        try{
+            MusicPlayer musicSFX = new MusicPlayer();
+            musicSFX.playSFX(MusicPlayer.Track.openMenu);
+
+            JoinLobby joinLobby = joinLobbyFXML.getController();
+
+            joinLobby.setReturnToCB(new ReturnToCallback(){
+                @Override
+                public void returnTo() {launchMainMenu();}
+            });
+
+            joinLobby.setLaunchCreateLobbyCB(this);
+
+            launchScene(createLobbyFXML.getRoot());
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void launchMainMenu() {
+        System.out.println("launchMainMenu");
+        music.playMusic(Track.title);
+
+        MainMenu mainMenu = mainMenuFXML.getController();
+        mainMenu.setLaunchGameCB(this);
+        mainMenu.setLaunchLobbyFinderCB(this);
+        mainMenu.setOptionsMenuCB(this);
+        mainMenu.setShapePickerCB(this);
+        System.out.println("playerTwo.getIsAi(): " + playerTwo.getIsAI());
+        mainMenu.setPlayers(playerOne, playerTwo);
+
+        if(rootPane.getChildren().size()  > 0){
+            launchScene(mainMenu.getRoot());
+        } else{
+            rootPane.getChildren().add(mainMenu.getRoot());
         }
     }
 
@@ -179,6 +249,8 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
 
             OptionsController optionsMenu = optionsMenuFXML.getController();
             optionsMenu.acceptCaller(caller, music);
+            optionsMenu.acceptPlayer(this.playerOne);
+            optionsMenu.setLoginCB(this);
             optionsMenu.setMainMenuCB(this);
             optionsMenu.setReturnToCB(() -> {closeMenu(optionsMenu.getRoot());});
             openMenu(optionsMenu.getRoot());
@@ -188,17 +260,16 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     }
 
     @Override
-    public void launchShapePicker(Player player) {
+    public void launchRegister(){
         try{
-            if (music.getShouldPlaySFX()){
-                MusicPlayer music2 = new MusicPlayer();
-                music2.playSFX(MusicPlayer.Track.openMenu);
-            }
-
-            ShapeColorController markerMenu = markerPickerFXML.getController();
-            markerMenu.acceptPlayer(player, music);
-            markerMenu.setReturnCB(() -> {closeMenu(markerMenu.getRoot());});
-            openMenu(markerMenu.getRoot());
+            Register register = registerFXML.getController();
+            register.setReturnToCB(new ReturnToCallback(){
+                @Override
+                public void returnTo() {launchLogin();}
+            });
+            register.setInjectPlayerCB(this);
+            register.setLaunchMainMenuCB(this);
+            launchScene(registerFXML.getRoot());
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -217,6 +288,23 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
                 scoreboard.addPlayer(gameHistory.get(i));
             scoreboard.setReturnCB(() -> {closeMenu(scoreboard.getRoot());});
             openMenu(scoreboard.getRoot());
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void launchShapePicker(Player player) {
+        try{
+            if (music.getShouldPlaySFX()){
+                MusicPlayer music2 = new MusicPlayer();
+                music2.playSFX(MusicPlayer.Track.openMenu);
+            }
+
+            ShapeColorController markerMenu = markerPickerFXML.getController();
+            markerMenu.acceptPlayer(player, music);
+            markerMenu.setReturnCB(() -> {closeMenu(markerMenu.getRoot());});
+            openMenu(markerMenu.getRoot());
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -316,74 +404,6 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             openMenu(splashScreen.getRoot());
         }
         gameStateSubscription.request(1);
-    }
-
-
-    //NEW STUFF//
-
-    public void setLaunchMainMenuCB(LaunchMainMenuCallback launchMainMenuCB){
-        this.launchMainMenuCB = launchMainMenuCB;
-    }
-
-    @Override
-    public void launchLobby(){
-        try{
-            MusicPlayer musicSFX = new MusicPlayer();
-            musicSFX.playSFX(MusicPlayer.Track.openMenu);
-
-            CreateLobby createLobby = createLobbyFXML.getController();
-            createLobby.setLaunchLobbyFinderCB(this);
-            createLobby.setReturnToCB(new ReturnToCallback(){
-                @Override
-                public void returnTo() {launchMainMenu();}
-            });
-            createLobby.setOptionsMenuCB(this);
-            launchScene(createLobbyFXML.getRoot());
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void launchLobbyFinder(){
-        try{
-            JoinLobby joinLobby = joinLobbyFXML.getController();
-            joinLobby.setReturnToCB(new ReturnToCallback(){
-                @Override
-                public void returnTo() {launchLobby();}
-            });
-            launchScene(joinLobbyFXML.getRoot());
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void launchLogin(){
-        try{
-            Login login = loginFXML.getController();
-            login.setReturnToCB(new ReturnToCallback(){
-                @Override
-                public void returnTo() {}
-            });
-            launchScene(loginFXML.getRoot());
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void launchRegister(){
-        try{
-            Register register = registerFXML.getController();
-            register.setReturnToCB(new ReturnToCallback(){
-                @Override
-                public void returnTo() {launchLogin();}
-            });
-            launchScene(registerFXML.getRoot());
-        } catch(Exception e){
-            e.printStackTrace();
-        }
     }
     
     private void subscribeToGameState(GameState gameState){

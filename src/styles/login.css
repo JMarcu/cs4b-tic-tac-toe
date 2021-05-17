@@ -14,7 +14,6 @@
 
 Button {
     -fx-background-color: -secondary;
-    -fx-font-size: 26px;
     -fx-cursor: hand;
     -fx-text-fill: -text-on-secondary;
 }

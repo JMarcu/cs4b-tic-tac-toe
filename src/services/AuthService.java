@@ -4,7 +4,12 @@ import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.Session;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import models.Lobby;
 import models.Player;
 import models.ServerMessage.AuthenticationResultMessageBody;
 import models.ServerMessage.LoginMessageBody;
@@ -61,13 +66,15 @@ public class AuthService extends AbstractWebsocketService {
     private String refreshToken = null;
 
     /** A callback that is set when the user attempts to log in and invoked when the attempt completes or fails. */
-    private Consumer<Boolean> onLoginCallback = null;
+    private Consumer<Player> onLoginCallback = null;
 
     /** A callback that is set when the user attempts to log out and invoked when the attempt completes or fails. */
     private Consumer<Boolean> onLogoutCallback = null;
 
+    private HashMap<UUID, Consumer<Player.Patch>> onPlayerPropertyCallbackMap;
+
     /** A callback that is set when the user attempts to register and invoked when registration completes or fails. */
-    private Consumer<RegistrationResult> onRegistrationCallback = null;
+    private BiConsumer<RegistrationResult, Player> onRegistrationCallback = null;
 
     /** The singleton */
     private static AuthService instance = null;
@@ -179,7 +186,7 @@ public class AuthService extends AbstractWebsocketService {
      * @throws Exception Only one attempt to log in may be active at a time. If this method is invoked before
      * the callback supplied to a previous invocation has been invoked then an exception will be thrown.
      */
-    public void login(String username, String password, Consumer<Boolean> onLoginCallback) throws Exception {
+    public void login(String username, String password, Consumer<Player> onLoginCallback) throws Exception {
         if(this.onLoginCallback != null){
             /* If we are already attempting to log the user in, then throw an exception. Only one attempt to log
             in can be active at a time. */
@@ -201,7 +208,7 @@ public class AuthService extends AbstractWebsocketService {
         } catch (IOException e) {
             //If we fail to send the message for some reason, invoke the callback with failed status.
             e.printStackTrace();
-            invokeLoginCallback(false);
+            invokeLoginCallback(null);
         }
     }
 
@@ -212,7 +219,7 @@ public class AuthService extends AbstractWebsocketService {
      * @throws Exception Only one attempt to log out may be active at a time. If this method is invoked before
      * the callback supplied to a previous invocation has been invoked then an exception will be thrown.
      */
-    public void logout(Consumer<Boolean> onLogoutCallback) throws Exception {
+    public void logout(UUID playerId, Consumer<Boolean> onLogoutCallback) throws Exception {
         //If the refresh token is null then we are not logged in and this method does nothing.
         if(refreshToken != null){
             if(this.onLogoutCallback != null){
@@ -225,7 +232,7 @@ public class AuthService extends AbstractWebsocketService {
             }
 
             //Construct the logout request message.
-            final Message logoutMessage = new Message(new LogoutMessageBody(refreshToken), MessageType.LOGOUT);
+            final Message logoutMessage = new Message(new LogoutMessageBody(refreshToken, playerId), MessageType.LOGOUT);
             
             try {
                 //Send the request to the server.
@@ -249,7 +256,7 @@ public class AuthService extends AbstractWebsocketService {
      * @throws Exception Only one attempt to register may be active at a time. If this method is invoked before
      * the callback supplied to a previous invocation has been invoked then an exception will be thrown.
      */
-    public void register(String username, String password, Consumer<RegistrationResult> onRegisterCallback) throws Exception {
+    public void register(String username, String password, BiConsumer<RegistrationResult, Player> onRegisterCallback) throws Exception {
         if(this.onRegistrationCallback != null){
             /* If we are already attempting to register the user, then throw an exception. Only one attempt to register
             can be active at a time. */
@@ -271,7 +278,7 @@ public class AuthService extends AbstractWebsocketService {
         } catch (IOException e) {
             //If we fail to send the message for some reason, invoke the callback with an UNKOWN_ERROR status.
             e.printStackTrace();
-            invokeRegisterCallback(RegistrationResult.UNKNOWN_ERROR);
+            invokeRegisterCallback(RegistrationResult.UNKNOWN_ERROR, null);
         }
     }
 
@@ -279,17 +286,17 @@ public class AuthService extends AbstractWebsocketService {
      * Invokes the callback set when the user attempts to log in and handles the associated cleanup.
      * @param loginResult Whether or not the login succeeded.
      */
-    private void invokeLoginCallback(boolean loginResult){
+    private void invokeLoginCallback(Player player){
         if(this.onLoginCallback != null){
             /* Store a local-scoped copy of the callback, then set the instance-scoped reference to null.
             The callback might invoke the 'login' method, which will throw an exception if our 
             instance-scoped copy is not null, so it's important that it be set to null before invoking
             the callback */
-            Consumer<Boolean> tempLoginCB = this.onLoginCallback;
+            Consumer<Player> tempLoginCB = this.onLoginCallback;
             this.onLoginCallback = null;
 
             //Invoke the callback.
-            tempLoginCB.accept(false);
+            tempLoginCB.accept(player);
         }
     }
 
@@ -298,6 +305,8 @@ public class AuthService extends AbstractWebsocketService {
      * @param loginResult Whether or not the logout succeeded.
      */
     private void invokeLogoutCallback(boolean logoutResult){
+        System.out.println("invokeLogoutCallback");
+        System.out.println("onLogoutCallback: " + onLogoutCallback);
         if(this.onLogoutCallback != null){
             /* Store a local-scoped copy of the callback, then set the instance-scoped reference to null.
             The callback might invoke the 'logout' method, which will throw an exception if our 
@@ -307,7 +316,7 @@ public class AuthService extends AbstractWebsocketService {
             this.onLogoutCallback = null;
 
             //Invoke the callback.
-            tempLogoutCB.accept(false);
+            tempLogoutCB.accept(logoutResult);
         }
     }
     
@@ -316,19 +325,24 @@ public class AuthService extends AbstractWebsocketService {
      * @param registerResult A result code defining whether the registration attempt succeeded and, if not, why
      * it failed.
      */
-    private void invokeRegisterCallback(RegistrationResult registerResult){
+    private void invokeRegisterCallback(RegistrationResult registerResult, Player player){
         if(this.onRegistrationCallback != null){
             /* Store a local-scoped copy of the callback, then set the instance-scoped reference to null.
             The callback might invoke the 'register' method, which will throw an exception if our 
             instance-scoped copy is not null, so it's important that it be set to null before invoking
             the callback */
-            Consumer<RegistrationResult> tempRegResultCB = this.onRegistrationCallback;
+            BiConsumer<RegistrationResult, Player> tempRegResultCB = this.onRegistrationCallback;
             this.onRegistrationCallback = null;
 
             //Invoke the callback.
-            tempRegResultCB.accept(registerResult);
+            tempRegResultCB.accept(registerResult, player);
         }
     }
+
+    /*==========================================================================================================
+     * PROFILES
+     *==========================================================================================================*/
+
 
     /*==========================================================================================================
      * CLIENT ENDPOINT
@@ -353,7 +367,7 @@ public class AuthService extends AbstractWebsocketService {
                 if(!authResultBody.getSuccess()){
                     /* A failed authentication result indicates a failure to change session status. If we have any pending
                     requests of that nature (i.e. login or logout), invoke their callbacks. Else, ignore the message. */
-                    this.invokeLoginCallback(false);
+                    this.invokeLoginCallback(null);
                     this.invokeLogoutCallback(false);
                 } else{
                     //Do nothing. There is currently no reason to receive a successful authentication result message 
@@ -369,11 +383,12 @@ public class AuthService extends AbstractWebsocketService {
                 this.refreshToken = loginSuccessBody.getRefreshToken();
 
                 //Invoke the callback.
-                invokeLoginCallback(true);
+                invokeLoginCallback(loginSuccessBody.getPlayer());
                 break;
             case LOGOUT_SUCCESS:
                 //If we haven't stored a callback for handling a logout, ignore the message.
-                if(this.onRegistrationCallback != null){
+                System.out.println("onLogoutCallback: " + onLogoutCallback);
+                if(this.onLogoutCallback != null){
                     //Clear our auth tokens.
                     this.jwt = null;
                     this.refreshToken = null;
@@ -390,7 +405,7 @@ public class AuthService extends AbstractWebsocketService {
                 RegistrationResultMessageBody regResultBody = GSON.fromJson(message.getBody(), RegistrationResultMessageBody.class);
 
                 //Invoke the callback.
-                invokeRegisterCallback(regResultBody.getResult());
+                invokeRegisterCallback(regResultBody.getResult(), regResultBody.getPlayer());
         }
     }
 

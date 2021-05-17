@@ -1,17 +1,22 @@
 package controllers;
 
-import models.Player;
 import javafx.scene.control.TextField;
+
+import java.util.function.Consumer;
+
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
-import models.SceneCallback.LaunchLobbyCallback;
+import models.Player;
+import models.SceneCallback.InjectPlayerCallback;
 import models.SceneCallback.LaunchLoginCallback;
 import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.LaunchRegisterCallback;
 import models.SceneCallback.ReturnToCallback;
 import services.AuthService;
+import services.AuthService.RegistrationResult;
 
 public class Login {
 
@@ -22,52 +27,22 @@ public class Login {
     @FXML private Button returnBtn;
     @FXML private Pane root;
 
-    private ReturnToCallback returnToCB;
+    private InjectPlayerCallback injectPlayerCB;
     private LaunchLoginCallback launchLoginCB;
     private LaunchRegisterCallback launchRegisterCB;
     private LaunchMainMenuCallback launchMainMenuCB;
+    private ReturnToCallback returnToCB;
 
     @FXML void initialize(){
         root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
         root.getStylesheets().add(getClass().getResource("/styles/login.css").toExternalForm());
-
-        setLaunchLoginCallback(launchLoginCB);
-        setLaunchMainMenuCB(launchMainMenuCB);
-        setLaunchRegisterCB(launchRegisterCB);
-        setReturnToCB(returnToCB);
+        
+        loginBtn.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
     }
 
-    // public void onLoginAction(){
-    //     try {
-    //         // AuthService.getInstance().login(
-    //         //     "some username",
-    //         //     "'some password'",
-    //         //     new Consumer<Boolean>(){
-    //         //         @Override
-    //         //         public void accept(Boolean success) {
-    //         //             MainMenu.this.onLoginResult(success);
-    //         //         }
-    //         //     }
-    //         // );
-            
-            
-    //         //Do something before the server responds to your attempt to log in.
-    //         //For example, show a loading screen.
-    //     } catch (Exception e) {
-    //         // TODO Auto-generated catch block
-    //         e.printStackTrace();
-    //     }
-    // }
-
-    // private void onLoginResult(boolean success){
-    //     if(success){
-    //         //Do what you want to do if it works.
-    //         System.out.println("Yay!");
-    //     } else{
-    //         //Dow what you want to do if it fails.
-    //         System.out.println("Boo!");
-    //     }
-    // }
+    public void setInjectPlayerCB(InjectPlayerCallback injectPlayerCB){
+        this.injectPlayerCB = injectPlayerCB;
+    }
 
     public void setLaunchRegisterCB(LaunchRegisterCallback launchRegisterCB){
         this.launchRegisterCB = launchRegisterCB;
@@ -77,8 +52,37 @@ public class Login {
         this.launchMainMenuCB = launchMainMenuCB;
     }
 
+    public void setLaunchRegisterCallback(LaunchRegisterCallback launchRegisterCB){ 
+        this.launchRegisterCB = launchRegisterCB;
+    }
+
     @FXML protected void onLoginClicked(ActionEvent e){
-        launchMainMenuCB.launchMainMenu();
+        try {
+            AuthService.getInstance().login(
+                this.usernameField.getText(), 
+                this.passwordField.getText(),
+                new Consumer<Player>(){
+                    @Override
+                    public void accept(Player player) {
+                        System.out.println("Inside Consumer: " + player);
+                        Platform.runLater(new Runnable(){
+                            @Override
+                            public void run() {
+                                System.out.println("Inside Runnable");
+                                if(player != null){
+                                    Login.this.injectPlayerCB.injectPlayer(player);
+                                    Login.this.launchMainMenuCB.launchMainMenu();
+                                }
+                            }
+                        });
+                    }
+                } 
+
+            );
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
     }
 
     @FXML protected void onRegisterClicked(ActionEvent e){

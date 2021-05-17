@@ -20,15 +20,25 @@ public class GameState implements Publisher<GameState.Patch>  {
     /** Describes where in the game is in it's lifecycle. */
     public enum Status {
         /** A freshly created game. No players have taken a turn yet. */
-        NEW, 
+        NEW("New"), 
         /** The game has begun and players have taken turns, but it has not ended in either a draw or victory. */
-        IN_PROGRESS,
+        IN_PROGRESS("In Progress"),
         /** The game has ended, inconclusively, in a draw between the players. */
-        DRAW, 
+        DRAW("Draw"), 
         /** The game has ended and been won by a player. Check {@link GameState.winner} for a description of the winning player. */
-        WON, 
+        WON("Won"), 
         /** The game has been abandoned. It is no longer being played, despite never finishing in a draw or victory. */
-        ABANDONED
+        ABANDONED("Abandoned");
+
+        private String str;
+
+        Status(String str){
+            this.str = str;
+        }
+
+        public String toString(Status status){
+            return str;
+        }
     }
 
     /**
@@ -254,6 +264,20 @@ public class GameState implements Publisher<GameState.Patch>  {
      * @returns The game's winner, or null if there is no winner.
      */
     public Player getWinner() { return this.winner; }
+
+    public void setPlayerOne(Player player) { 
+        this.players = new Pair<Player, Player>(player, this.players.getValue1());
+        this.notifySubscribers(new Patch(){
+            { players = GameState.this.players; }
+        });
+    }
+
+    public void setPlayerTwo(Player player) { 
+        this.players = new Pair<Player, Player>(this.players.getValue0(), player);
+        this.notifySubscribers(new Patch(){
+            { players = GameState.this.players; }
+        });
+    }
 
     /*==========================================================================================================
      * GAME LOGIC - methods for controlling the flow of the game

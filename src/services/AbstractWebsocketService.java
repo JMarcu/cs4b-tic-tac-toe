@@ -105,7 +105,7 @@ public abstract class AbstractWebsocketService extends Thread implements Sender 
      * @param closeReason Defines the manner in which the session has ended.
      */
     @OnClose
-    private void onClose(Session session, CloseReason closeReason){
+    public void onClose(Session session, CloseReason closeReason){
         this.handleClose(session, closeReason);
     }
     
@@ -118,7 +118,8 @@ public abstract class AbstractWebsocketService extends Thread implements Sender 
      * @param messageString The received message, serialized as a string.
      */
     @OnMessage
-    private void onMessage(Session session, String messageString){
+    public void onMessage(Session session, String messageString){
+        System.out.println("Message Received: " + messageString);
         Message message = GSON.fromJson(messageString, Message.class);
         this.handleMessage(session, message);
     }
@@ -130,7 +131,7 @@ public abstract class AbstractWebsocketService extends Thread implements Sender 
      * @param session The session object representing the websocket conversation.
      */
     @OnOpen
-    private void onOpen(Session session){
+    public void onOpen(Session session){
         this.session = session;
         this.handleOpen(session);
     }
@@ -164,6 +165,7 @@ public abstract class AbstractWebsocketService extends Thread implements Sender 
             uriBuilder.append(WEBSOCKET_ROUTE);
 
             session = container.connectToServer(this, new URI(uriBuilder.toString()));
+            System.out.println("Connection Established: " + session);
         } catch (DeploymentException | IOException | URISyntaxException e) {
             e.printStackTrace();
         }

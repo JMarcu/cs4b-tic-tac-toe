@@ -6,19 +6,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import org.javatuples.Pair;
+
 public class Lobby implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private UUID id;
     private String name;
-    private ArrayList<Player> players;
+    private int playerCount;
+    private Pair<Player, Player> players;
     private GameState.Status status;
 
     public Lobby(String name){
-        this(UUID.randomUUID(), name, new ArrayList<Player>(), GameState.Status.NEW);
+        this(UUID.randomUUID(), name, new Pair<Player, Player>(null, null), GameState.Status.NEW);
     }
 
-    public Lobby(UUID id, String name, ArrayList<Player> players, GameState.Status status){
+    public Lobby(UUID id, String name, Pair<Player, Player> players, GameState.Status status){
         this.id = id;
         this.name = name;
         this.players = players;
@@ -27,6 +30,25 @@ public class Lobby implements Serializable {
 
     public UUID getId(){ return this.id; }
     public String getName(){ return this.name; }
-    public List<Player> getPlayers(){ return Collections.unmodifiableList(this.players); }
+    public Pair<Player, Player> getPlayers(){ return this.players; }
     public GameState.Status getStatus(){ return this.status; }
+
+    public int getPlayerCount(){
+        int playerCount = 0;
+        if(players.getValue0() != null){
+            playerCount++;
+        }
+        if(players.getValue1() != null){
+            playerCount++;
+        }
+        return playerCount;
+    }
+
+    public int getSpectatorCount(){
+        return 0;
+    }
+
+    public String getStatusString(){
+        return status.toString();
+    }
 }

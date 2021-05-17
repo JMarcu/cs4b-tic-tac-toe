@@ -1,21 +1,26 @@
 package controllers;
 
+import java.util.function.Consumer;
+
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-//import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Button;
 import models.SceneCallback.ReturnToCallback;
+import services.AuthService;
+import models.SceneCallback.LaunchLoginCallback;
 import models.SceneCallback.LaunchMainMenuCallback;
 import models.MusicPlayer;
+import models.Player;
 
 public class OptionsController {
 
+    private LaunchLoginCallback launchLoginCB;
     private LaunchMainMenuCallback mainMenuCB;
     private ReturnToCallback returnToCB;
     private MusicPlayer music;
-
-    //private MusicPlayer music;
+    private Player player;
 
     @FXML
     private Button RestartButton;
@@ -41,6 +46,10 @@ public class OptionsController {
         }
 
         this.music = music;
+    }
+
+    public void acceptPlayer(Player player){
+        this.player = player;
     }
 
     @FXML private StackPane root;
@@ -94,6 +103,33 @@ public class OptionsController {
         //Exits program
 
         System.exit(0);
+    }
+
+    @FXML protected void onLogoutAction(ActionEvent e){
+        try {
+            AuthService.getInstance().logout(
+                player.getUuid(),
+                new Consumer<Boolean>(){
+                    @Override
+                    public void accept(Boolean success) {
+                        System.out.println("Inside Consumer");
+                        Platform.runLater(new Runnable(){
+                            @Override
+                            public void run() {
+                                OptionsController.this.launchLoginCB.launchLogin();
+                            }
+                        });
+                    }
+                }
+            );
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+    }
+
+    public void setLoginCB(LaunchLoginCallback launchLoginCB){
+        this.launchLoginCB = launchLoginCB;
     }
 
     public void setMainMenuCB(LaunchMainMenuCallback mainMenuCB){

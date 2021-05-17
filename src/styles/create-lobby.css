@@ -2,6 +2,12 @@
     -fx-font-family: Pixeboy;
 }
 
+.marker-pane {
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain; 
+}
+
 .title {
     -fx-font-color: -text-on-primary;
 }

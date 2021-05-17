@@ -56,7 +56,7 @@
                         <Font size="36.0" />
                      </font>
                   </Button>
-                  <Button id="ReturnButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" prefHeight="83.0" prefWidth="600.0" text="Log out" GridPane.rowIndex="5">
+                  <Button id="ReturnButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" prefHeight="83.0" prefWidth="600.0" text="Log out" GridPane.rowIndex="5" onAction='#onLogoutAction'>
                      <font>
                         <Font size="36.0" />
                      </font>

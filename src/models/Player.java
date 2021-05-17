@@ -17,9 +17,7 @@ public class Player implements Serializable {
      ************************************************************************************************************/
 
     /** Describes a differential and atomic update to the player's state. Objects of this type are dispatched to subscribers */
-    public static class Patch implements Serializable {
-        private static final long serialVersionUID = 1L;
-
+    public static class Patch {
         /** The color of the player's marker. */
         protected SerializeableColor color;
 
@@ -130,15 +128,14 @@ public class Player implements Serializable {
      */
     public boolean getIsAI() {return isAi;}
 
-    /**
-     * Sets the color of the player's marker. Subscribers are notified.
-     * @param color The new color of the player's marker.
-     */
-    public void setColor(Color color){
+
+    public void setMarker(MarkerShape shape, Color color){
         this.color = new SerializeableColor(color);
+        this.shape = shape;
         this.notifySubscribers(new Patch(){
             {
                 color = Player.this.color;
+                shape = Player.this.shape;
             }
         });
     }
@@ -152,19 +149,6 @@ public class Player implements Serializable {
         this.notifySubscribers(new Patch(){
             {
                 name = Player.this.name;
-            }
-        });
-    }
-
-    /**
-     * Sets the shape of the player's marker. Subscribers are notified.
-     * @param shape The new shape of the player's marker.
-     */
-    public void setShape(MarkerShape shape){
-        this.shape = shape;
-        this.notifySubscribers(new Patch(){
-            {
-                shape = Player.this.shape;
             }
         });
     }

@@ -43,13 +43,14 @@ public class ShapeColorController {
     public ScrollPane getRoot(){ return this.root; }
 
     @FXML protected void ReturnButtonClicked(ActionEvent event) {
-        //System.out.println("currentColor: " + currentColor);
         if (music.getShouldPlaySFX()){
             musicSFX.playSFX(MusicPlayer.Track.exitMenu);
         }
 
-        player.setColor(currentColor != null ? currentColor : Color.BLACK);
-        player.setShape(myShape);
+        player.setMarker(
+            myShape,
+            currentColor != null ? currentColor : Color.BLACK
+        );
         returnCB.returnTo();
     }
 
