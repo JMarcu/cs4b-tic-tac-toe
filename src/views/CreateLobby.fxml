@@ -19,7 +19,7 @@
 
 <ScrollPane fx:id="root" fitToHeight="true" fitToWidth="true" prefHeight="407.0" prefWidth="615.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CreateLobby">
    <content>
-      <BorderPane prefHeight="200.0" prefWidth="200.0">
+      <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: -primary; -fx-border-color: -primary;">
          <center>
             <GridPane maxHeight="500.0" maxWidth="800.0" BorderPane.alignment="CENTER">
               <columnConstraints>
@@ -42,15 +42,19 @@
                         <Image url="@../assets/images/splash/globe.png" />
                      </image>
                   </ImageView>
-                  <Label fx:id="title" prefHeight="65.0" prefWidth="257.0" text="Online Match" GridPane.columnSpan="2">
+                  <Label fx:id="title" maxWidth="1.7976931348623157E308" prefHeight="65.0" prefWidth="257.0" text="Online Match" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS">
                      <font>
-                        <Font size="35.0" />
+                        <Font size="64.0" />
                      </font>
+                     <styleClass>
+                        <String fx:value="arcade-font" />
+                        <String fx:value="title" />
+                     </styleClass>
                   </Label>
-                  <Button fx:id="createBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onCreateLobbyAction" prefHeight="99.0" prefWidth="135.0" text="Create Lobby" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" />
+                  <Button fx:id="createBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onCreateLobbyAction" prefHeight="99.0" prefWidth="135.0" styleClass="arcade-font" text="Create Lobby" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" />
                   <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnSpan="3" GridPane.rowIndex="4">
                      <children>
-                        <Label text="Lobby Name">
+                        <Label styleClass="arcade-font" text="Lobby Name">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -64,7 +68,7 @@
                   </VBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="2">
                      <children>
-                        <Label text="Player">
+                        <Label styleClass="arcade-font" text="Player">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -97,7 +101,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="returnBtn" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#onReturnAction" text="Back" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0">
+                  <Button fx:id="returnBtn" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#onReturnAction" styleClass="arcade-font" text="Back" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0">
                      <HBox.margin>
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>

@@ -11,6 +11,7 @@ public enum MessageType {
     CREATE_LOBBY,
     LOBBY_LIST,
     LOGIN,
+    LOGIN_FAIL,
     LOGIN_SUCCESS,
     LOGOUT,
     LOGOUT_SUCCESS,

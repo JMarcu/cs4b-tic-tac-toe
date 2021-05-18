@@ -21,12 +21,23 @@ public class OptionsController {
     private ReturnToCallback returnToCB;
     private MusicPlayer music;
     private Player player;
+    private boolean online;
 
-    @FXML
-    private Button RestartButton;
+    @FXML private Button logInOutBtn;
+    @FXML private Button RestartButton;
+    @FXML private Button MainMenuButton;
+    @FXML private StackPane root;
 
-    @FXML
-    private Button MainMenuButton;
+    public OptionsController(){
+        this.online = false;
+    }
+
+    @FXML void initialize(){
+        root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/styles/options-menu.css").toExternalForm());
+        
+        logInOutBtn.setText(online ? "Log Out" : "Log In");
+    }
 
     public void acceptCaller(String caller, MusicPlayer music)
     {
@@ -48,11 +59,17 @@ public class OptionsController {
         this.music = music;
     }
 
+    public void acceptOnline(boolean online){
+        this.online = online;
+
+        if(this.logInOutBtn != null){
+            logInOutBtn.setText(online ? "Log Out" : "Log In");
+        }
+    }
+
     public void acceptPlayer(Player player){
         this.player = player;
     }
-
-    @FXML private StackPane root;
 
     public StackPane getRoot(){ return this.root; }
     
@@ -105,26 +122,30 @@ public class OptionsController {
         System.exit(0);
     }
 
-    @FXML protected void onLogoutAction(ActionEvent e){
-        try {
-            AuthService.getInstance().logout(
-                player.getUuid(),
-                new Consumer<Boolean>(){
-                    @Override
-                    public void accept(Boolean success) {
-                        System.out.println("Inside Consumer");
-                        Platform.runLater(new Runnable(){
-                            @Override
-                            public void run() {
-                                OptionsController.this.launchLoginCB.launchLogin();
-                            }
-                        });
+    @FXML protected void onLogInOutAction(ActionEvent e){
+        if(online){
+            try {
+                AuthService.getInstance().logout(
+                    player.getUuid(),
+                    new Consumer<Boolean>(){
+                        @Override
+                        public void accept(Boolean success) {
+                            System.out.println("Inside Consumer");
+                            Platform.runLater(new Runnable(){
+                                @Override
+                                public void run() {
+                                    OptionsController.this.launchLoginCB.launchLogin();
+                                }
+                            });
+                        }
                     }
-                }
-            );
-        } catch (Exception e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+                );
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        } else{
+            OptionsController.this.launchLoginCB.launchLogin();
         }
     }
 

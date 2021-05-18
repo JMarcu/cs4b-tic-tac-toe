@@ -12,6 +12,7 @@ import controllers.Login;
 import controllers.Register;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
+import java.util.function.Consumer;
 import java.util.UUID;
 import java.util.Vector;
 import javafx.animation.FadeTransition;
@@ -28,7 +29,6 @@ import models.Ai;
 import models.GameState;
 import models.MarkerShape;
 import models.Player;
-import models.SceneCallback.InjectPlayerCallback;
 import models.SceneCallback.LaunchCreateLobbyCallback;
 import models.SceneCallback.LaunchGameCallback;
 import models.SceneCallback.LaunchMainMenuCallback;
@@ -45,30 +45,28 @@ import models.MusicPlayer.Track;
 import models.MusicPlayer;
 
 public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback,
-        LaunchShapePickerCallback, LaunchScoreBoardCallback, LaunchLobbyFinderCallback, LaunchLoginCallback, LaunchRegisterCallback, 
-        LaunchCreateLobbyCallback, InjectPlayerCallback {
+        LaunchShapePickerCallback, LaunchScoreBoardCallback, LaunchLobbyFinderCallback, LaunchLoginCallback, 
+        LaunchRegisterCallback, LaunchCreateLobbyCallback {
 
     private CreateLobby  createLobby;
     private FXMLLoader   createLobbyFXML;
+    private GameState    gameState;
+    private Subscription gameStateSubscription;
     private FXMLLoader   gameBoardFXML;
     private FXMLLoader   joinLobbyFXML;
     private FXMLLoader   loginFXML;
     private FXMLLoader   mainMenuFXML;
     private FXMLLoader   markerPickerFXML;
-    private FXMLLoader   optionsMenuFXML;
-    private FXMLLoader   registerFXML;
-    private FXMLLoader   scoreboardFXML; 
-    private FXMLLoader   splashScreenFXML;
-    private GameState    gameState;
     private MusicPlayer  music;
+    private boolean      online;
+    private FXMLLoader   optionsMenuFXML;
     private Player       playerOne;
     private Player       playerTwo;
+    private FXMLLoader   registerFXML;
     private StackPane    rootPane;
-    private Subscription gameStateSubscription;
+    private FXMLLoader   scoreboardFXML; 
+    private FXMLLoader   splashScreenFXML;
     private final long FADE_DURATION = 200;
-
-    private LaunchMainMenuCallback  launchMainMenuCB;
-    private LaunchLoginCallback     launchloginCB;
 
     public static void main(String[] args) {
         launch(args);
@@ -130,11 +128,6 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         }
     }
 
-    @Override 
-    public void injectPlayer(Player player){
-        this.playerOne = player;
-    }
-
     @Override
     public void launchCreateLobby(){
         try{
@@ -145,7 +138,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
 
             createLobby.setReturnToCB(new ReturnToCallback(){
                 @Override
-                public void returnTo() {launchMainMenu();}
+                public void returnTo() {launchLobbyFinder();}
             });
 
             createLobby.setLaunchGameCB(this);
@@ -185,11 +178,19 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     public void launchLogin(){
         try{
             Login login = loginFXML.getController();
-            login.setReturnToCB(new ReturnToCallback(){
+            login.setInjectOnlineCB(new Consumer<Boolean>(){
                 @Override
-                public void returnTo() {}
+                public void accept(Boolean online) {
+                    App.this.online = online;
+                }
             });
-            login.setInjectPlayerCB(this);
+            login.setInjectPlayerCB(new Consumer<Player>(){
+                @Override
+                public void accept(Player player) {
+                    App.this.playerOne = player;
+                }
+            });
+            login.setLaunchLobbyFinderCB(this);
             login.setLaunchMainMenuCB(this);
             login.setLaunchRegisterCallback(this);
             launchScene(loginFXML.getRoot());
@@ -200,6 +201,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     
     @Override
     public void launchLobbyFinder(){
+        System.out.println("Launch Lobby Finder");
         try{
             MusicPlayer musicSFX = new MusicPlayer();
             musicSFX.playSFX(MusicPlayer.Track.openMenu);
@@ -212,8 +214,10 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             });
 
             joinLobby.setLaunchCreateLobbyCB(this);
+            joinLobby.setLaunchMainMenuCB(this);
+            joinLobby.setLaunchOptionsMenuCB(this);
 
-            launchScene(createLobbyFXML.getRoot());
+            launchScene(joinLobby.getRoot());
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -221,16 +225,15 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
 
     @Override
     public void launchMainMenu() {
-        System.out.println("launchMainMenu");
         music.playMusic(Track.title);
 
         MainMenu mainMenu = mainMenuFXML.getController();
         mainMenu.setLaunchGameCB(this);
         mainMenu.setLaunchLobbyFinderCB(this);
+        mainMenu.setOnline(online);
         mainMenu.setOptionsMenuCB(this);
-        mainMenu.setShapePickerCB(this);
-        System.out.println("playerTwo.getIsAi(): " + playerTwo.getIsAI());
         mainMenu.setPlayers(playerOne, playerTwo);
+        mainMenu.setShapePickerCB(this);
 
         if(rootPane.getChildren().size()  > 0){
             launchScene(mainMenu.getRoot());
@@ -249,6 +252,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
 
             OptionsController optionsMenu = optionsMenuFXML.getController();
             optionsMenu.acceptCaller(caller, music);
+            optionsMenu.acceptOnline(online);
             optionsMenu.acceptPlayer(this.playerOne);
             optionsMenu.setLoginCB(this);
             optionsMenu.setMainMenuCB(this);
@@ -267,8 +271,19 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
                 @Override
                 public void returnTo() {launchLogin();}
             });
-            register.setInjectPlayerCB(this);
-            register.setLaunchMainMenuCB(this);
+            register.setInjectOnlineCB(new Consumer<Boolean>(){
+                @Override
+                public void accept(Boolean online){
+                    App.this.online = online;
+                }
+            });
+            register.setInjectPlayerCB(new Consumer<Player>(){
+                @Override
+                public void accept(Player player) {
+                    App.this.playerOne = player;
+                }
+            });
+            register.setLaunchLobbyFinderCB(this);
             launchScene(registerFXML.getRoot());
         } catch(Exception e){
             e.printStackTrace();

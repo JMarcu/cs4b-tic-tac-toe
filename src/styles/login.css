@@ -1,5 +1,6 @@
 .arcade-font {
     -fx-font-family: Pixeboy;
+    -fx-font-size: 20px;
 }
 
 .title {

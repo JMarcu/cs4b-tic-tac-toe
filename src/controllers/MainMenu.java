@@ -9,6 +9,8 @@ import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
@@ -46,6 +48,9 @@ public class MainMenu {
 
     /** Interface invoked to tell the scene controller to launch a game. */
     private LaunchGameCallback launchGameCB;
+
+    /** Whether or not the player is logged into online play. */
+    private boolean online;
 
     /** Interface invoked to tell the scene controller to open the options menu. */
     private LaunchOptionsMenuCallback optionsMenuCB;
@@ -90,11 +95,17 @@ public class MainMenu {
     /** ImageView displaying a gear for the options menu button. */
     @FXML private ImageView gearIV;
 
+    @FXML private ImageView globeIV;
+
     /** ToggleButton for selecting to vs a second human opponent. */
     @FXML private ToggleButton humanBtn;
 
-    // @FXML private ChoiceBox<String> gameModeCB;
-    
+    @FXML private ImageView localIV;
+
+    @FXML private Label localLabel;
+
+    @FXML private Button onlineBtn;
+
     /** TextField for displaying and editing the first player's name. */
     @FXML private TextField playerOneNameTF;
 
@@ -127,6 +138,7 @@ public class MainMenu {
      *  - Game mode will be set to {@link GameMode.FREE_PLAY}.
      */
     public MainMenu(){
+        this.online = false;
         this.playerOne = new Player(Color.BLACK, UUID.randomUUID(), "Player 1", MarkerShape.X);
         this.playerTwo = new Player(Color.BLACK, UUID.randomUUID(), "Player 2", MarkerShape.O);
         this.secondaryOption = -1;
@@ -146,6 +158,11 @@ public class MainMenu {
         //Set the state of the single player toggle buttons.
         aiBtn.setSelected(singlePlayer);
         humanBtn.setSelected(!singlePlayer);
+
+        this.globeIV.setOpacity(online ? 1 : 0);
+        this.localIV.setOpacity(online ? 0 : 1);
+        this.localLabel.setOpacity(online ? 0 : 1);
+        this.onlineBtn.setDisable(!online);
 
         //Color the options button to fit the color scheme.
         ColorScheme.adjustImageColor(gearIV, ColorScheme.TEXT_ON_SECONDARY.getColor());
@@ -183,13 +200,29 @@ public class MainMenu {
         this.launchGameCB = launchGameCB;
     }
 
+    public void setLaunchLobbyFinderCB(LaunchLobbyFinderCallback launchLobbyFinderCB){
+        this.launchLobbyFinderCB = launchLobbyFinderCB;
+    }
+
+    public void setOnline(boolean online){
+        this.online = online;
+        if(this.globeIV != null){
+            this.globeIV.setOpacity(online ? 1 : 0);
+        }
+        if(this.localIV != null){
+            this.localIV.setOpacity(online ? 0 : 1);
+        }
+        if(this.localLabel != null){
+            this.localLabel.setOpacity(online ? 0 : 1);
+        }
+        if(this.onlineBtn != null){
+            this.onlineBtn.setDisable(!online);
+        }
+    }
+
     /** Sets the callback to be invoked when the MainMenu wants to open the options menu. */
     public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB){
         this.optionsMenuCB = optionsMenuCB;
-    }
-
-    public void setLaunchLobbyFinderCB(LaunchLobbyFinderCallback launchLobbyFinderCB){
-        this.launchLobbyFinderCB = launchLobbyFinderCB;
     }
 
     /** Sets and binds the two players in the game. */

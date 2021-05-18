@@ -2,16 +2,15 @@ package controllers;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import models.Player;
-import models.SceneCallback.InjectPlayerCallback;
-import models.SceneCallback.LaunchMainMenuCallback;
+import models.SceneCallback.LaunchLobbyFinderCallback;
 import models.SceneCallback.ReturnToCallback;
 import services.AuthService;
 import services.AuthService.RegistrationResult;
@@ -21,10 +20,11 @@ public class Register {
     @FXML private TextField passwordField;
     @FXML private Button registerBtn;
     @FXML private Button returnBtn;
-    @FXML private Pane root;
+    @FXML private ScrollPane root;
 
-    private InjectPlayerCallback injectPlayerCB;
-    private LaunchMainMenuCallback launchMainMenuCB;
+    private Consumer<Boolean> injectOnlineCB;
+    private Consumer<Player> injectPlayerCB;
+    private LaunchLobbyFinderCallback launchLobbyFinderCB;
     private ReturnToCallback returnToCB;
 
     @FXML void initialize(){
@@ -55,8 +55,9 @@ public class Register {
                                     case PASSWORD_FAILS_REQUIREMENTS:
                                         break;
                                     case SUCCESS:
-                                        Register.this.injectPlayerCB.injectPlayer(player);
-                                        Register.this.launchMainMenuCB.launchMainMenu();
+                                        Register.this.injectOnlineCB.accept(true);
+                                        Register.this.injectPlayerCB.accept(player);
+                                        Register.this.launchLobbyFinderCB.launchLobbyFinder();
                                         break;
                                     case UNKNOWN_ERROR:
                                         break;
@@ -75,13 +76,19 @@ public class Register {
         }
     }
 
-    public Pane getRoot(){ return this.root; }
+    public ScrollPane getRoot(){ return this.root; }
 
-    public void setInjectPlayerCB(InjectPlayerCallback injectPlayerCB){
+    public void setInjectOnlineCB(Consumer<Boolean> injectOnlineCB){
+        this.injectOnlineCB = injectOnlineCB;
+    }
+
+    public void setInjectPlayerCB(Consumer<Player> injectPlayerCB){
         this.injectPlayerCB = injectPlayerCB;
     }
 
-    public void setLaunchMainMenuCB(LaunchMainMenuCallback launchMainMenuCB){ this.launchMainMenuCB = launchMainMenuCB; }
+    public void setLaunchLobbyFinderCB(LaunchLobbyFinderCallback launchLobbyFinderCB){ 
+        this.launchLobbyFinderCB = launchLobbyFinderCB; 
+    }
 
     public void setReturnToCB(ReturnToCallback returnToCB){this.returnToCB = returnToCB;}
 }

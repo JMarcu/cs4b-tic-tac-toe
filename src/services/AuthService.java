@@ -374,6 +374,8 @@ public class AuthService extends AbstractWebsocketService {
                     //from the auth service. On a successfull login, instead expect a LOGIN_SUCCESS message.
                 }
                 break;
+            case LOGIN_FAIL:
+                break;
             case LOGIN_SUCCESS:
                 //Deserialize the body.
                 LoginSuccessMessageBody loginSuccessBody = GSON.fromJson(message.getBody(), LoginSuccessMessageBody.class);

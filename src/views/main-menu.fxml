@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -21,28 +28,24 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="root" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="425.0" prefWidth="625.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainMenu">
+<ScrollPane fx:id="root" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="425.0" prefWidth="625.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainMenu">
    <content>
       <BorderPane minHeight="400.0" minWidth="600.0" style="-fx-background-color: -primary; -fx-border-color: -primary;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <bottom>
             <Pane minHeight="100.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button layoutX="14.0" layoutY="11.0" mnemonicParsing="false" prefHeight="10.0" prefWidth="10.0">
-                     <graphic>
-                        <ImageView fx:id="globeIV" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../assets/images/splash/globe.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Label alignment="CENTER_RIGHT" layoutX="271.0" layoutY="32.0" prefHeight="33.0" prefWidth="82.0" text="Local Play">
+                  <Label fx:id="localLabel" alignment="CENTER_RIGHT" layoutX="54.0" layoutY="34.0" prefHeight="33.0" prefWidth="82.0" text="Local Play">
                      <font>
                         <Font size="15.0" />
                      </font></Label>
-                  <ImageView fitHeight="29.0" fitWidth="26.0" layoutX="360.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="localIV" fitHeight="29.0" fitWidth="26.0" layoutX="28.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../assets/images/splash/dced.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="globeIV" fitHeight="50.0" fitWidth="50.0" layoutX="28.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../assets/images/splash/globe.png" />
                      </image>
                   </ImageView>
                </children></Pane>
@@ -131,13 +134,14 @@
                      </VBox.margin>
                   </GridPane>
                   <Separator layoutX="10.0" layoutY="85.0" maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayAction" styleClass="arcade-font, play-btn" text="Play" VBox.vgrow="ALWAYS">
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPlayAction" styleClass="arcade-font, play-btn" text="Start" VBox.vgrow="ALWAYS">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Button>
                   <Separator layoutX="10.0" layoutY="85.0" maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" VBox.vgrow="ALWAYS" />
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onOnlineAction" styleClass="arcade-font, play-btn" text="Test Online" VBox.vgrow="ALWAYS">
+                  <Separator maxHeight="1.7976931348623157E308" opacity="0.0" orientation="VERTICAL" prefHeight="20.0" />
+                  <Button fx:id="onlineBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onOnlineAction" styleClass="arcade-font, play-btn" text="Play Online" VBox.vgrow="ALWAYS">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>

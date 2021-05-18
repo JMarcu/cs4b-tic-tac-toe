@@ -12,19 +12,26 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import models.ColorScheme;
 import models.Lobby;
 import models.MusicPlayer;
 import models.SceneCallback.LaunchCreateLobbyCallback;
+import models.SceneCallback.LaunchMainMenuCallback;
+import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.ReturnToCallback;
 
 public class JoinLobby {
     private LaunchCreateLobbyCallback createLobbyCB;
+    private LaunchMainMenuCallback mainMenuCB;
     private MusicPlayer music;
+    private LaunchOptionsMenuCallback optionsCB;
     private ReturnToCallback returnToCB;
 
     @FXML private Button backBtn;
     @FXML private Button createLobbyBtn;
+    @FXML private ImageView gearIV;
     @FXML private Button joinBtn;
     @FXML private TableColumn<Lobby, String> lobbyColumn;
     @FXML private TableView<Lobby> lobbyTable;
@@ -45,8 +52,13 @@ public class JoinLobby {
 
     @FXML
     void initialize() {
+        System.out.println("Join Lobby Initialize");
+
         root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
         root.getStylesheets().add(getClass().getResource("/styles/join-lobby.css").toExternalForm());
+        
+        //Color the options button to fit the color scheme.
+        ColorScheme.adjustImageColor(gearIV, ColorScheme.TEXT_ON_SECONDARY.getColor());
 
         this.lobbyColumn.prefWidthProperty().bind(lobbyTable.widthProperty().subtract(3 * FIXED_COLUMN_WIDTH));
 
@@ -83,12 +95,23 @@ public class JoinLobby {
 
     @FXML
     private void onCreateLobbyAction(ActionEvent event) {
+        System.out.println("Create Lobby Action");
         this.createLobbyCB.launchCreateLobby();
     }
 
     @FXML
     private void onJoinAction(ActionEvent event) {
 
+    }
+
+    @FXML
+    private void onOptions(ActionEvent event){
+        this.optionsCB.launchOptionsMenu("");
+    }
+
+    @FXML
+    private void onPlayOfflineAction(ActionEvent event){
+        this.mainMenuCB.launchMainMenu();
     }
 
     @FXML
@@ -107,6 +130,14 @@ public class JoinLobby {
 
     public void setLaunchCreateLobbyCB(LaunchCreateLobbyCallback createLobbyCB){
         this.createLobbyCB = createLobbyCB;
+    }
+
+    public void setLaunchMainMenuCB(LaunchMainMenuCallback mainMenuCB){
+        this.mainMenuCB = mainMenuCB;
+    }
+
+    public void setLaunchOptionsMenuCB(LaunchOptionsMenuCallback optionsCB){
+        this.optionsCB = optionsCB;
     }
 
     public void setReturnToCB(ReturnToCallback returnToCB){

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
@@ -13,39 +14,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="625.0" prefWidth="605.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.JoinLobby">
    <content>
-      <BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
-         <top>
-            <GridPane BorderPane.alignment="CENTER">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Button fx:id="backBtn" mnemonicParsing="false" onAction="#onBackAction" text="Back" GridPane.columnSpan="2">
-                     <GridPane.margin>
-                        <Insets left="20.0" top="20.0" />
-                     </GridPane.margin>
-                  </Button>
-               </children>
-            </GridPane>
-         </top>
+      <BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: -primary; -fx-border-color: -primary;">
          <center>
             <AnchorPane maxWidth="1500.0">
                <children>
@@ -55,12 +26,13 @@
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                      </columnConstraints>
                      <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <TableView fx:id="lobbyTable" maxWidth="1500.0" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+                        <TableView fx:id="lobbyTable" maxWidth="1500.0" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
                           <columns>
                             <TableColumn fx:id="lobbyColumn" editable="false" prefWidth="225.0" resizable="false" text="Lobby" />
                               <TableColumn fx:id="statusColumn" editable="false" minWidth="90.0" prefWidth="90.0" text="Status" />
@@ -68,29 +40,46 @@
                               <TableColumn fx:id="spectatorsColumn" editable="false" minWidth="90.0" prefWidth="95.0" resizable="false" text="Spectators" />
                           </columns>
                         </TableView>
-                        <HBox GridPane.columnSpan="2" GridPane.rowIndex="2">
+                        <HBox GridPane.columnSpan="2" GridPane.rowIndex="3">
                            <children>
-                              <Button fx:id="joinBtn" minWidth="80.0" mnemonicParsing="false" onAction="#onJoinAction" text="Join" />
-                              <Button fx:id="spectateBtn" minWidth="80.0" mnemonicParsing="false" onAction="#onSpectateAction" text="Spectate">
-                                 <HBox.margin>
-                                    <Insets left="20.0" />
-                                 </HBox.margin>
-                              </Button>
+                              <HBox>
+                                 <children>
+                                    <Button fx:id="joinBtn" minWidth="80.0" mnemonicParsing="false" onAction="#onJoinAction" styleClass="arcade-font" text="Join" />
+                                    <Button fx:id="spectateBtn" minWidth="80.0" mnemonicParsing="false" onAction="#onSpectateAction" styleClass="arcade-font" text="Spectate">
+                                       <HBox.margin>
+                                          <Insets left="20.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox nodeOrientation="RIGHT_TO_LEFT" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onPlayOfflineAction" styleClass="arcade-font" text="Play Offline" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
                            </children>
                            <GridPane.margin>
                               <Insets top="20.0" />
                            </GridPane.margin>
                         </HBox>
-                        <Button fx:id="refreshBtn" minWidth="90.0" mnemonicParsing="false" onAction="#onRefreshAction" prefHeight="25.0" prefWidth="90.0" text="Refresh" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
+                        <Button fx:id="refreshBtn" minWidth="90.0" mnemonicParsing="false" onAction="#onRefreshAction" prefHeight="25.0" prefWidth="120.0" styleClass="arcade-font" text="Refresh" GridPane.halignment="LEFT" GridPane.rowIndex="1">
                            <GridPane.margin>
-                              <Insets bottom="5.0" />
+                              <Insets bottom="10.0" />
                            </GridPane.margin>
                         </Button>
-                        <Button fx:id="createLobbyBtn" minWidth="120.0" mnemonicParsing="false" onAction="#onCreateLobbyAction" prefWidth="120.0" text="Create Lobby" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                        <Button fx:id="createLobbyBtn" minWidth="120.0" mnemonicParsing="false" onAction="#onCreateLobbyAction" prefHeight="25.0" prefWidth="150.0" styleClass="arcade-font" text="Create Lobby" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                            <GridPane.margin>
-                              <Insets bottom="5.0" />
+                              <Insets bottom="10.0" />
                            </GridPane.margin>
                         </Button>
+                        <Label alignment="CENTER" contentDisplay="CENTER" mouseTransparent="true" styleClass="arcade-font, title" text="Tic Tac Toe!" GridPane.columnSpan="2" GridPane.halignment="CENTER">
+                           <font>
+                              <Font size="64.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets bottom="20.0" />
+                           </GridPane.margin>
+                        </Label>
                      </children>
                   </GridPane>
                </children>
@@ -105,6 +94,22 @@
          <bottom>
             <Separator opacity="0.0" orientation="VERTICAL" prefHeight="50.0" BorderPane.alignment="CENTER" />
          </bottom>
+         <top>
+            <AnchorPane>
+               <children>
+                  <Separator opacity="0.0" orientation="VERTICAL" prefHeight="50.0" BorderPane.alignment="CENTER" />
+                  <Button mnemonicParsing="false" onAction="#onOptions" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                     <graphic>
+                        <ImageView fx:id="gearIV" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../assets/images/gear.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </AnchorPane>
+         </top>
       </BorderPane>
    </content>
 </ScrollPane>

@@ -8,15 +8,14 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.ScrollPane;
 import models.Player;
-import models.SceneCallback.InjectPlayerCallback;
+import models.SceneCallback.LaunchLobbyFinderCallback;
 import models.SceneCallback.LaunchLoginCallback;
 import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.LaunchRegisterCallback;
 import models.SceneCallback.ReturnToCallback;
 import services.AuthService;
-import services.AuthService.RegistrationResult;
 
 public class Login {
 
@@ -25,13 +24,13 @@ public class Login {
     @FXML private Button loginBtn;
     @FXML private Button registerBtn;
     @FXML private Button returnBtn;
-    @FXML private Pane root;
+    @FXML private ScrollPane root;
 
-    private InjectPlayerCallback injectPlayerCB;
-    private LaunchLoginCallback launchLoginCB;
+    private Consumer<Boolean> injectOnlineCB;
+    private Consumer<Player> injectPlayerCB;
+    private LaunchLobbyFinderCallback launchLobbyFinderCB;
     private LaunchRegisterCallback launchRegisterCB;
     private LaunchMainMenuCallback launchMainMenuCB;
-    private ReturnToCallback returnToCB;
 
     @FXML void initialize(){
         root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
@@ -40,16 +39,26 @@ public class Login {
         loginBtn.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
     }
 
-    public void setInjectPlayerCB(InjectPlayerCallback injectPlayerCB){
+    public ScrollPane getRoot(){ return this.root; }
+
+    public void setInjectOnlineCB(Consumer<Boolean> injectOnlineCB){
+        this.injectOnlineCB = injectOnlineCB;
+    }
+
+    public void setInjectPlayerCB(Consumer<Player> injectPlayerCB){
         this.injectPlayerCB = injectPlayerCB;
     }
 
-    public void setLaunchRegisterCB(LaunchRegisterCallback launchRegisterCB){
-        this.launchRegisterCB = launchRegisterCB;
+    public void setLaunchLobbyFinderCB(LaunchLobbyFinderCallback launchLobbyFinderCB){
+        this.launchLobbyFinderCB = launchLobbyFinderCB;
     }
 
     public void setLaunchMainMenuCB(LaunchMainMenuCallback launchMainMenuCB){
         this.launchMainMenuCB = launchMainMenuCB;
+    }
+
+    public void setLaunchRegisterCB(LaunchRegisterCallback launchRegisterCB){
+        this.launchRegisterCB = launchRegisterCB;
     }
 
     public void setLaunchRegisterCallback(LaunchRegisterCallback launchRegisterCB){ 
@@ -70,8 +79,9 @@ public class Login {
                             public void run() {
                                 System.out.println("Inside Runnable");
                                 if(player != null){
-                                    Login.this.injectPlayerCB.injectPlayer(player);
-                                    Login.this.launchMainMenuCB.launchMainMenu();
+                                    Login.this.injectOnlineCB.accept(true);
+                                    Login.this.injectPlayerCB.accept(player);
+                                    Login.this.launchLobbyFinderCB.launchLobbyFinder();
                                 }
                             }
                         });
@@ -80,20 +90,17 @@ public class Login {
 
             );
         } catch (Exception e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
+    }
+
+    @FXML protected void onPlayOfflineAction(ActionEvent e){
+        Login.this.injectOnlineCB.accept(false);
+        Login.this.launchMainMenuCB.launchMainMenu();
     }
 
     @FXML protected void onRegisterClicked(ActionEvent e){
         launchRegisterCB.launchRegister();
     }
 
-    public Pane getRoot(){ return this.root; }
-
-    public void setLaunchLoginCallback(LaunchLoginCallback launchLoginCB){ this.launchLoginCB = launchLoginCB;}
-
-    public void setReturnToCB(ReturnToCallback returnToCB){
-        this.returnToCB = returnToCB;
-    }
 }
