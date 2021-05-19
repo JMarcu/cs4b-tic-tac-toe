@@ -1,11 +1,8 @@
 package models;
 
-import java.io.Serializable;
-
 import javafx.scene.paint.Color;
 
-public class SerializeableColor implements Serializable{
-    private static final long serialVersionUID = 1L;
+public class SerializeableColor{
 
     double red;
     double green;

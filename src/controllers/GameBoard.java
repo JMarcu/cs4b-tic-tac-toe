@@ -81,11 +81,13 @@ public class GameBoard{
         read = false;
         boardController.setGameState(gameState);
 
-        playerOneTF.setText(gameState.getPlayers().getValue0().getName());
-        playerTwoTF.setText(gameState.getPlayers().getValue1().getName());
+        this.updatePlayerViews();
 
-        updateImage(playerOneShapeIV, gameState.getPlayers().getValue0());
-        updateImage(playerTwoShapeIV, gameState.getPlayers().getValue1());
+        if(gameState.getStatus() == GameState.Status.IN_PROGRESS){
+            boardController.setEnable();
+        } else{
+            boardController.setDisable();
+        }
     }
 
     /************************************************************************************************************
@@ -99,8 +101,6 @@ public class GameBoard{
         this.gameState = gameState;
 
         if(gameStateSubscription != null){ gameStateSubscription.cancel(); }
-        if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
-        if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
         
         this.gameState.subscribe(new Subscriber<GameState.Patch>(){
 			@Override public void onSubscribe(Subscription subscription) { 
@@ -114,40 +114,14 @@ public class GameBoard{
 			@Override public void onError(Throwable throwable) { }
 			@Override public void onComplete() { }
         });
-           
-        this.gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
-			@Override public void onSubscribe(Subscription subscription) { 
-                playerOneSubscription = subscription; 
-                playerOneSubscription.request(1);
-            }
-			@Override public void onNext(Player.Patch item) { 
-                onPlayerPatch(gameState.getPlayers().getValue0(), playerOneShapeIV, item); 
-                playerOneSubscription.request(1);
-            }
-			@Override public void onError(Throwable throwable) { }
-			@Override public void onComplete() { }
-        });
+
+        this.subscribeToPlayers();
 
         if(!read){ 
             gameHistory.remove(gameHistory.lastElement());
             gameHistory.add(gameState); read = true;
         }
 
-        this.gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
-			@Override public void onSubscribe(Subscription subscription) { 
-                playerTwoSubscription = subscription; 
-                playerTwoSubscription.request(1);
-            }
-			@Override public void onNext(Player.Patch item) { 
-                onPlayerPatch(gameState.getPlayers().getValue1(), playerTwoShapeIV, item); 
-                playerTwoSubscription.request(1);
-            }
-
-            @Override public void onError(Throwable throwable) { }
-			@Override public void onComplete() { }
-        });
-
-        //if(!gameState.getPlayers().getValue1().getIsAI() && !read){ gameHistory.add(gameState); read = true;
         gameHistory.add(gameState); read = true;
         
         if(viewInit){
@@ -162,12 +136,16 @@ public class GameBoard{
 
     //Checks whetheer or not the image is already in use or null and sets it if both ar false
     private void updateImage(ImageView iv, Player player){
-        final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());
+        final String newUrl = player != null
+            ? ASSETS_DIRECTORY.concat(player.getShape().getFilename())
+            : ASSETS_DIRECTORY.concat("empty.png");
         if(iv.getImage() == null || !iv.getImage().getUrl().equals(newUrl)){
             final Image newImage = new Image(newUrl);
             iv.setImage(newImage);
         }
-        ColorScheme.adjustImageColor(iv, player.getColor());
+        if(player != null){
+            ColorScheme.adjustImageColor(iv, player.getColor());
+        }
     }
 
     /************************************************************************************************************
@@ -196,13 +174,11 @@ public class GameBoard{
 
     @FXML //Allows playerone to use the options menu by pressing the gear button
     private void onOption(ActionEvent event){
-      // System.out.println("onOption");
         this.optionsMenuCB.launchOptionsMenu("Game");
     }
 
     @FXML //Allows playerone to access the scoreboard by pressing the scoreboard button
     private void onScoreBoard(ActionEvent event){
-        // System.out.println("onScoreBoard");
         this.scoreBoardCB.launchScoreBoard(TTTScene.GAME_BOARD, gameHistory);
         
         for(int i=0; i<gameHistory.size(); i++)    
@@ -216,25 +192,81 @@ public class GameBoard{
      ************************************************************************************************************/
 
     private void onGameStatePatch(GameState.Patch patch){
-        System.out.println("onGameStatePatch");
-        if(patch.getCurrentPlayer() != null){
-            System.out.println("patch.getCurrentPlayer.getIsAi(): " + patch.getCurrentPlayer().getIsAI());
-        } else{
-            System.out.println("patch.getCurrentPlayer: " + patch.getCurrentPlayer());
+        if(patch.getStatus() != null && boardController != null){
+            if(patch.getStatus() == GameState.Status.IN_PROGRESS){
+                boardController.setEnable();
+            } else{
+                boardController.setDisable();
+            }
         }
+
+        if(patch.getPlayers() != null){
+            this.subscribeToPlayers();
+            this.updatePlayerViews();
+        }
+
         if(patch.getCurrentPlayer() != null && patch.getCurrentPlayer().getIsAI()){
-            System.out.println("is AI");
             Ai aiPlayer = (Ai)patch.getCurrentPlayer();
             Pair<Integer, Integer> move = aiPlayer.generateMove(gameState);
-            System.out.println(move);
             gameState.setCell(move.getValue0(), move.getValue1());
         }
     }
 
     private void onPlayerPatch(Player player, ImageView iv, Player.Patch patch){
-        System.out.println("onPlayerPatch");
         if(patch.getColor() != null || patch.getShape() != null){
             updateImage(iv, player);
         }
+    }
+
+    private void subscribeToPlayers(){
+        if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
+        if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
+           
+        if(this.gameState.getPlayers().getValue0() != null){
+            this.gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
+                @Override public void onSubscribe(Subscription subscription) { 
+                    playerOneSubscription = subscription; 
+                    playerOneSubscription.request(1);
+                }
+                @Override public void onNext(Player.Patch item) { 
+                    onPlayerPatch(gameState.getPlayers().getValue0(), playerOneShapeIV, item); 
+                    playerOneSubscription.request(1);
+                }
+                @Override public void onError(Throwable throwable) { }
+                @Override public void onComplete() { }
+            });
+        }
+
+        if(this.gameState.getPlayers().getValue1() != null){
+            this.gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
+                @Override public void onSubscribe(Subscription subscription) { 
+                    playerTwoSubscription = subscription; 
+                    playerTwoSubscription.request(1);
+                }
+                @Override public void onNext(Player.Patch item) { 
+                    onPlayerPatch(gameState.getPlayers().getValue1(), playerTwoShapeIV, item); 
+                    playerTwoSubscription.request(1);
+                }
+
+                @Override public void onError(Throwable throwable) { }
+                @Override public void onComplete() { }
+            });
+        }
+    }
+
+    private void updatePlayerViews(){        
+        playerOneTF.setText(
+            gameState.getPlayers().getValue0() != null
+            ? gameState.getPlayers().getValue0().getName()
+            : ""
+        );
+        playerTwoTF.setText(
+            gameState.getPlayers().getValue1() != null
+            ? gameState.getPlayers().getValue1().getName()
+            : ""
+        );
+
+        updateImage(playerOneShapeIV, gameState.getPlayers().getValue0());
+        updateImage(playerTwoShapeIV, gameState.getPlayers().getValue1());
     }
 }

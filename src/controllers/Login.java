@@ -16,6 +16,7 @@ import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.LaunchRegisterCallback;
 import models.SceneCallback.ReturnToCallback;
 import services.AuthService;
+import services.LobbyService;
 
 public class Login {
 
@@ -73,11 +74,9 @@ public class Login {
                 new Consumer<Player>(){
                     @Override
                     public void accept(Player player) {
-                        System.out.println("Inside Consumer: " + player);
                         Platform.runLater(new Runnable(){
                             @Override
                             public void run() {
-                                System.out.println("Inside Runnable");
                                 if(player != null){
                                     Login.this.injectOnlineCB.accept(true);
                                     Login.this.injectPlayerCB.accept(player);

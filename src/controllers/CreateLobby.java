@@ -4,6 +4,7 @@ import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.function.Consumer;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -83,8 +84,12 @@ public class CreateLobby {
                 new Consumer<GameState>(){
                     @Override
                     public void accept(GameState gameState) {
-                        CreateLobby.this.launchGameCB.launchGame(gameState);
-                        
+                        Platform.runLater(new Runnable(){
+                            @Override
+                            public void run() {
+                                CreateLobby.this.launchGameCB.launchGame(gameState);
+                            }
+                        });
                     }
                 }
             );
@@ -126,8 +131,6 @@ public class CreateLobby {
     }
 
     public void setPlayer(Player player){
-        System.out.println("setPlayer: " + player.getName());
-
         this.player = player;
 
         if(playerSubscription != null){ playerSubscription.cancel(); }
@@ -144,7 +147,6 @@ public class CreateLobby {
 
             @Override
             public void onNext(Player.Patch item) {
-                System.out.println("item.getColor(): " + item.getColor());
                 if(item.getColor() != null || item.getShape() != null){
                     setMarker();
                 }
@@ -166,7 +168,6 @@ public class CreateLobby {
             sb.append(player.getShape().getFilename());
             sb.append("');");
             markerPane.setStyle(sb.toString());
-            System.out.println(markerPane.getStyle());
             ColorScheme.adjustImageColor(markerPane, player.getColor());
         }
     }

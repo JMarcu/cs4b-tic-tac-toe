@@ -4,6 +4,7 @@ import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.Session;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -305,8 +306,6 @@ public class AuthService extends AbstractWebsocketService {
      * @param loginResult Whether or not the logout succeeded.
      */
     private void invokeLogoutCallback(boolean logoutResult){
-        System.out.println("invokeLogoutCallback");
-        System.out.println("onLogoutCallback: " + onLogoutCallback);
         if(this.onLogoutCallback != null){
             /* Store a local-scoped copy of the callback, then set the instance-scoped reference to null.
             The callback might invoke the 'logout' method, which will throw an exception if our 
@@ -384,12 +383,21 @@ public class AuthService extends AbstractWebsocketService {
                 this.jwt = loginSuccessBody.getJWT();
                 this.refreshToken = loginSuccessBody.getRefreshToken();
 
-                //Invoke the callback.
-                invokeLoginCallback(loginSuccessBody.getPlayer());
+                LobbyService.getInstance().connect(
+                    jwt, 
+                    loginSuccessBody.getPlayer(),
+                    new Consumer<ArrayList<Lobby>>(){
+                        @Override
+                        public void accept(ArrayList<Lobby> t) {
+                            //Invoke the callback.
+                            invokeLoginCallback(loginSuccessBody.getPlayer());
+                        }
+                    }
+                );
+
                 break;
             case LOGOUT_SUCCESS:
                 //If we haven't stored a callback for handling a logout, ignore the message.
-                System.out.println("onLogoutCallback: " + onLogoutCallback);
                 if(this.onLogoutCallback != null){
                     //Clear our auth tokens.
                     this.jwt = null;

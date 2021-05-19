@@ -91,7 +91,6 @@ public class Board {
      * ACCESSORS & MUTATORS
      ************************************************************************************************************/
     public void setGameState(GameState gameState){
-        System.out.println("setGameState: " + gameState);
         this.gameState = gameState;
 
         if(this.gameStateSubscription != null){ this.gameStateSubscription.cancel(); }
@@ -111,31 +110,36 @@ public class Board {
 			@Override public void onComplete() { }
         });
         
-        this.gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
-			@Override public void onSubscribe(Subscription subscription) { 
-                playerOneSubscription = subscription; 
-                playerOneSubscription.request(1);
-            }
-			@Override public void onNext(Player.Patch item) { 
-                onPlayerPatch(gameState.getPlayers().getValue0(), item); 
-                playerOneSubscription.request(1);
-            }
-			@Override public void onError(Throwable throwable) { }
-			@Override public void onComplete() { }
-        });
+        
+        if(this.gameState.getPlayers().getValue0() != null){
+            this.gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
+                @Override public void onSubscribe(Subscription subscription) { 
+                    playerOneSubscription = subscription; 
+                    playerOneSubscription.request(1);
+                }
+                @Override public void onNext(Player.Patch item) { 
+                    onPlayerPatch(gameState.getPlayers().getValue0(), item); 
+                    playerOneSubscription.request(1);
+                }
+                @Override public void onError(Throwable throwable) { }
+                @Override public void onComplete() { }
+            });
+        }
 
-        this.gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
-			@Override public void onSubscribe(Subscription subscription) { 
-                playerTwoSubscription = subscription; 
-                playerTwoSubscription.request(1);
-            }
-			@Override public void onNext(Player.Patch item) { 
-                onPlayerPatch(gameState.getPlayers().getValue1(), item); 
-                playerTwoSubscription.request(1);
-            }
-			@Override public void onError(Throwable throwable) { }
-			@Override public void onComplete() { }
-        });
+        if(this.gameState.getPlayers().getValue1() != null){
+            this.gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
+                @Override public void onSubscribe(Subscription subscription) { 
+                    playerTwoSubscription = subscription; 
+                    playerTwoSubscription.request(1);
+                }
+                @Override public void onNext(Player.Patch item) { 
+                    onPlayerPatch(gameState.getPlayers().getValue1(), item); 
+                    playerTwoSubscription.request(1);
+                }
+                @Override public void onError(Throwable throwable) { }
+                @Override public void onComplete() { }
+            });
+        }
 
         if(this.viewInit){
             this.initializeIVGrid();
@@ -150,8 +154,13 @@ public class Board {
 
     private void initializeIVGrid(){
         playerIVMap = new HashMap<UUID, ArrayList<ImageView>>();
-        playerIVMap.put(gameState.getPlayers().getValue0().getUuid(), new ArrayList<ImageView>());
-        playerIVMap.put(gameState.getPlayers().getValue1().getUuid(), new ArrayList<ImageView>());
+        if(this.gameState.getPlayers().getValue0() != null){
+            playerIVMap.put(gameState.getPlayers().getValue0().getUuid(), new ArrayList<ImageView>());
+        }
+        
+        if(this.gameState.getPlayers().getValue1() != null){
+            playerIVMap.put(gameState.getPlayers().getValue1().getUuid(), new ArrayList<ImageView>());
+        }
 
         for(int i = 0; i < imageViewGrid.length; i++){
             for(int j = 0; j < imageViewGrid[i].length; j++){
@@ -181,11 +190,6 @@ public class Board {
     @FXML private void handleLeftBtm(MouseEvent e)   { if(!boardDisable) gameState.setCell(2, 0); }
     @FXML private void handleCenterBtm(MouseEvent e) { if(!boardDisable) gameState.setCell(2, 1); }
     @FXML private void handleRightBtm(MouseEvent e)  { if(!boardDisable) gameState.setCell(2, 2); }
-    
-    // private void AiPlay(){
-        
-
-    // } 
 
     /************************************************************************************************************
      * SUBSCRIPTION HANDLERS

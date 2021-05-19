@@ -6,7 +6,6 @@ import controllers.ScoreBoard;
 import controllers.ShapeColorController;
 import controllers.SplashScreen;
 import controllers.SplashScreen.SplashType;
-import controllers.CreateLobby;
 import controllers.JoinLobby;
 import controllers.Login;
 import controllers.Register;
@@ -40,6 +39,7 @@ import models.SceneCallback.LaunchLoginCallback;
 import models.SceneCallback.LaunchRegisterCallback;
 import models.SceneCallback.ReturnToCallback;
 import services.AuthService;
+import services.LobbyService;
 import models.TTTScene;
 import models.MusicPlayer.Track;
 import models.MusicPlayer;
@@ -76,6 +76,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     public void start(Stage primaryStage) {
         try {
             AuthService.getInstance().start();
+            LobbyService.getInstance().start();
 
             music = new MusicPlayer();            
             playerOne = new Player(Color.BLACK, UUID.randomUUID(), "Player 1", MarkerShape.X);
@@ -201,7 +202,6 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     
     @Override
     public void launchLobbyFinder(){
-        System.out.println("Launch Lobby Finder");
         try{
             MusicPlayer musicSFX = new MusicPlayer();
             musicSFX.playSFX(MusicPlayer.Track.openMenu);
@@ -214,8 +214,10 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             });
 
             joinLobby.setLaunchCreateLobbyCB(this);
+            joinLobby.setLaunchGameCB(this);
             joinLobby.setLaunchMainMenuCB(this);
             joinLobby.setLaunchOptionsMenuCB(this);
+            joinLobby.loadLobbies();
 
             launchScene(joinLobby.getRoot());
         } catch(Exception e){
@@ -234,6 +236,14 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         mainMenu.setOptionsMenuCB(this);
         mainMenu.setPlayers(playerOne, playerTwo);
         mainMenu.setShapePickerCB(this);
+
+        if(online){
+            try {
+                LobbyService.getInstance().leaveLobby();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         if(rootPane.getChildren().size()  > 0){
             launchScene(mainMenu.getRoot());

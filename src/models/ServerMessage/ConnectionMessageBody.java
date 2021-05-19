@@ -7,16 +7,19 @@ public class ConnectionMessageBody {
         JOIN, LEAVE
     }
     
+    private String jwt;
     private UUID lobbyId;
     private UUID playerId;
     private Type type;
 
-    public ConnectionMessageBody(UUID lobbyId, UUID playerId, Type type){
+    public ConnectionMessageBody(String jwt, UUID lobbyId, UUID playerId, Type type){
+        this.jwt = jwt;
         this.lobbyId = lobbyId;
         this.playerId = playerId;
         this.type = type;
     }
 
+    public String getJwt(){ return jwt; }
     public UUID getLobbyId(){ return lobbyId; }
     public UUID getPlayerId(){ return playerId; }
     public Type getType(){ return type; }

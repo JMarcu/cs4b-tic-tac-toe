@@ -124,7 +124,7 @@ public class GameState implements Publisher<GameState.Patch>  {
     private Pair<Player, Player> players;
 
     /** A {@link java.util.concurrent.Flow.Publisher} implementation that handles our subscriptions. */
-    private SubmissionPublisher<Patch> publisher;
+    private transient  SubmissionPublisher<Patch> publisher;
 
     /**
      * Some game modes requires additional configuration, and that is stored here. For instance, {@link GameMode.BEST_OF_X}
@@ -267,15 +267,31 @@ public class GameState implements Publisher<GameState.Patch>  {
 
     public void setPlayerOne(Player player) { 
         this.players = new Pair<Player, Player>(player, this.players.getValue1());
+
+        if(this.players.getValue0() != null && this.players.getValue1() != null && status == Status.NEW){
+            this.status = Status.IN_PROGRESS;
+        }
+
         this.notifySubscribers(new Patch(){
-            { players = GameState.this.players; }
+            { 
+                players = GameState.this.players;
+                status = GameState.this.status;
+            }
         });
     }
 
     public void setPlayerTwo(Player player) { 
         this.players = new Pair<Player, Player>(this.players.getValue0(), player);
+
+        if(this.players.getValue0() != null && this.players.getValue1() != null && status == Status.NEW){
+            this.status = Status.IN_PROGRESS;
+        }
+
         this.notifySubscribers(new Patch(){
-            { players = GameState.this.players; }
+            { 
+                players = GameState.this.players;
+                status = GameState.this.status;
+            }
         });
     }
 

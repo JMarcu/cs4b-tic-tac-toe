@@ -1,6 +1,9 @@
 package services;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import interfaces.Sender;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.CloseReason;
@@ -12,6 +15,7 @@ import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.WebSocketContainer;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URISyntaxException;
 import models.ServerMessage.Message;
@@ -25,6 +29,8 @@ public abstract class AbstractWebsocketService extends Thread implements Sender 
 
     /** The client's websocket container, provided by Tomcat. */
     protected WebSocketContainer container;
+
+    protected Gson gson;
 
     /** The websocket session with the remote AuthService. */
     protected Session session;
@@ -61,6 +67,25 @@ public abstract class AbstractWebsocketService extends Thread implements Sender 
         this.DOMAIN = domain;
         this.SUBDOMAIN = subdomain;
         this.WEBSOCKET_PROTOCOL = domain.contains("localhost") ? "ws://" : "wss://";
+        
+        this.gson = new GsonBuilder()
+            .excludeFieldsWithModifiers(Modifier.TRANSIENT)
+            .setExclusionStrategies(new ExclusionStrategy(){
+                @Override
+                public boolean shouldSkipField(FieldAttributes f){
+                    boolean exclude = false;
+                    try{
+                        exclude = f.getName().equals("serialVersionUID");
+                    } catch(Exception err){ }
+                    return exclude;
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return false;
+                }
+            })
+            .create();
 
         Thread clientThread = new Thread(this);
         clientThread.start();
@@ -165,7 +190,6 @@ public abstract class AbstractWebsocketService extends Thread implements Sender 
             uriBuilder.append(WEBSOCKET_ROUTE);
 
             session = container.connectToServer(this, new URI(uriBuilder.toString()));
-            System.out.println("Connection Established: " + session);
         } catch (DeploymentException | IOException | URISyntaxException e) {
             e.printStackTrace();
         }

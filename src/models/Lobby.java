@@ -1,16 +1,11 @@
 package models;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import org.javatuples.Pair;
 
-public class Lobby implements Serializable {
-    private static final long serialVersionUID = 1L;
-    
+public class Lobby {
+
     private UUID id;
     private String name;
     private int playerCount;

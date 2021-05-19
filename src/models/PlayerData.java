@@ -1,11 +1,8 @@
 package models;
 
-import java.io.Serializable;
-
 import javafx.scene.paint.Color;
 
-public class PlayerData implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class PlayerData {
 
     /** The color of the player's marker. */
     protected SerializeableColor color;

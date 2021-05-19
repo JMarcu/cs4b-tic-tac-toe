@@ -46,11 +46,9 @@ public class Register {
                 new BiConsumer<RegistrationResult, Player>(){
                     @Override
                     public void accept(RegistrationResult result, Player player) {
-                        System.out.println("Inside Consumer: " + player);
                         Platform.runLater(new Runnable(){
                             @Override
                             public void run() {
-                                System.out.println("Inside Runnable");
                                 switch(result){
                                     case PASSWORD_FAILS_REQUIREMENTS:
                                         break;

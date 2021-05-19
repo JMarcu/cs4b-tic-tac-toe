@@ -44,7 +44,6 @@ public class OptionsController {
         //Load external style sheets.
         root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
         root.getStylesheets().add(getClass().getResource("/styles/options-menu.css").toExternalForm());
-        //System.out.println(caller);
         if(caller == "MainMenu") // if called from the main menu don't let the player use these two buttons
         {
             RestartButton.setDisable(true);
@@ -130,7 +129,6 @@ public class OptionsController {
                     new Consumer<Boolean>(){
                         @Override
                         public void accept(Boolean success) {
-                            System.out.println("Inside Consumer");
                             Platform.runLater(new Runnable(){
                                 @Override
                                 public void run() {
