@@ -5,19 +5,29 @@ import java.util.concurrent.Flow.Subscription;
 import java.util.function.Consumer;
 
 import interfaces.CallBackable;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import models.ColorScheme;
 import models.GameState;
 import models.MusicPlayer;
@@ -30,9 +40,11 @@ import models.SceneCallback.ReturnToCallback;
 import services.LobbyService;
 
 public class CreateLobby {
+    @FXML private ToggleButton aiBtn;
     @FXML private Button createBtn;
     @FXML private ImageView icon;
     @FXML private ImageView gearIV;
+    @FXML private ToggleButton humanBtn;
     @FXML private Button joinBtn;
     @FXML private TextField lobbyTextField;
     @FXML private ImageView marker;
@@ -51,6 +63,7 @@ public class CreateLobby {
     private Player player;
     private Subscription playerSubscription;
     private ReturnToCallback returnToCB;
+    private boolean vsAi;
     
     /** Absolute location of the image assets directory. */
     private final String IMAGES_DIRECTORY = "/assets/images/";
@@ -62,6 +75,7 @@ public class CreateLobby {
         this.launchShapePickerCB = null;
         this.player = null;
         this.playerSubscription = null;
+        this.vsAi = false;
     }
 
     /** Sets the default state of the view's interactive elements. */
@@ -76,12 +90,19 @@ public class CreateLobby {
         ColorScheme.adjustImageColor(gearIV, ColorScheme.TEXT_ON_SECONDARY.getColor());
 
         this.setMarker();
+        animateSinglePlayerButtons();
+    }
+
+    @FXML private void onAiAction(ActionEvent e){
+        vsAi = true;
+        animateSinglePlayerButtons();
     }
 
     @FXML private void onCreateLobbyAction(ActionEvent e){
         try {
             LobbyService.getInstance().createLobby(
                 lobbyTextField.getText(), 
+                vsAi,
                 new CallBackable(){
                     @Override
                     public void callback() {
@@ -97,6 +118,11 @@ public class CreateLobby {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
+    }
+
+    @FXML private void onHumanAction(ActionEvent e){
+        vsAi = false;
+        animateSinglePlayerButtons();
     }
 
     @FXML private void onMarkerAction(ActionEvent e){
@@ -161,6 +187,50 @@ public class CreateLobby {
         this.returnToCB = returnToCB;
     }
     
+    /** Transitions the background colors of the vsHuman/vsAI buttons whenever they are toggled. */
+    private void animateSinglePlayerButtons(){
+        ToggleButton darkBtn = this.vsAi ? this.aiBtn : this.humanBtn;
+        ToggleButton lightBtn = this.vsAi ? this.humanBtn : this.aiBtn;
+
+        Color darkColor = ColorScheme.SECONDARY.getColor();
+        Color lightColor = ColorScheme.SECONDARY_LIGHT.getColor();
+
+        final Animation lightToDark = new Transition(){
+            {
+                setCycleDuration(Duration.millis(150));
+                setInterpolator(Interpolator.EASE_OUT);
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+                darkBtn.setBackground(new Background(new BackgroundFill(
+                    darkColor.interpolate(lightColor, frac), 
+                    new CornerRadii(4), 
+                    Insets.EMPTY
+                )));
+            }
+        };
+
+        final Animation darkToLight = new Transition(){
+            {
+                setCycleDuration(Duration.millis(150));
+                setInterpolator(Interpolator.EASE_OUT);
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+                lightBtn.setBackground(new Background(new BackgroundFill(
+                    lightColor.interpolate(darkColor, frac), 
+                    new CornerRadii(4), 
+                    Insets.EMPTY
+                )));
+            }
+        };
+
+        lightToDark.play();
+        darkToLight.play();
+    }
+
     private void setMarker(){
         if(this.player != null && this.markerPane != null){
             StringBuilder sb = new StringBuilder();

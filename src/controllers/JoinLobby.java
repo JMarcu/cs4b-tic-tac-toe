@@ -1,11 +1,10 @@
 package controllers;
 
+import interfaces.CallBackable;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 import java.util.function.Consumer;
-
-import interfaces.CallBackable;
+import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -13,13 +12,12 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import models.ColorScheme;
-import models.GameState;
 import models.Lobby;
 import models.MusicPlayer;
 import models.SceneCallback.LaunchCreateLobbyCallback;

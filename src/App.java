@@ -13,9 +13,6 @@ import controllers.Register;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.function.Consumer;
-
-import com.google.gson.Gson;
-
 import java.util.UUID;
 import java.util.Vector;
 import javafx.animation.FadeTransition;
@@ -54,7 +51,6 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         LaunchShapePickerCallback, LaunchScoreBoardCallback, LaunchLobbyFinderCallback, LaunchLoginCallback, 
         LaunchRegisterCallback, LaunchCreateLobbyCallback {
 
-    private CreateLobby  createLobby;
     private FXMLLoader   createLobbyFXML;
     private Subscription gameStateSubscription;
     private Subscription gameStatePatchSubscription;
@@ -433,7 +429,6 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
                         music.playSFX(Track.tie);
                     }
                     splashScreen.setSplashType(SplashType.DRAW);
-                    openMenu(splashScreen.getRoot());
                     Platform.runLater(new Runnable(){
                         @Override
                         public void run() {

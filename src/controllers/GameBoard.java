@@ -225,8 +225,12 @@ public class GameBoard{
             this.updatePlayerViews();
         }
 
-        if(patch.getCurrentPlayer() != null && patch.getCurrentPlayer().getIsAI()){
-            GameState gameState = GameStateService.getInstance().getGameState();
+        GameState gameState = GameStateService.getInstance().getGameState();
+        if(
+            !gameState.getOnline() &&
+            patch.getCurrentPlayer() != null && 
+            patch.getCurrentPlayer().getIsAI()
+        ){
             Ai aiPlayer = (Ai)patch.getCurrentPlayer();
             Pair<Integer, Integer> move = aiPlayer.generateMove(gameState);
             gameState.setCell(move.getValue0(), move.getValue1());

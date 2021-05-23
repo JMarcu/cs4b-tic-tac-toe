@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-
 import models.Lobby;
 import models.Player;
 import models.ServerMessage.AuthenticationResultMessageBody;

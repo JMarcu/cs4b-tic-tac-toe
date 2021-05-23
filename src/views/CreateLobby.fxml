@@ -32,6 +32,8 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" />
@@ -51,8 +53,8 @@
                         <String fx:value="title" />
                      </styleClass>
                   </Label>
-                  <Button fx:id="createBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onCreateLobbyAction" prefHeight="99.0" prefWidth="135.0" styleClass="arcade-font" text="Create Lobby" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" />
-                  <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnSpan="3" GridPane.rowIndex="4">
+                  <Button fx:id="createBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onCreateLobbyAction" prefHeight="99.0" prefWidth="135.0" styleClass="arcade-font" text="Create Lobby" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="8" />
+                  <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnSpan="3" GridPane.rowIndex="6">
                      <children>
                         <Label styleClass="arcade-font" text="Lobby Name">
                            <font>
@@ -84,6 +86,23 @@
                               <Pane fx:id="markerPane" styleClass="marker-pane" />
                            </graphic>
                         </Button>
+                     </children>
+                  </HBox>
+                  <HBox maxHeight="1.7976931348623157E308" GridPane.rowIndex="4">
+                     <children>
+                        <ToggleButton fx:id="aiBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="225.0" mnemonicParsing="false" onAction="#onAiAction" styleClass="arcade-font, toggle-btn" text="vs AI" HBox.hgrow="ALWAYS">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <toggleGroup>
+                              <ToggleGroup fx:id="singlePlayer" />
+                           </toggleGroup>
+                        </ToggleButton>
+                        <ToggleButton fx:id="humanBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="225.0" mnemonicParsing="false" onAction="#onHumanAction" styleClass="arcade-font, toggle-btn" text="vs Human" toggleGroup="$singlePlayer" HBox.hgrow="ALWAYS">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ToggleButton>
                      </children>
                   </HBox>
                </children>

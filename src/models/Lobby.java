@@ -1,14 +1,13 @@
 package models;
 
 import java.util.UUID;
-
 import org.javatuples.Pair;
 
 public class Lobby {
 
+    protected boolean aiLobby;
     private UUID id;
     private String name;
-    private int playerCount;
     private Pair<Player, Player> players;
     private GameState.Status status;
 
@@ -27,6 +26,7 @@ public class Lobby {
     public String getName(){ return this.name; }
     public Pair<Player, Player> getPlayers(){ return this.players; }
     public GameState.Status getStatus(){ return this.status; }
+    public boolean isAiLobby(){ return aiLobby; }
 
     public int getPlayerCount(){
         int playerCount = 0;

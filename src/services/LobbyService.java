@@ -125,10 +125,10 @@ public class LobbyService extends AbstractWebsocketService {
      * LOBBY MANAGEMENT
      *==========================================================================================================*/
 
-    public void createLobby(String name, CallBackable onLobbyCallback) throws Exception{
+    public void createLobby(String name, boolean ai, CallBackable onLobbyCallback) throws Exception{
         if(this.authenticated){
             this.onLobbyCallback = onLobbyCallback;
-            CreateLobbyMessageBody body = new CreateLobbyMessageBody(jwt, name);
+            CreateLobbyMessageBody body = new CreateLobbyMessageBody(jwt, name, ai);
             send(new Message(body, MessageType.CREATE_LOBBY));
         } else{
             throw new Exception("Not Authenticated");
@@ -225,7 +225,6 @@ public class LobbyService extends AbstractWebsocketService {
                     Player[] connSuccessPlayers = gson.fromJson(connSuccessBody.getGameState().getPlayers().toString(), Player[].class);
                     connSuccessBody.getGameState().setPlayerOne(connSuccessPlayers[0]);
                     connSuccessBody.getGameState().setPlayerTwo(connSuccessPlayers[1]);
-                    System.out.println("connSuccessBody.getGameState().getPlayers(): " + connSuccessBody.getGameState().getPlayers());
 
                     GameStateService.getInstance().setGameState(connSuccessBody.getGameState());
                     this.onLobbyCallback.callback();
