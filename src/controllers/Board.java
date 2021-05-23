@@ -15,10 +15,12 @@ import javafx.scene.layout.StackPane;
 import models.ColorScheme;
 import models.GameState;
 import models.Player;
+import services.GameStateService;
+import services.LobbyService;
 
 public class Board {
-    private GameState                           gameState;
     private Subscription                        gameStateSubscription;
+    private Subscription                        gameStatePatchSubscription;
     private ImageView[][]                       imageViewGrid;
     private HashMap<UUID, ArrayList<ImageView>> playerIVMap;
     private Subscription                        playerOneSubscription;
@@ -43,12 +45,26 @@ public class Board {
 
     public Board() {
         this.imageViewGrid = null;
-        this.gameState = null;
-        this.gameStateSubscription = null;
+        this.gameStatePatchSubscription = null;
         this.playerIVMap = new HashMap<UUID, ArrayList<ImageView>>();
         this.playerOneSubscription = null;
         this.playerTwoSubscription = null;
         this.viewInit = false;
+
+        GameStateService.getInstance().subscribe(new Subscriber<GameState>(){
+            @Override public void onSubscribe(Subscription subscription) { 
+                gameStateSubscription = subscription;
+                gameStateSubscription.request(1);
+            }
+            @Override public void onNext(GameState item) { 
+                if(item != null){
+                    onGameState(); 
+                }
+                gameStateSubscription.request(1);
+            };
+            @Override public void onError(Throwable throwable) { }
+            @Override public void onComplete() { }
+        });
     }
 
     @FXML
@@ -64,7 +80,7 @@ public class Board {
         this.imageViewGrid[2][1] = centerBtm;
         this.imageViewGrid[2][2] = rightBtm;
         this.viewInit = true;
-        if(this.gameState != null){
+        if(GameStateService.getInstance().getGameState() != null){
             this.initializeIVGrid();
         }
         leftTop.fitHeightProperty().bind(tile.heightProperty().divide(10).multiply(9));
@@ -90,29 +106,32 @@ public class Board {
     /************************************************************************************************************
      * ACCESSORS & MUTATORS
      ************************************************************************************************************/
-    public void setGameState(GameState gameState){
-        this.gameState = gameState;
+    
+    public void onGameState(){
+        System.out.println("onGameState");
+        GameState gameState = GameStateService.getInstance().getGameState();
 
-        if(this.gameStateSubscription != null){ this.gameStateSubscription.cancel(); }
+        if(this.gameStatePatchSubscription != null){ System.out.println("Cancel GSP subscription."); this.gameStatePatchSubscription.cancel(); }
         if(this.playerOneSubscription != null){ this.playerOneSubscription.cancel(); }
         if(this.playerTwoSubscription != null){ this.playerTwoSubscription.cancel(); }
         
-        this.gameState.subscribe(new Subscriber<GameState.Patch>(){
+        gameState.subscribe(new Subscriber<GameState.Patch>(){
 			@Override public void onSubscribe(Subscription subscription) { 
-                gameStateSubscription = subscription; 
-                gameStateSubscription.request(1);
+                gameStatePatchSubscription = subscription; 
+                gameStatePatchSubscription.request(1);
             }
 			@Override public void onNext(GameState.Patch item) { 
+                System.out.println("item: " + item);
                 onGameStatePatch(item); 
-                gameStateSubscription.request(1);
+                gameStatePatchSubscription.request(1);
             }
 			@Override public void onError(Throwable throwable) { }
 			@Override public void onComplete() { }
         });
         
         
-        if(this.gameState.getPlayers().getValue0() != null){
-            this.gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
+        if(gameState.getPlayers().getValue0() != null){
+            gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
                 @Override public void onSubscribe(Subscription subscription) { 
                     playerOneSubscription = subscription; 
                     playerOneSubscription.request(1);
@@ -126,8 +145,8 @@ public class Board {
             });
         }
 
-        if(this.gameState.getPlayers().getValue1() != null){
-            this.gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
+        if(gameState.getPlayers().getValue1() != null){
+            gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
                 @Override public void onSubscribe(Subscription subscription) { 
                     playerTwoSubscription = subscription; 
                     playerTwoSubscription.request(1);
@@ -146,6 +165,7 @@ public class Board {
         }
     }
 
+    
     private void createCellImage(Player player, ImageView iv) {
         final String newUrl = ASSETS_DIRECTORY.concat(player.getShape().getFilename());
         iv.setImage(new Image(newUrl));
@@ -153,12 +173,13 @@ public class Board {
     }
 
     private void initializeIVGrid(){
+        GameState gameState = GameStateService.getInstance().getGameState();
         playerIVMap = new HashMap<UUID, ArrayList<ImageView>>();
-        if(this.gameState.getPlayers().getValue0() != null){
+        if(gameState.getPlayers().getValue0() != null){
             playerIVMap.put(gameState.getPlayers().getValue0().getUuid(), new ArrayList<ImageView>());
         }
         
-        if(this.gameState.getPlayers().getValue1() != null){
+        if(gameState.getPlayers().getValue1() != null){
             playerIVMap.put(gameState.getPlayers().getValue1().getUuid(), new ArrayList<ImageView>());
         }
 
@@ -181,24 +202,47 @@ public class Board {
      * EVENT HANDLERS
      ************************************************************************************************************/
 
-    @FXML private void handleLeftTop(MouseEvent e)   { if(!boardDisable) gameState.setCell(0, 0); }
-    @FXML private void handleCenterTop(MouseEvent e) { if(!boardDisable) gameState.setCell(0, 1); }
-    @FXML private void handleRightTop(MouseEvent e)  { if(!boardDisable) gameState.setCell(0, 2); }
-    @FXML private void handleLeftMid(MouseEvent e)   { if(!boardDisable) gameState.setCell(1, 0); }
-    @FXML private void handleCenterMid(MouseEvent e) { if(!boardDisable) gameState.setCell(1, 1); }
-    @FXML private void handleRightMid(MouseEvent e)  { if(!boardDisable) gameState.setCell(1, 2); }
-    @FXML private void handleLeftBtm(MouseEvent e)   { if(!boardDisable) gameState.setCell(2, 0); }
-    @FXML private void handleCenterBtm(MouseEvent e) { if(!boardDisable) gameState.setCell(2, 1); }
-    @FXML private void handleRightBtm(MouseEvent e)  { if(!boardDisable) gameState.setCell(2, 2); }
+    @FXML private void handleLeftTop(MouseEvent e)   { if(!boardDisable){setCell(0, 0);} }
+    @FXML private void handleCenterTop(MouseEvent e) { if(!boardDisable){setCell(0, 1);} }
+    @FXML private void handleRightTop(MouseEvent e)  { if(!boardDisable){setCell(0, 2);} }
+    @FXML private void handleLeftMid(MouseEvent e)   { if(!boardDisable){setCell(1, 0);} }
+    @FXML private void handleCenterMid(MouseEvent e) { if(!boardDisable){setCell(1, 1);} }
+    @FXML private void handleRightMid(MouseEvent e)  { if(!boardDisable){setCell(1, 2);} }
+    @FXML private void handleLeftBtm(MouseEvent e)   { if(!boardDisable){setCell(2, 0);} }
+    @FXML private void handleCenterBtm(MouseEvent e) { if(!boardDisable){setCell(2, 1);} }
+    @FXML private void handleRightBtm(MouseEvent e)  { if(!boardDisable){setCell(2, 2);} }
+
+    private void setCell(int x, int y){
+        if(GameStateService.getInstance().getGameState().getOnline()){
+            try {
+                LobbyService.getInstance().move(x, y);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else{
+            GameStateService.getInstance().getGameState().setCell(x, y);
+        }
+    }
 
     /************************************************************************************************************
      * SUBSCRIPTION HANDLERS
      ************************************************************************************************************/
 
     private void onGameStatePatch(GameState.Patch patch){
-        if(patch.getMove() != null){
-            this.createCellImage(patch.getMove().getValue0(), imageViewGrid[patch.getMove().getValue1()][patch.getMove().getValue2()]);
-            this.playerIVMap.get(patch.getMove().getValue0().getUuid()).add(imageViewGrid[patch.getMove().getValue1()][patch.getMove().getValue2()]);
+        System.out.println("onGameStatePatch");
+        System.out.println("getMove: " + patch.getMove());
+        try{
+            if(patch.getPlayers() != null){
+                this.initializeIVGrid();
+            }
+
+            if(patch.getMove() != null){
+                this.createCellImage(patch.getMove().getValue0(), imageViewGrid[patch.getMove().getValue1()][patch.getMove().getValue2()]);
+                this.playerIVMap.get(patch.getMove().getValue0().getUuid()).add(imageViewGrid[patch.getMove().getValue1()][patch.getMove().getValue2()]);
+            }
+        }catch(Exception ex){
+            System.err.println("Error during onGameStatePatch");
+            ex.printStackTrace();
         }
     }
 

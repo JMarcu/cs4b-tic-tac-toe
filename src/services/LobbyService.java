@@ -1,17 +1,13 @@
 package services;
 
-import java.io.IOException;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.UUID;
-import java.util.function.Consumer;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+import interfaces.CallBackable;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.Session;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.function.Consumer;
+import java.util.UUID;
 import models.GameState;
 import models.Lobby;
 import models.Player;
@@ -23,8 +19,12 @@ import models.ServerMessage.CreateLobbyMessageBody;
 import models.ServerMessage.LobbyListMessageBody;
 import models.ServerMessage.Message;
 import models.ServerMessage.MessageType;
+import models.ServerMessage.MoveMessageBody;
+import models.ServerMessage.NewGameMessageBody;
+import models.ServerMessage.PlayAgainMessageBody;
 import models.ServerMessage.PlayerJoinedMessageBody;
 import models.ServerMessage.PlayerLeaveMessageBody;
+import org.javatuples.Pair;
 
 @ClientEndpoint
 public class LobbyService extends AbstractWebsocketService {
@@ -35,15 +35,13 @@ public class LobbyService extends AbstractWebsocketService {
 
     private boolean authenticated;
 
-    private GameState gameState;
-
     /** JWT which authenticates the user and provides proof of their claims. */
     private String jwt = null;
 
     private UUID lobbyId = null;
 
     private Consumer<ArrayList<Lobby>> onConnectCallback;
-    private Consumer<GameState> onLobbyCallback;
+    private CallBackable onLobbyCallback;
     private Consumer<ArrayList<Lobby>> onLobbyListCallback;
 
     private Player player;
@@ -112,7 +110,6 @@ public class LobbyService extends AbstractWebsocketService {
     }
 
     public void disconnect(){
-        this.gameState = null;
         this.jwt = null;
         this.lobbyId = null;
         this.player = null;
@@ -128,7 +125,7 @@ public class LobbyService extends AbstractWebsocketService {
      * LOBBY MANAGEMENT
      *==========================================================================================================*/
 
-    public void createLobby(String name, Consumer<GameState> onLobbyCallback) throws Exception{
+    public void createLobby(String name, CallBackable onLobbyCallback) throws Exception{
         if(this.authenticated){
             this.onLobbyCallback = onLobbyCallback;
             CreateLobbyMessageBody body = new CreateLobbyMessageBody(jwt, name);
@@ -138,7 +135,7 @@ public class LobbyService extends AbstractWebsocketService {
         }
     }
 
-    public void joinLobby(UUID lobbyId, Consumer<GameState> onLobbyCallback) throws Exception{
+    public void joinLobby(UUID lobbyId, CallBackable onLobbyCallback) throws Exception{
         if(this.authenticated){
             this.onLobbyCallback = onLobbyCallback;
             ConnectionMessageBody body = new ConnectionMessageBody(
@@ -176,6 +173,24 @@ public class LobbyService extends AbstractWebsocketService {
         }
     }
 
+    public void move(int x, int y) throws Exception{
+        if(this.authenticated){
+            MoveMessageBody body = new MoveMessageBody(jwt, lobbyId, new Pair<Integer, Integer>(x, y));
+            send(new Message(body, MessageType.MOVE));
+        } else{
+            throw new Exception("Not Authenticated");
+        }
+    }
+
+    public void playAgain() throws Exception{
+        if(this.authenticated){
+            PlayAgainMessageBody body = new PlayAgainMessageBody(lobbyId, jwt);
+            send(new Message(body, MessageType.PLAY_AGAIN));
+        } else{
+            throw new Exception("Not Authenticated");
+        }
+    }
+
     /*==========================================================================================================
      * CLIENT ENDPOINT
      *==========================================================================================================*/
@@ -207,8 +222,13 @@ public class LobbyService extends AbstractWebsocketService {
                     break;
                 case CONNECTION_SUCCESS:
                     ConnectionSuccessMessageBody connSuccessBody = gson.fromJson(message.getBody(), ConnectionSuccessMessageBody.class);
-                    this.gameState = connSuccessBody.getGameState();
-                    this.onLobbyCallback.accept(this.gameState);
+                    Player[] connSuccessPlayers = gson.fromJson(connSuccessBody.getGameState().getPlayers().toString(), Player[].class);
+                    connSuccessBody.getGameState().setPlayerOne(connSuccessPlayers[0]);
+                    connSuccessBody.getGameState().setPlayerTwo(connSuccessPlayers[1]);
+                    System.out.println("connSuccessBody.getGameState().getPlayers(): " + connSuccessBody.getGameState().getPlayers());
+
+                    GameStateService.getInstance().setGameState(connSuccessBody.getGameState());
+                    this.onLobbyCallback.callback();
 
                     if(connSuccessBody.getType() == ConnectionMessageBody.Type.JOIN){
                         this.lobbyId = connSuccessBody.getLobbyId();
@@ -234,23 +254,38 @@ public class LobbyService extends AbstractWebsocketService {
                     break;
                 case PLAYER_JOINED:
                     PlayerJoinedMessageBody joinBody = gson.fromJson(message.getBody(), PlayerJoinedMessageBody.class);
+                    GameState joinGameState = GameStateService.getInstance().getGameState();
+                    System.out.println("joinBody.getPlayer(): " + joinBody.getPlayer());
                     
                     if(joinBody.getPosition() == 0){
-                        this.gameState.setPlayerOne(joinBody.getPlayer());
+                        joinGameState.setPlayerOne(joinBody.getPlayer());
                     } else{
-                        this.gameState.setPlayerTwo(joinBody.getPlayer());
+                        joinGameState.setPlayerTwo(joinBody.getPlayer());
                     }
+                    System.out.println("joinGameState.getPlayers(): " + joinGameState.getPlayers());
                     break;
                 case PLAYER_LEFT:
                     PlayerLeaveMessageBody leaveBody = gson.fromJson(message.getBody(), PlayerLeaveMessageBody.class);
+                    GameState leaveGameState = GameStateService.getInstance().getGameState();
 
                     if(leaveBody.getPosition() == 0){
-                        this.gameState.setPlayerOne(null);
+                        leaveGameState.setPlayerOne(null);
                     } else{
-                        this.gameState.setPlayerTwo(null);
+                        leaveGameState.setPlayerTwo(null);
                     }
                     break;
                 case MOVE:
+                    MoveMessageBody moveBody = gson.fromJson(message.getBody(), MoveMessageBody.class);
+                    GameState moveGameState = GameStateService.getInstance().getGameState();
+                    System.out.println("Received Move: " + moveBody.getMove().getValue0() + ", " + moveBody.getMove().getValue1());
+                    moveGameState.setCell(moveBody.getMove().getValue0(), moveBody.getMove().getValue1());
+                    break;
+                case NEW_GAME:
+                    NewGameMessageBody newGameBody = gson.fromJson(message.getBody(), NewGameMessageBody.class);
+                    Player[] newGamePlayers = gson.fromJson(newGameBody.getGameState().getPlayers().toString(), Player[].class);
+                    newGameBody.getGameState().setPlayerOne(newGamePlayers[0]);
+                    newGameBody.getGameState().setPlayerTwo(newGamePlayers[1]);
+                    GameStateService.getInstance().setGameState(newGameBody.getGameState());
                     break;
                 default:
                     break;

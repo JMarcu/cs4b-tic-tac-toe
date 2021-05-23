@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.Pane;
 import models.Player;
 import models.SceneCallback.LaunchLobbyFinderCallback;
 import models.SceneCallback.ReturnToCallback;

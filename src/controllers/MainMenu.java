@@ -32,6 +32,8 @@ import models.SceneCallback.LaunchGameCallback;
 import models.SceneCallback.LaunchLobbyFinderCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
+import services.GameStateService;
+
 import org.javatuples.Pair;
 
 /**
@@ -313,7 +315,10 @@ public class MainMenu {
     void onPlayAction(ActionEvent event) {
         if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
         if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
-        launchGameCB.launchGame(new GameState(gameMode, new Pair<Player, Player>(playerOne, playerTwo), singlePlayer, secondaryOption));
+        GameStateService.getInstance().setGameState(
+            new GameState(gameMode, new Pair<Player, Player>(playerOne, playerTwo), singlePlayer, secondaryOption, false)
+        );
+        launchGameCB.launchGame();
     }
 
     /** Update player one's name when the user types in ${@link playerOneNameTF}.  */

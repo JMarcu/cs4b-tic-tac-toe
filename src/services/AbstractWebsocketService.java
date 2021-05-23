@@ -171,7 +171,8 @@ public abstract class AbstractWebsocketService extends Thread implements Sender 
       * @throws IOExecption Thrown if there is an error operating over the websocket channel.
       */
     public void send(Message message) throws IOException{
-        session.getBasicRemote().sendText(new Gson().toJson(message));
+        System.out.println("Sending Message: " + gson.toJson(message));
+        session.getBasicRemote().sendText(gson.toJson(message));
     }
 
     /*==========================================================================================================

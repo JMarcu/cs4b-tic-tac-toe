@@ -16,6 +16,8 @@ public enum MessageType {
     LOGOUT,
     LOGOUT_SUCCESS,
     MOVE,
+    NEW_GAME,
+    PLAY_AGAIN,
     PLAYER_JOINED,
     PLAYER_LEFT,
     PLAYER_PROPERTIES,

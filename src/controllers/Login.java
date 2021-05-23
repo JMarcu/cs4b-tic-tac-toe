@@ -11,12 +11,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import models.Player;
 import models.SceneCallback.LaunchLobbyFinderCallback;
-import models.SceneCallback.LaunchLoginCallback;
 import models.SceneCallback.LaunchMainMenuCallback;
 import models.SceneCallback.LaunchRegisterCallback;
-import models.SceneCallback.ReturnToCallback;
 import services.AuthService;
-import services.LobbyService;
 
 public class Login {
 

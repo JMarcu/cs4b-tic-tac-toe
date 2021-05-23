@@ -1,9 +1,8 @@
 package controllers;
 
 import java.util.concurrent.Flow.*;
-
 import org.javatuples.Pair;
-
+import java.util.UUID;
 import java.util.Vector;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,7 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-//import javafx.scene.layout.BorderPane;
 import javafx.scene.control.ScrollPane;
 import models.Ai;
 import models.ColorScheme;
@@ -21,20 +19,22 @@ import models.Player;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchScoreBoardCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
+import services.AuthService;
+import services.GameStateService;
 import models.TTTScene;
 
 public class GameBoard{
     
-    private GameState                 gameState;
+    private Vector<GameState>         gameHistory = new Vector<GameState>();
     private Subscription              gameStateSubscription;
+    private Subscription              gameStatePatchSubscription;
     private LaunchOptionsMenuCallback optionsMenuCB;
     private Subscription              playerOneSubscription;
     private Subscription              playerTwoSubscription;
+    private boolean                   read;
     private LaunchShapePickerCallback shapePickerCB;
     private LaunchScoreBoardCallback  scoreBoardCB;
     private boolean                   viewInit;
-    private boolean                   read;
-    private Vector<GameState>         gameHistory = new Vector<GameState>();
 
     private final String ASSETS_DIRECTORY = "/assets/images/";
 
@@ -49,8 +49,7 @@ public class GameBoard{
     @FXML private ScrollPane root;
     
     public GameBoard(){
-        this.gameState = null;
-        this.gameStateSubscription = null;
+        this.gameStatePatchSubscription = null;
         this.optionsMenuCB = null;
         this.playerOneSubscription = null;
         this.playerTwoSubscription = null;
@@ -60,6 +59,21 @@ public class GameBoard{
 
         GameState none = new GameState();
         this.gameHistory.add(none);
+
+        GameStateService.getInstance().subscribe(new Subscriber<GameState>(){
+            @Override public void onSubscribe(Subscription subscription) { 
+                gameStateSubscription = subscription;
+                gameStateSubscription.request(1);
+            }
+            @Override public void onNext(GameState item) { 
+                if(item != null){
+                    onGameState(); 
+                }
+                gameStateSubscription.request(1);
+            };
+            @Override public void onError(Throwable throwable) { }
+            @Override public void onComplete() { }
+        });
     }
     
     @FXML 
@@ -67,7 +81,7 @@ public class GameBoard{
         this.viewInit = true; 
         this.read = false;
 
-        if(gameState != null){
+        if(GameStateService.getInstance().getGameState() != null){
             finallyInitialize();
         }
 
@@ -79,10 +93,10 @@ public class GameBoard{
 
     private void finallyInitialize(){
         read = false;
-        boardController.setGameState(gameState);
 
         this.updatePlayerViews();
 
+        GameState gameState = GameStateService.getInstance().getGameState();
         if(gameState.getStatus() == GameState.Status.IN_PROGRESS){
             boardController.setEnable();
         } else{
@@ -90,26 +104,20 @@ public class GameBoard{
         }
     }
 
-    /************************************************************************************************************
-     * ACCESSORS & MUTATORS
-     ************************************************************************************************************/
-
-    public ScrollPane getRoot(){ return this.root; }
-
     //Loads data from launchGame
-    public void setGameState(GameState gameState){
-        this.gameState = gameState;
+    public void onGameState(){
+        GameState gameState = GameStateService.getInstance().getGameState();
 
-        if(gameStateSubscription != null){ gameStateSubscription.cancel(); }
+        if(gameStatePatchSubscription != null){ gameStatePatchSubscription.cancel(); }
         
-        this.gameState.subscribe(new Subscriber<GameState.Patch>(){
+        gameState.subscribe(new Subscriber<GameState.Patch>(){
 			@Override public void onSubscribe(Subscription subscription) { 
-                gameStateSubscription = subscription; 
-                gameStateSubscription.request(1);
+                gameStatePatchSubscription = subscription; 
+                gameStatePatchSubscription.request(1);
             }
 			@Override public void onNext(GameState.Patch item) { 
                 onGameStatePatch(item); 
-                gameStateSubscription.request(1);
+                gameStatePatchSubscription.request(1);
             }
 			@Override public void onError(Throwable throwable) { }
 			@Override public void onComplete() { }
@@ -128,7 +136,15 @@ public class GameBoard{
             finallyInitialize();
             read = false;
         }
+
+        setBoardStatus();
     }
+
+    /************************************************************************************************************
+     * ACCESSORS & MUTATORS
+     ************************************************************************************************************/
+
+    public ScrollPane getRoot(){ return this.root; }
 
     public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB) {this.optionsMenuCB = optionsMenuCB;}
     public void setScoreBoardCB(LaunchScoreBoardCallback scoreBoardCB)    {this.scoreBoardCB = scoreBoardCB;}
@@ -154,21 +170,25 @@ public class GameBoard{
 
     @FXML //Sets Playerone's name on the textfield for the gameboard
     private void onPlayerOneTF(KeyEvent event){
+        GameState gameState = GameStateService.getInstance().getGameState();
         gameState.getPlayers().getValue0().setName(this.playerOneTF.getText());
     }
 
     @FXML //Sets Playertwo's name on the textfield for the gameboard
     private void onPlayerTwoTF(KeyEvent event){
+        GameState gameState = GameStateService.getInstance().getGameState();
         gameState.getPlayers().getValue1().setName(this.playerTwoTF.getText());
     }
 
     @FXML //Allows playerone to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerOneShapeAction(ActionEvent event) {
+        GameState gameState = GameStateService.getInstance().getGameState();
         this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue0());
     }
 
     @FXML //Allows playertwo to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerTwoShapeAction(ActionEvent event) {
+        GameState gameState = GameStateService.getInstance().getGameState();
         this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue1());
     }
 
@@ -206,10 +226,13 @@ public class GameBoard{
         }
 
         if(patch.getCurrentPlayer() != null && patch.getCurrentPlayer().getIsAI()){
+            GameState gameState = GameStateService.getInstance().getGameState();
             Ai aiPlayer = (Ai)patch.getCurrentPlayer();
             Pair<Integer, Integer> move = aiPlayer.generateMove(gameState);
             gameState.setCell(move.getValue0(), move.getValue1());
         }
+
+        setBoardStatus();
     }
 
     private void onPlayerPatch(Player player, ImageView iv, Player.Patch patch){
@@ -218,12 +241,47 @@ public class GameBoard{
         }
     }
 
+    private void setBoardStatus(){
+        boolean disableBoard = true;
+        GameState gameState = GameStateService.getInstance().getGameState();
+
+        //Only enable the board if the game is in progress.
+        if(gameState.getStatus() == GameState.Status.IN_PROGRESS){
+
+            if(gameState.getOnline()){
+                //For online play, enable the board if the logged in player is the game's current player.
+                UUID playerId = AuthService.getInstance().getPlayer().getUuid();
+                UUID currentPlayerId = gameState.getCurrentPlayer().getUuid();
+                if(playerId.equals(currentPlayerId)){
+                    disableBoard = false;
+                    boardController.setEnable();
+                }
+            } else{
+                if(!gameState.getSinglePlayer()){
+                    //For offline player, enable the board if it is a two player game...
+                    disableBoard = false;
+                    boardController.setEnable();
+                } else if(!gameState.getCurrentPlayer().getIsAI()){
+                    //...or if it is not the AI's turn.
+                    disableBoard = false;
+                    boardController.setEnable();
+                }
+            }
+        }
+
+        //If none of the special conditions above were met, disable the board.
+        if(disableBoard){
+            boardController.setDisable();
+        }
+    }
+
     private void subscribeToPlayers(){
+        GameState gameState = GameStateService.getInstance().getGameState();
         if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
         if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
            
-        if(this.gameState.getPlayers().getValue0() != null){
-            this.gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
+        if(gameState.getPlayers().getValue0() != null){
+            gameState.getPlayers().getValue0().subscribe(new Subscriber<Player.Patch>(){
                 @Override public void onSubscribe(Subscription subscription) { 
                     playerOneSubscription = subscription; 
                     playerOneSubscription.request(1);
@@ -237,8 +295,8 @@ public class GameBoard{
             });
         }
 
-        if(this.gameState.getPlayers().getValue1() != null){
-            this.gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
+        if(gameState.getPlayers().getValue1() != null){
+            gameState.getPlayers().getValue1().subscribe(new Subscriber<Player.Patch>(){
                 @Override public void onSubscribe(Subscription subscription) { 
                     playerTwoSubscription = subscription; 
                     playerTwoSubscription.request(1);
@@ -255,6 +313,7 @@ public class GameBoard{
     }
 
     private void updatePlayerViews(){        
+        GameState gameState = GameStateService.getInstance().getGameState();
         playerOneTF.setText(
             gameState.getPlayers().getValue0() != null
             ? gameState.getPlayers().getValue0().getName()

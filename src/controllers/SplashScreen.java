@@ -1,5 +1,6 @@
 package controllers;
 
+import interfaces.CallBackable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,13 +11,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import models.SceneCallback.LaunchGameCallback;
-import models.SceneCallback.LaunchMainMenuCallback;
-import models.SceneCallback.ReturnToCallback;
-import models.GameState;
+import models.Player;
 
 public class SplashScreen {
-    private GameState gameState;
 
     public enum SplashType{
         TITLE ("Click anywhere to continue...", "title"),
@@ -36,9 +33,10 @@ public class SplashScreen {
         public String getFilename(){ return this.filename; }
     };
 
-    private LaunchGameCallback launchGameCB;
-    private LaunchMainMenuCallback launchMainMenuCB;
-    private ReturnToCallback returnToCB;
+    private CallBackable closeCB;
+    private CallBackable playAgainCB;
+    private Player player;
+    private CallBackable returnToMenuCB;
 
     private final String SPLASH_DIRECTORY = "/assets/images/splash/";
 
@@ -52,7 +50,10 @@ public class SplashScreen {
     @FXML private VBox root;
 
     public SplashScreen(){
-        this.gameState = null;
+        this.closeCB = null;
+        this.playAgainCB = null;
+        this.player = null;
+        this.returnToMenuCB = null;
     }
 
     /** Sets the default state of the view's interactive elements. */
@@ -61,8 +62,8 @@ public class SplashScreen {
         //Load external style sheets
         root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
         root.getStylesheets().add(getClass().getResource("/styles/splash-screen.css").toExternalForm());
-        if(gameState != null){
-            personName.setText(gameState.getPlayers().getValue0().getName());
+        if(player != null){
+            personName.setText(player.getName());
         }
     }
 
@@ -70,20 +71,23 @@ public class SplashScreen {
         return this.root;
     }
 
-    public void setLaunchGameCB(LaunchGameCallback launchGameCB){
-        this.launchGameCB = launchGameCB;
+    public void setCloseCallback(CallBackable closeCB){
+        this.closeCB = closeCB;
     }
 
-    public void setLaunchMainMenuCB(LaunchMainMenuCallback launchMainMenuCB){
-        this.launchMainMenuCB = launchMainMenuCB;
+    public void setPlayAgainCallback(CallBackable playAgainCB){
+        this.playAgainCB = playAgainCB;
     }
 
-    public void setReturnCB(ReturnToCallback returnToCB){
-        this.returnToCB = returnToCB;
+    public void setPlayer(Player player){
+        this.player = player;
+        if(personName != null){
+            personName.setText(player.getName());
+        }
     }
 
-    public void setGameState(GameState gameState){
-        this.gameState = gameState;
+    public void setReturnToMenuCallback(CallBackable returnToMenuCB){
+        this.returnToMenuCB = returnToMenuCB;
     }
     
     public void setSplashType(SplashType splashType){
@@ -104,25 +108,19 @@ public class SplashScreen {
     }
 
     @FXML
-    private void handleReplayButton(MouseEvent e){
-        // Replay Logic goes here
-    }
-
-    /** Closes the splash screen when the element is clicked on. */
-    @FXML
-    private void closeSplash(MouseEvent e){
-        if(returnToCB != null){
-            returnToCB.returnTo();
+    private void onBgClick(MouseEvent event){
+        if(closeCB != null){
+            closeCB.callback();
         }
     }
 
     @FXML
     private void onPlayAgainAction(ActionEvent event){
-        launchGameCB.launchGame(gameState);
+        this.playAgainCB.callback();
     }
 
     @FXML
     private void onBackToMenuAction(ActionEvent event){
-        launchMainMenuCB.launchMainMenu();
+        this.returnToMenuCB.callback();
     }
 }

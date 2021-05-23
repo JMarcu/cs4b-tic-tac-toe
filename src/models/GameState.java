@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
@@ -120,6 +121,8 @@ public class GameState implements Publisher<GameState.Patch>  {
     /** Flag for the type of game mode being played. */
     private GameMode gameMode;
 
+    private boolean online;
+
     /** Stores the players in the game. */
     private Pair<Player, Player> players;
 
@@ -159,7 +162,7 @@ public class GameState implements Publisher<GameState.Patch>  {
 
     /** Creates a default game: single player, free play, and with both players set to null. */
     public GameState(){
-        this(GameMode.FREE_PLAY, new Pair<Player, Player>(new Player(), new Player()), true, 0);
+        this(GameMode.FREE_PLAY, new Pair<Player, Player>(new Player(), new Player()), true, 0, false);
         this.status = GameState.Status.NEW;
     }
 
@@ -170,7 +173,7 @@ public class GameState implements Publisher<GameState.Patch>  {
      * @param singlePlayer True if player one should be versing the AI, false if both players are human.
      */
     public GameState(GameMode gameMode, Pair<Player, Player> players, Boolean singlePlayer){
-        this(gameMode, players, singlePlayer, 0);
+        this(gameMode, players, singlePlayer, 0, false);
     }
 
     /** 
@@ -181,8 +184,9 @@ public class GameState implements Publisher<GameState.Patch>  {
      * @param secondaryOption The game mode's secondary option value. The meaning of this option is contextual
      * based on the game mode.
      */
-    public GameState(GameMode gameMode, Pair<Player, Player> players, Boolean singlePlayer, int secondaryOption){
+    public GameState(GameMode gameMode, Pair<Player, Player> players, Boolean singlePlayer, int secondaryOption, boolean online){
         this.gameMode = gameMode;
+        this.online = online;
         this.players = players;
         this.singlePlayer = singlePlayer;
         this.secondaryOption = secondaryOption;
@@ -191,13 +195,16 @@ public class GameState implements Publisher<GameState.Patch>  {
         this.emptyCells = GRID_SIZE * GRID_SIZE;
         this.grid = new Player[GRID_SIZE][GRID_SIZE];
         this.publisher = new SubmissionPublisher<Patch>(Runnable::run, Flow.defaultBufferSize());
-        this.status = Status.NEW;
         this.victoryCounts = new ArrayList<Integer>();
         this.winner = null;
 
         for(int i = 0; i < (GRID_SIZE * 2) + 2; i++){
             this.victoryCounts.add(0);
         }
+
+        this.status = singlePlayer || (players.getValue0() != null && players.getValue1() != null)
+            ? Status.IN_PROGRESS
+            : Status.NEW;
     }
     
     /*==========================================================================================================
@@ -208,7 +215,9 @@ public class GameState implements Publisher<GameState.Patch>  {
      * Returns the player whose turn it is. 
      * @returns The player whose turn it is.
      */
-    public Player getCurrentPlayer() { return (Player) this.players.getValue(this.currentPlayerIndex); }
+    public Player getCurrentPlayer() { 
+        return (Player) this.players.getValue(this.currentPlayerIndex);
+    }
 
     /** 
      * Returns the game mode. 
@@ -221,6 +230,8 @@ public class GameState implements Publisher<GameState.Patch>  {
      * @return The grid size.
      */
     public int getGridSize() { return this.GRID_SIZE; }
+
+    public boolean getOnline(){ return this.online; }
 
     /** 
      * Returns the players in the game. 
@@ -386,6 +397,7 @@ public class GameState implements Publisher<GameState.Patch>  {
                 }
 
                 //Update subscribers of the move and that the current player has changed.
+                System.out.println("Notify Subscribers");
                 notifySubscribers(new Patch(){
                     {
                         currentPlayer = GameState.this.getCurrentPlayer();
@@ -411,7 +423,9 @@ public class GameState implements Publisher<GameState.Patch>  {
 
      /**  Offers the patch to all subscribers. */
     private void notifySubscribers(Patch patch){
+        System.out.println("number of subscribers: " + this.publisher.getNumberOfSubscribers());
         this.publisher.offer(patch, null);
+        System.out.println("Offered");
     }
 
     public static boolean checkVictoryArr(ArrayList<Integer> victoryArr, Pair<Integer, Integer> move, boolean isPlayerOne){

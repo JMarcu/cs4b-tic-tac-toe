@@ -175,6 +175,14 @@ public class AuthService extends AbstractWebsocketService {
     }
 
     /*==========================================================================================================
+     * STATE
+     *==========================================================================================================*/
+
+    public Player getPlayer(){
+        return this.player;
+    }
+
+    /*==========================================================================================================
      * SESSION MANAGEMENT
      *==========================================================================================================*/
 
@@ -381,6 +389,7 @@ public class AuthService extends AbstractWebsocketService {
 
                 //Store the auth tokens.
                 this.jwt = loginSuccessBody.getJWT();
+                this.player = loginSuccessBody.getPlayer();
                 this.refreshToken = loginSuccessBody.getRefreshToken();
 
                 LobbyService.getInstance().connect(
@@ -401,6 +410,7 @@ public class AuthService extends AbstractWebsocketService {
                 if(this.onLogoutCallback != null){
                     //Clear our auth tokens.
                     this.jwt = null;
+                    this.player = null;
                     this.refreshToken = null;
 
                     //Invoke the callback.

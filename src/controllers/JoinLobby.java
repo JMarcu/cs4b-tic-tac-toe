@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import interfaces.CallBackable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -92,13 +93,13 @@ public class JoinLobby {
         try {
             LobbyService.getInstance().joinLobby(
                 this.lobbyTable.getSelectionModel().getSelectedItem().getId(),
-                new Consumer<GameState>(){
+                new CallBackable(){
                     @Override
-                    public void accept(GameState gameState) {
+                    public void callback() {
                         Platform.runLater(new Runnable(){
                             @Override
                             public void run() {
-                                JoinLobby.this.launchGameCB.launchGame(gameState);
+                                JoinLobby.this.launchGameCB.launchGame();
                             }
                         });
                     }

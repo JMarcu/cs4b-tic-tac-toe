@@ -4,6 +4,7 @@ import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.function.Consumer;
 
+import interfaces.CallBackable;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -81,13 +82,13 @@ public class CreateLobby {
         try {
             LobbyService.getInstance().createLobby(
                 lobbyTextField.getText(), 
-                new Consumer<GameState>(){
+                new CallBackable(){
                     @Override
-                    public void accept(GameState gameState) {
+                    public void callback() {
                         Platform.runLater(new Runnable(){
                             @Override
                             public void run() {
-                                CreateLobby.this.launchGameCB.launchGame(gameState);
+                                CreateLobby.this.launchGameCB.launchGame();
                             }
                         });
                     }
