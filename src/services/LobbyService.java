@@ -24,6 +24,10 @@ import models.ServerMessage.NewGameMessageBody;
 import models.ServerMessage.PlayAgainMessageBody;
 import models.ServerMessage.PlayerJoinedMessageBody;
 import models.ServerMessage.PlayerLeaveMessageBody;
+import models.ServerMessage.SpectateJoinMessageBody;
+import models.ServerMessage.SpectateLeaveMessageBody;
+import models.ServerMessage.SpectateSuccessMessageBody;
+
 import org.javatuples.Pair;
 
 @ClientEndpoint
@@ -191,6 +195,31 @@ public class LobbyService extends AbstractWebsocketService {
         }
     }
 
+    public void spectate(UUID lobbyId, CallBackable onLobbyCallback) throws Exception{
+        if(this.authenticated){
+            this.onLobbyCallback = onLobbyCallback;
+            SpectateJoinMessageBody body = new SpectateJoinMessageBody(
+                lobbyId, 
+                player.getUuid()
+            );
+            send(new Message(body, MessageType.SPECTATE_JOIN));
+        } else{
+            throw new Exception("Not Authenticated");
+        }
+    }
+
+    public void stopSpectating() throws Exception{
+        if(this.authenticated && lobbyId != null){
+            SpectateLeaveMessageBody body = new SpectateLeaveMessageBody(
+                lobbyId, 
+                player.getUuid()
+            );
+            send(new Message(body, MessageType.SPECTATE_LEAVE));
+        } else{
+            throw new Exception("Not Authenticated");
+        }
+    }
+
     /*==========================================================================================================
      * CLIENT ENDPOINT
      *==========================================================================================================*/
@@ -254,14 +283,12 @@ public class LobbyService extends AbstractWebsocketService {
                 case PLAYER_JOINED:
                     PlayerJoinedMessageBody joinBody = gson.fromJson(message.getBody(), PlayerJoinedMessageBody.class);
                     GameState joinGameState = GameStateService.getInstance().getGameState();
-                    System.out.println("joinBody.getPlayer(): " + joinBody.getPlayer());
                     
                     if(joinBody.getPosition() == 0){
                         joinGameState.setPlayerOne(joinBody.getPlayer());
                     } else{
                         joinGameState.setPlayerTwo(joinBody.getPlayer());
                     }
-                    System.out.println("joinGameState.getPlayers(): " + joinGameState.getPlayers());
                     break;
                 case PLAYER_LEFT:
                     PlayerLeaveMessageBody leaveBody = gson.fromJson(message.getBody(), PlayerLeaveMessageBody.class);
@@ -276,7 +303,6 @@ public class LobbyService extends AbstractWebsocketService {
                 case MOVE:
                     MoveMessageBody moveBody = gson.fromJson(message.getBody(), MoveMessageBody.class);
                     GameState moveGameState = GameStateService.getInstance().getGameState();
-                    System.out.println("Received Move: " + moveBody.getMove().getValue0() + ", " + moveBody.getMove().getValue1());
                     moveGameState.setCell(moveBody.getMove().getValue0(), moveBody.getMove().getValue1());
                     break;
                 case NEW_GAME:
@@ -285,6 +311,16 @@ public class LobbyService extends AbstractWebsocketService {
                     newGameBody.getGameState().setPlayerOne(newGamePlayers[0]);
                     newGameBody.getGameState().setPlayerTwo(newGamePlayers[1]);
                     GameStateService.getInstance().setGameState(newGameBody.getGameState());
+                    break;
+                case SPECTATE_SUCCESS:
+                    SpectateSuccessMessageBody specSuccessBody = gson.fromJson(message.getBody(), SpectateSuccessMessageBody.class);
+                    Player[] specSuccessPlayers = gson.fromJson(specSuccessBody.getGameState().getPlayers().toString(), Player[].class);
+                    specSuccessBody.getGameState().setPlayerOne(specSuccessPlayers[0]);
+                    specSuccessBody.getGameState().setPlayerTwo(specSuccessPlayers[1]);
+                    this.lobbyId = specSuccessBody.getLobbyId();
+
+                    GameStateService.getInstance().setGameState(specSuccessBody.getGameState());
+                    this.onLobbyCallback.callback();
                     break;
                 default:
                     break;

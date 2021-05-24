@@ -1,5 +1,7 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 import org.javatuples.Pair;
 
@@ -9,6 +11,7 @@ public class Lobby {
     private UUID id;
     private String name;
     private Pair<Player, Player> players;
+    protected HashMap<UUID, Boolean> spectators;
     private GameState.Status status;
 
     public Lobby(String name){
@@ -19,12 +22,24 @@ public class Lobby {
         this.id = id;
         this.name = name;
         this.players = players;
+        this.spectators = new HashMap<UUID, Boolean>();
         this.status = status;
+    }
+
+    public void addSpectator(UUID playerId){
+        this.spectators.put(playerId, true);
+    }
+
+    public void removeSpectator(UUID playerId){
+        if(this.spectators.containsKey(playerId)){
+            this.spectators.put(playerId, false);
+        }
     }
 
     public UUID getId(){ return this.id; }
     public String getName(){ return this.name; }
     public Pair<Player, Player> getPlayers(){ return this.players; }
+    public ArrayList<UUID> getSpectators() { return new ArrayList<UUID>(spectators.keySet()); }
     public GameState.Status getStatus(){ return this.status; }
     public boolean isAiLobby(){ return aiLobby; }
 
@@ -40,7 +55,7 @@ public class Lobby {
     }
 
     public int getSpectatorCount(){
-        return 0;
+        return this.spectators.size();
     }
 
     public String getStatusString(){

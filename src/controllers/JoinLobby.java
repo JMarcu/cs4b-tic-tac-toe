@@ -125,7 +125,24 @@ public class JoinLobby {
 
     @FXML
     private void onSpectateAction(ActionEvent event) {
-
+        try {
+            LobbyService.getInstance().spectate(
+                this.lobbyTable.getSelectionModel().getSelectedItem().getId(),
+                new CallBackable(){
+                    @Override
+                    public void callback() {
+                        Platform.runLater(new Runnable(){
+                            @Override
+                            public void run() {
+                                JoinLobby.this.launchGameCB.launchGame();
+                            }
+                        });
+                    }
+                }
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public BorderPane getRoot(){ 
