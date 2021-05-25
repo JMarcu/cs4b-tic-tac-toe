@@ -4,11 +4,11 @@ import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.Session;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-
 import models.Lobby;
 import models.Player;
 import models.ServerMessage.AuthenticationResultMessageBody;
@@ -19,8 +19,6 @@ import models.ServerMessage.Message;
 import models.ServerMessage.MessageType;
 import models.ServerMessage.RegisterMessageBody;
 import models.ServerMessage.RegistrationResultMessageBody;
-import models.ServerMessage.RequestPlayerMessageBody;
-import models.ServerMessage.RequestedPlayerMessageBody;
 
 /**
  * Facilitates communication between the client and the AuthService on the server.
@@ -80,8 +78,6 @@ public class AuthService extends AbstractWebsocketService {
 
     /** The singleton */
     private static AuthService instance = null;
-
-    public Player getPlayer(){return player;}
 
     /*==========================================================================================================
      * LIFECYCLE
@@ -175,6 +171,14 @@ public class AuthService extends AbstractWebsocketService {
             AuthService.instance = new AuthService(player, domain);
         }
         return instance;
+    }
+
+    /*==========================================================================================================
+     * STATE
+     *==========================================================================================================*/
+
+    public Player getPlayer(){
+        return this.player;
     }
 
     /*==========================================================================================================
@@ -309,8 +313,6 @@ public class AuthService extends AbstractWebsocketService {
      * @param loginResult Whether or not the logout succeeded.
      */
     private void invokeLogoutCallback(boolean logoutResult){
-        System.out.println("invokeLogoutCallback");
-        System.out.println("onLogoutCallback: " + onLogoutCallback);
         if(this.onLogoutCallback != null){
             /* Store a local-scoped copy of the callback, then set the instance-scoped reference to null.
             The callback might invoke the 'logout' method, which will throw an exception if our 
@@ -340,22 +342,6 @@ public class AuthService extends AbstractWebsocketService {
 
             //Invoke the callback.
             tempRegResultCB.accept(registerResult, player);
-        }
-    }
-
-    /** 
-     * 
-     * @param 
-     */
-    private void invokePlayerPropertiesCallback(Player player){
-        if(this.onLoginCallback != null){
-            /* Store a local-scoped copy of the callback, then set the instance-scoped reference to null.
-            The callback might invoke the 'login' method, which will throw an exception if our 
-            instance-scoped copy is not null, so it's important that it be set to null before invoking
-            the callback */
-         
-
-            //Invoke the callback.
         }
     }
 
@@ -394,23 +380,37 @@ public class AuthService extends AbstractWebsocketService {
                     //from the auth service. On a successfull login, instead expect a LOGIN_SUCCESS message.
                 }
                 break;
+            case LOGIN_FAIL:
+                invokeLoginCallback(null);
+                break;
             case LOGIN_SUCCESS:
                 //Deserialize the body.
                 LoginSuccessMessageBody loginSuccessBody = GSON.fromJson(message.getBody(), LoginSuccessMessageBody.class);
 
                 //Store the auth tokens.
                 this.jwt = loginSuccessBody.getJWT();
+                this.player = loginSuccessBody.getPlayer();
                 this.refreshToken = loginSuccessBody.getRefreshToken();
 
-                //Invoke the callback.
-                invokeLoginCallback(loginSuccessBody.getPlayer());
+                LobbyService.getInstance().connect(
+                    jwt, 
+                    loginSuccessBody.getPlayer(),
+                    new Consumer<ArrayList<Lobby>>(){
+                        @Override
+                        public void accept(ArrayList<Lobby> t) {
+                            //Invoke the callback.
+                            invokeLoginCallback(loginSuccessBody.getPlayer());
+                        }
+                    }
+                );
+
                 break;
             case LOGOUT_SUCCESS:
                 //If we haven't stored a callback for handling a logout, ignore the message.
-                System.out.println("onLogoutCallback: " + onLogoutCallback);
                 if(this.onLogoutCallback != null){
                     //Clear our auth tokens.
                     this.jwt = null;
+                    this.player = null;
                     this.refreshToken = null;
 
                     //Invoke the callback.
@@ -426,33 +426,6 @@ public class AuthService extends AbstractWebsocketService {
 
                 //Invoke the callback.
                 invokeRegisterCallback(regResultBody.getResult(), regResultBody.getPlayer());
-                break;
-            case REQUEST_PLAYER:
-                RequestPlayerMessageBody requestPlayerBody = gson.fromJson(message.getBody(), RequestPlayerMessageBody.class);
-
-                try {
-                    this.send(new Message(requestPlayerBody.getPlayerId(), MessageType.REQUEST_PLAYER));
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    
-                    System.out.println("REQUEST PLAYER");
-                    e.printStackTrace();
-                }
-                break;
-            case REQUESTED_PLAYER:
-                RequestedPlayerMessageBody requestedPlayerBody = gson.fromJson(message.getBody(), RequestedPlayerMessageBody.class);
-                
-                if(requestedPlayerBody.getPlayer() != null){
-                    System.out.println(requestedPlayerBody.getPlayer().getName());
-                    System.out.println(requestedPlayerBody.getPlayer().getColor());
-                    System.out.println(requestedPlayerBody.getPlayer().getIsAI());
-                    System.out.println(requestedPlayerBody.getPlayer().getUuid());
-                }
-                else{
-                    System.out.println("The player was null");
-                }
-            
-                break;
         }
     }
 
