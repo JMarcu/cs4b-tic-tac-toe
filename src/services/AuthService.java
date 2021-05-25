@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-
-import models.Lobby;
 import models.Player;
 import models.ServerMessage.AuthenticationResultMessageBody;
 import models.ServerMessage.LoginMessageBody;
@@ -394,6 +392,9 @@ public class AuthService extends AbstractWebsocketService {
                     //from the auth service. On a successfull login, instead expect a LOGIN_SUCCESS message.
                 }
                 break;
+            case LOGIN_FAIL:
+                invokeLoginCallback(null);
+                break;
             case LOGIN_SUCCESS:
                 //Deserialize the body.
                 LoginSuccessMessageBody loginSuccessBody = GSON.fromJson(message.getBody(), LoginSuccessMessageBody.class);
@@ -407,7 +408,6 @@ public class AuthService extends AbstractWebsocketService {
                 break;
             case LOGOUT_SUCCESS:
                 //If we haven't stored a callback for handling a logout, ignore the message.
-                System.out.println("onLogoutCallback: " + onLogoutCallback);
                 if(this.onLogoutCallback != null){
                     //Clear our auth tokens.
                     this.jwt = null;
