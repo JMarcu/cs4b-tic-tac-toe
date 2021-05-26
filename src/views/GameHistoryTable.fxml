@@ -27,7 +27,7 @@
                         <TableColumn fx:id="EndTime" prefWidth="67.0" text="End" />
                     </columns>
                   </TableView>
-                  <Button fx:id="ReturnButton" layoutX="501.0" mnemonicParsing="false" text="Return">
+                  <Button fx:id="ReturnButton" layoutX="501.0" mnemonicParsing="false" onAction="#ReturnButtonClicked" text="Return">
                      <font>
                         <Font size="20.0" />
                      </font>
