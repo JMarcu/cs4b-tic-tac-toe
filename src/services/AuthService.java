@@ -23,6 +23,8 @@ import models.ServerMessage.RegisterMessageBody;
 import models.ServerMessage.RegistrationResultMessageBody;
 import models.ServerMessage.UpdatePlayerMessageBody;
 import models.ServerMessage.UpdatePlayerSuccessMessageBody;
+import models.ServerMessage.RequestPlayerMessageBody;
+import models.ServerMessage.RequestedPlayerMessageBody;
 
 /**
  * Facilitates communication between the client and the AuthService on the server.
@@ -77,7 +79,7 @@ public class AuthService extends AbstractWebsocketService {
     /** A callback that is set when the user attempts to log out and invoked when the attempt completes or fails. */
     private Consumer<Boolean> onLogoutCallback = null;
 
-    private HashMap<UUID, Consumer<Player.Patch>> onPlayerPropertyCallbackMap;
+    private HashMap<UUID, Consumer<Player.Patch>> onRequestPlayerCallbackMap;
 
     /** A callback that is set when the user attempts to register and invoked when registration completes or fails. */
     private BiConsumer<RegistrationResult, Player> onRegistrationCallback = null;
@@ -375,6 +377,25 @@ public class AuthService extends AbstractWebsocketService {
         }
     }
     
+    /** 
+     * 
+     * @param 
+     */
+    private void invokeRequestPlayerCallback(Player player){
+        // if(this.onRequestPlayerCallbackMap != null){
+        //     /* Store a local-scoped copy of the callback, then set the instance-scoped reference to null.
+        //     The callback might invoke the 'login' method, which will throw an exception if our 
+        //     instance-scoped copy is not null, so it's important that it be set to null before invoking
+        //     the callback */
+         
+        //     HashMap<UUID, Consumer<Player.Patch>> tempRequestPlayerCB =  this.onRequestPlayerCallbackMap;
+        //     this.onRequestPlayerCallbackMap = null;
+
+        //     //Invoke the callback.
+        //     tempRequestPlayerCB.put(player.getUuid(), );
+        // }
+    }
+
     /*==========================================================================================================
      * PROFILES
      *==========================================================================================================*/
@@ -488,6 +509,32 @@ public class AuthService extends AbstractWebsocketService {
                 this.jwt = updatePlayerSuccBody.getJwt();
                 LobbyService.getInstance().setJwt(jwt);
                 invokeUpdateCallback(updatePlayerSuccBody.getPlayer());
+                break;
+            case REQUEST_PLAYER:
+                RequestPlayerMessageBody requestPlayerBody = gson.fromJson(message.getBody(), RequestPlayerMessageBody.class);
+
+                try {
+                    this.send(new Message(requestPlayerBody.getPlayerId(), MessageType.REQUEST_PLAYER));
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    
+                    System.out.println("REQUEST PLAYER");
+                    e.printStackTrace();
+                }
+                break;
+            case REQUESTED_PLAYER:
+                RequestedPlayerMessageBody requestedPlayerBody = gson.fromJson(message.getBody(), RequestedPlayerMessageBody.class);
+                
+
+                if(requestedPlayerBody.getPlayer() != null){
+                    System.out.println("Player Received");
+                    System.out.println(requestedPlayerBody.getPlayer().getName());
+                    System.out.println(requestedPlayerBody.getPlayer().getUuid());
+                }
+                else{
+                    System.out.println("The player is null");
+                }
+            
                 break;
         }
     }
