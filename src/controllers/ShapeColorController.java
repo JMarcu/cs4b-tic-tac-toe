@@ -8,7 +8,9 @@ import javafx.scene.paint.Color;
 import models.ColorScheme;
 import models.MarkerShape;
 import models.Player;
+import models.SerializeableColor;
 import models.SceneCallback.ReturnToCallback;
+import services.AuthService;
 import models.MusicPlayer;
 
 public class ShapeColorController {
@@ -51,6 +53,9 @@ public class ShapeColorController {
             myShape,
             currentColor != null ? currentColor : Color.BLACK
         );
+
+        AuthService.getInstance().updatePlayer(null, new SerializeableColor(player.getColor()), player.getShape(), null);
+
         returnCB.returnTo();
     }
 
