@@ -518,7 +518,15 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
                     GameState gameState = GameStateService.getInstance().getGameState();
                     Player player;
                     if(gameState.getOnline()){
-                        player = AuthService.getInstance().getPlayer();
+                        Player self = AuthService.getInstance().getPlayer();
+                        if(
+                            gameState.getPlayers().getValue0().getUuid().equals(self.getUuid()) ||
+                            gameState.getPlayers().getValue1().getUuid().equals(self.getUuid())
+                        ){
+                            player = self;
+                        } else{
+                            player = patch.getWinner();
+                        }
                     } else if(gameState.getSinglePlayer()){
                         player = gameState.getPlayers().getValue0();
                     } else{
