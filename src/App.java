@@ -6,6 +6,7 @@ import controllers.ScoreBoard;
 import controllers.ShapeColorController;
 import controllers.SplashScreen;
 import controllers.SplashScreen.SplashType;
+import controllers.GameHistoryController;
 import interfaces.CallBackable;
 import controllers.JoinLobby;
 import controllers.Login;
@@ -13,6 +14,8 @@ import controllers.Register;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
 import javafx.animation.FadeTransition;
@@ -26,6 +29,8 @@ import javafx.scene.text.Font;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.Pair;
+import models.Game;
 import models.Ai;
 import models.GameState;
 import models.MarkerShape;
@@ -40,6 +45,7 @@ import models.SceneCallback.LaunchLobbyFinderCallback;
 import models.SceneCallback.LaunchLoginCallback;
 import models.SceneCallback.LaunchRegisterCallback;
 import models.SceneCallback.ReturnToCallback;
+import models.SceneCallback.LaunchGameHistoryCallback;
 import services.AuthService;
 import services.GameStateService;
 import services.LobbyService;
@@ -48,7 +54,7 @@ import models.MusicPlayer.Track;
 import models.MusicPlayer;
 
 public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback,
-        LaunchShapePickerCallback, LaunchScoreBoardCallback, LaunchLobbyFinderCallback, LaunchLoginCallback, 
+        LaunchShapePickerCallback, LaunchScoreBoardCallback, LaunchGameHistoryCallback, LaunchLobbyFinderCallback, LaunchLoginCallback, 
         LaunchRegisterCallback, LaunchCreateLobbyCallback {
 
     private FXMLLoader   createLobbyFXML;
@@ -66,7 +72,8 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     private Player       playerTwo;
     private FXMLLoader   registerFXML;
     private StackPane    rootPane;
-    private FXMLLoader   scoreboardFXML; 
+    //private FXMLLoader   scoreboardFXML;
+    private FXMLLoader   gameHistoryFXML;  
     private FXMLLoader   splashScreenFXML;
     private final long FADE_DURATION = 200;
 
@@ -95,7 +102,8 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             markerPickerFXML = new FXMLLoader(getClass().getResource("/views/ShapeColorPicker.fxml"));
             optionsMenuFXML = new FXMLLoader(getClass().getResource("/views/OptionsMenu.fxml"));
             registerFXML = new FXMLLoader(getClass().getResource("/views/Register.fxml"));
-            scoreboardFXML = new FXMLLoader(getClass().getResource("/views/Scoreboard.fxml"));
+            //scoreboardFXML = new FXMLLoader(getClass().getResource("/views/Scoreboard.fxml"));
+            gameHistoryFXML = new FXMLLoader(getClass().getResource("/views/GameHistoryTable.fxml"));
             splashScreenFXML = new FXMLLoader(getClass().getResource("/views/SplashScreen.fxml"));
 
             createLobbyFXML.load();
@@ -106,7 +114,8 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             markerPickerFXML.load();
             optionsMenuFXML.load();
             registerFXML.load();
-            scoreboardFXML.load();
+            //scoreboardFXML.load();
+            gameHistoryFXML.load();
             splashScreenFXML.load();
 
             primaryStage.setTitle("Tic Tac Toe");
@@ -180,7 +189,8 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             GameBoard gameBoard = gameBoardFXML.getController();
             gameBoard.setShapePickerCB(this);
             gameBoard.setOptionsMenuCB(this);
-            gameBoard.setScoreBoardCB(this);
+            //gameBoard.setScoreBoardCB(this);
+            gameBoard.setGameHistoryCB(this);
             
             launchScene(gameBoard.getRoot());
         } catch (Exception e) {
@@ -314,18 +324,72 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     }
 
     @Override
-    public void launchScoreBoard(TTTScene returnTo, Vector<GameState> gameHistory){
+    public void launchScoreBoard(TTTScene returnTo, Vector<GameState> gameHistory1){
         try{
-            ScoreBoard scoreboard = scoreboardFXML.getController();
+
+            //test code
+            List<Game> gameHistory = new ArrayList<Game>();
+
+            Game testGame1 = new Game();
+            List<Pair<Integer,Integer>> allMoves = new ArrayList<Pair<Integer,Integer>>();
+            allMoves.add(new Pair(0,0));
+            allMoves.add(new Pair(1,1));
+            allMoves.add(new Pair(2,2));
+            allMoves.add(new Pair(0,2));
+            allMoves.add(new Pair(2,0));
+            allMoves.add(new Pair(2,1));
+            allMoves.add(new Pair(1,0));
+            testGame1.setAllMoves(allMoves);
+
+            List<UUID> allSpectators = new ArrayList<UUID>();
+            allSpectators.add(UUID.randomUUID());
+            allSpectators.add(UUID.randomUUID());
+            allSpectators.add(UUID.randomUUID());
+            testGame1.setAllSpectators(allSpectators);
+
+            UUID playerOne = UUID.randomUUID();
+            UUID creator = playerOne;
+            UUID winner = playerOne;
+            UUID playerTwo = UUID.randomUUID();
+            testGame1.setPlayers(new Pair(playerOne, playerTwo));
+            testGame1.setCreator(creator);
+            testGame1.setWinner(winner);
+            testGame1.setEndManually(9000);
+            testGame1.setStart(5000);
+            testGame1.setGameId(1);
+
+            List<Long> moveTimes = new ArrayList<Long>();
+            moveTimes.add(Long.valueOf(1));
+            moveTimes.add(Long.valueOf(2));
+            moveTimes.add(Long.valueOf(3));
+            moveTimes.add(Long.valueOf(4));
+            moveTimes.add(Long.valueOf(5));
+            moveTimes.add(Long.valueOf(6));
+            moveTimes.add(Long.valueOf(7));
+            testGame1.setMoveTimes(moveTimes);
+
+            gameHistory.add(testGame1);
+
+            //end test code
+
+
+
+            //ScoreBoard scoreboard = scoreboardFXML.getController();
+            GameHistoryController gameHistoryTable = gameHistoryFXML.getController();
             if(gameHistory.size()==0) {
-                scoreboard.set();
-                GameState none = new GameState();
-                scoreboard.addPlayer(none);
+                gameHistoryTable.set();
+                //GameState none = new GameState();
+                //scoreboard.addPlayer(none);
             }
+            //for(int i=0; i<gameHistory.size(); i++)
+            //    scoreboard.addPlayer(gameHistory.get(i));
+            //scoreboard.setReturnCB(() -> {closeMenu(scoreboard.getRoot());});
+            //openMenu(scoreboard.getRoot());
             for(int i=0; i<gameHistory.size(); i++)
-                scoreboard.addPlayer(gameHistory.get(i));
-            scoreboard.setReturnCB(() -> {closeMenu(scoreboard.getRoot());});
-            openMenu(scoreboard.getRoot());
+                gameHistoryTable.addGame(gameHistory.get(i));
+            gameHistoryTable.setReturnCB(() -> {closeMenu(gameHistoryTable.getRoot());});
+            openMenu(gameHistoryTable.getRoot());
+
         } catch(Exception e){
             e.printStackTrace();
         }

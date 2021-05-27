@@ -18,6 +18,7 @@ import models.GameState;
 import models.Player;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchScoreBoardCallback;
+import models.SceneCallback.LaunchGameHistoryCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
 import services.AuthService;
 import services.GameStateService;
@@ -33,7 +34,7 @@ public class GameBoard{
     private Subscription              playerTwoSubscription;
     private boolean                   read;
     private LaunchShapePickerCallback shapePickerCB;
-    private LaunchScoreBoardCallback  scoreBoardCB;
+    private LaunchGameHistoryCallback  gameHistoryCB;
     private boolean                   viewInit;
 
     private final String ASSETS_DIRECTORY = "/assets/images/";
@@ -54,7 +55,8 @@ public class GameBoard{
         this.playerOneSubscription = null;
         this.playerTwoSubscription = null;
         this.shapePickerCB = null;
-        this.scoreBoardCB = null;
+        //this.scoreBoardCB = null;
+        this.gameHistoryCB = null;
         this.viewInit = false;
 
         GameState none = new GameState();
@@ -147,7 +149,8 @@ public class GameBoard{
     public ScrollPane getRoot(){ return this.root; }
 
     public void setOptionsMenuCB(LaunchOptionsMenuCallback optionsMenuCB) {this.optionsMenuCB = optionsMenuCB;}
-    public void setScoreBoardCB(LaunchScoreBoardCallback scoreBoardCB)    {this.scoreBoardCB = scoreBoardCB;}
+    //public void setScoreBoardCB(LaunchScoreBoardCallback scoreBoardCB)    {this.scoreBoardCB = scoreBoardCB;}
+    public void setGameHistoryCB(LaunchGameHistoryCallback gameHistoryCB)    {this.gameHistoryCB = gameHistoryCB;}
     public void setShapePickerCB(LaunchShapePickerCallback shapePickerCB) {this.shapePickerCB = shapePickerCB;}
 
     //Checks whetheer or not the image is already in use or null and sets it if both ar false
@@ -199,7 +202,7 @@ public class GameBoard{
 
     @FXML //Allows playerone to access the scoreboard by pressing the scoreboard button
     private void onScoreBoard(ActionEvent event){
-        this.scoreBoardCB.launchScoreBoard(TTTScene.GAME_BOARD, gameHistory);
+        this.gameHistoryCB.launchScoreBoard(TTTScene.GAME_BOARD, gameHistory);
         
         for(int i=0; i<gameHistory.size(); i++)    
             this.gameHistory.remove(i);

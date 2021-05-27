@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="603.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="603.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.GameHistoryController">
   <content>
       <VBox prefHeight="444.0" prefWidth="603.0">
          <children>
@@ -18,8 +18,8 @@
                     <columns>
                       <TableColumn fx:id="GameId" prefWidth="67.0" text="GameId" />
                       <TableColumn fx:id="CreatedBy" prefWidth="67.0" text="Created By" />
-                        <TableColumn fx:id="AmIFirst" prefWidth="67.0" text="First?" />
-                        <TableColumn fx:id="Opponent" prefWidth="67.0" text="Opponent" />
+                        <TableColumn fx:id="PlayerOne" prefWidth="67.0" text="Player One" />
+                        <TableColumn fx:id="PlayerTwo" prefWidth="67.0" text="Player Two" />
                         <TableColumn fx:id="GameMoves" prefWidth="67.0" text="Moves" />
                         <TableColumn fx:id="Winner" prefWidth="67.0" text="Winner" />
                         <TableColumn fx:id="Spectators" prefWidth="67.0" text="Spectators" />
