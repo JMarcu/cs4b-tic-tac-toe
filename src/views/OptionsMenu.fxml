@@ -27,7 +27,6 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
                   <Button id="ReturnButton" fx:id="ReturnButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" onAction="#ReturnButtonClicked" prefHeight="83.0" prefWidth="600.0" text="Back">
@@ -45,22 +44,17 @@
                         <Font size="36.0" />
                      </font>
                   </Button>
-                  <Button id="RestartButton" fx:id="RestartButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" onAction="#RestartButtonClicked" prefHeight="83.0" prefWidth="600.0" text="Restart" GridPane.rowIndex="3">
+                  <Button id="MainMenuButton" fx:id="MainMenuButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" onAction="#MainMenuButtonClicked" prefHeight="83.0" prefWidth="600.0" text="Main Menu" GridPane.rowIndex="3">
                      <font>
                         <Font size="36.0" />
                      </font>
                   </Button>
-                  <Button id="MainMenuButton" fx:id="MainMenuButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" onAction="#MainMenuButtonClicked" prefHeight="83.0" prefWidth="600.0" text="Main Menu" GridPane.rowIndex="4">
+                  <Button id="ExitButton" fx:id="ExitButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" onAction="#ExitButtonClicked" prefHeight="83.0" prefWidth="600.0" text="EXIT" textFill="RED" GridPane.rowIndex="5">
                      <font>
                         <Font size="36.0" />
                      </font>
                   </Button>
-                  <Button id="ExitButton" fx:id="ExitButton" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" onAction="#ExitButtonClicked" prefHeight="83.0" prefWidth="600.0" text="EXIT" textFill="RED" GridPane.rowIndex="6">
-                     <font>
-                        <Font size="36.0" />
-                     </font>
-                  </Button>
-                  <Button id="ReturnButton" fx:id="logInOutBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" onAction="#onLogInOutAction" prefHeight="83.0" prefWidth="600.0" GridPane.rowIndex="5">
+                  <Button id="ReturnButton" fx:id="logInOutBtn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" onAction="#onLogInOutAction" prefHeight="83.0" prefWidth="600.0" GridPane.rowIndex="4">
                      <font>
                         <Font size="36.0" />
                      </font>

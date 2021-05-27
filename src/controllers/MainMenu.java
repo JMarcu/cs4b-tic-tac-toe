@@ -237,31 +237,36 @@ public class MainMenu {
         if(playerOneSubscription != null){ playerOneSubscription.cancel(); }
         if(playerTwoSubscription != null){ playerTwoSubscription.cancel(); }
 
-        //Initialize the player marker views.
-        this.setMarker(playerOneMarkerPane, playerOne);
-        this.setMarker(playerTwoMarkerPane, playerTwo);
+        if(playerOne != null){
+            //Initialize the player marker views.
+            this.setMarker(playerOneMarkerPane, playerOne);
 
-        //Subscribe to player updates. We want to update the marker views whenever the 
-        //players change their markers in another menu.
-        this.playerOne.subscribe(new Subscriber<Player.Patch>(){
-            @Override public void onComplete() { }
-            @Override public void onError(Throwable throwable) { }
+            //Subscribe to player updates. We want to update the marker views whenever the 
+            //players change their markers in another menu.
+            this.playerOne.subscribe(new Subscriber<Player.Patch>(){
+                @Override public void onComplete() { }
+                @Override public void onError(Throwable throwable) { }
 
-            @Override
-            public void onSubscribe(Subscription subscription) {
-                playerOneSubscription = subscription;
-                playerOneSubscription.request(1);
-            }
-
-            @Override
-            public void onNext(Player.Patch item) {
-                if(item.getColor() != null || item.getShape() != null){
-                    setMarker(playerOneMarkerPane, playerOne);
+                @Override
+                public void onSubscribe(Subscription subscription) {
+                    playerOneSubscription = subscription;
+                    playerOneSubscription.request(1);
                 }
-                playerOneSubscription.request(1);
-            }
-        });
-        this.subscribeToPlayerTwo();
+
+                @Override
+                public void onNext(Player.Patch item) {
+                    if(item.getColor() != null || item.getShape() != null){
+                        setMarker(playerOneMarkerPane, playerOne);
+                    }
+                    playerOneSubscription.request(1);
+                }
+            });
+        }
+
+        if(playerTwo != null){
+            this.setMarker(playerTwoMarkerPane, playerTwo);
+            this.subscribeToPlayerTwo();
+        }
     }
 
     /** Sets the callback to be invoked when the MainMenu wants to launch a marker picker menu. */

@@ -307,6 +307,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
                 }
             });
             register.setLaunchLobbyFinderCB(this);
+            System.out.println("Launch Register");
             launchScene(registerFXML.getRoot());
         } catch(Exception e){
             e.printStackTrace();

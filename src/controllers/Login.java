@@ -27,19 +27,34 @@ public class Login {
     @FXML private Button returnBtn;
     @FXML private ScrollPane root;
 
+    private boolean initialFocusSet;
     private Consumer<Boolean> injectOnlineCB;
     private Consumer<Player> injectPlayerCB;
     private LaunchLobbyFinderCallback launchLobbyFinderCB;
     private LaunchRegisterCallback launchRegisterCB;
     private LaunchMainMenuCallback launchMainMenuCB;
 
+    public Login(){
+        this.initialFocusSet = false;
+    }
+
     @FXML void initialize(){
+        passwordField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue && !initialFocusSet){
+                usernameField.requestFocus();
+                initialFocusSet = true;
+            }
+        });
+
         root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
         root.getStylesheets().add(getClass().getResource("/styles/login.css").toExternalForm());
         
         loginBtn.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
+        
         errorLabel.setTextFill(Color.RED);
         errorLabel.setVisible(false);
+
+        usernameField.requestFocus();
     }
 
     public ScrollPane getRoot(){ return this.root; }

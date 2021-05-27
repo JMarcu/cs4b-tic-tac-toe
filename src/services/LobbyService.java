@@ -251,14 +251,18 @@ public class LobbyService extends AbstractWebsocketService {
                     break;
                 case CONNECTION_SUCCESS:
                     ConnectionSuccessMessageBody connSuccessBody = gson.fromJson(message.getBody(), ConnectionSuccessMessageBody.class);
-                    Player[] connSuccessPlayers = gson.fromJson(connSuccessBody.getGameState().getPlayers().toString(), Player[].class);
-                    connSuccessBody.getGameState().setPlayerOne(connSuccessPlayers[0]);
-                    connSuccessBody.getGameState().setPlayerTwo(connSuccessPlayers[1]);
 
-                    GameStateService.getInstance().setGameState(connSuccessBody.getGameState());
-                    this.onLobbyCallback.callback();
 
                     if(connSuccessBody.getType() == ConnectionMessageBody.Type.JOIN){
+                        if(connSuccessBody.getGameState() != null && connSuccessBody.getGameState().getPlayers() != null){
+                            Player[] connSuccessPlayers = gson.fromJson(connSuccessBody.getGameState().getPlayers().toString(), Player[].class);
+                            connSuccessBody.getGameState().setPlayerOne(connSuccessPlayers[0]);
+                            connSuccessBody.getGameState().setPlayerTwo(connSuccessPlayers[1]);
+    
+                            GameStateService.getInstance().setGameState(connSuccessBody.getGameState());
+                            this.onLobbyCallback.callback();
+                        }
+                        
                         this.lobbyId = connSuccessBody.getLobbyId();
                     } else{
                         this.lobbyId = null;
