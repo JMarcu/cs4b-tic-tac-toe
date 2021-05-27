@@ -24,7 +24,6 @@ public class OptionsController {
     private boolean online;
 
     @FXML private Button logInOutBtn;
-    @FXML private Button RestartButton;
     @FXML private Button MainMenuButton;
     @FXML private StackPane root;
 
@@ -46,12 +45,10 @@ public class OptionsController {
         root.getStylesheets().add(getClass().getResource("/styles/options-menu.css").toExternalForm());
         if(caller == "MainMenu") // if called from the main menu don't let the player use these two buttons
         {
-            RestartButton.setDisable(true);
             MainMenuButton.setDisable(true);
         }
         else
         {
-            RestartButton.setDisable(false);
             MainMenuButton.setDisable(false);
         }
 
@@ -105,11 +102,6 @@ public class OptionsController {
         music.setShouldPlay(!music.getShouldPlay());
     }
 
-    @FXML protected void RestartButtonClicked(ActionEvent event) {
-        // Restarts the current game
-        // Restart()
-    }
-
     @FXML protected void MainMenuButtonClicked(ActionEvent event) {
         // Returns you to main menu (from game)
         this.mainMenuCB.launchMainMenu();
@@ -122,6 +114,7 @@ public class OptionsController {
     }
 
     @FXML protected void onLogInOutAction(ActionEvent e){
+        System.out.println("Log Out Click");
         if(online){
             try {
                 AuthService.getInstance().logout(

@@ -1,6 +1,7 @@
 package controllers;
 
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 
 import java.util.function.Consumer;
 
@@ -8,6 +9,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import models.Player;
 import models.SceneCallback.LaunchLobbyFinderCallback;
@@ -17,6 +19,7 @@ import services.AuthService;
 
 public class Login {
 
+    @FXML private Label errorLabel;
     @FXML private TextField usernameField;
     @FXML private TextField passwordField;
     @FXML private Button loginBtn;
@@ -24,17 +27,34 @@ public class Login {
     @FXML private Button returnBtn;
     @FXML private ScrollPane root;
 
+    private boolean initialFocusSet;
     private Consumer<Boolean> injectOnlineCB;
     private Consumer<Player> injectPlayerCB;
     private LaunchLobbyFinderCallback launchLobbyFinderCB;
     private LaunchRegisterCallback launchRegisterCB;
     private LaunchMainMenuCallback launchMainMenuCB;
 
+    public Login(){
+        this.initialFocusSet = false;
+    }
+
     @FXML void initialize(){
+        passwordField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue && !initialFocusSet){
+                usernameField.requestFocus();
+                initialFocusSet = true;
+            }
+        });
+
         root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
         root.getStylesheets().add(getClass().getResource("/styles/login.css").toExternalForm());
         
         loginBtn.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
+        
+        errorLabel.setTextFill(Color.RED);
+        errorLabel.setVisible(false);
+
+        usernameField.requestFocus();
     }
 
     public ScrollPane getRoot(){ return this.root; }
@@ -79,6 +99,7 @@ public class Login {
                                     Login.this.injectPlayerCB.accept(player);
                                     Login.this.launchLobbyFinderCB.launchLobbyFinder();
                                 }
+                                errorLabel.setVisible(true);
                             }
                         });
                     }

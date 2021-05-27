@@ -51,6 +51,7 @@ public class CreateLobby {
     @FXML private Button markerBtn;
     @FXML private Pane markerPane;
     @FXML private TextField playerName;
+    @FXML private Label playerNameLabel;
     @FXML private Button returnBtn;
     @FXML private ScrollPane root;
     @FXML private MenuButton timeMenu;
@@ -91,6 +92,10 @@ public class CreateLobby {
 
         this.setMarker();
         animateSinglePlayerButtons();
+
+        if(this.player != null){
+            playerNameLabel.setText(player.getName());
+        }
     }
 
     @FXML private void onAiAction(ActionEvent e){
@@ -181,6 +186,10 @@ public class CreateLobby {
             }
         });
         this.setMarker();
+
+        if(this.playerNameLabel != null){
+            playerNameLabel.setText(player.getName());
+        }
     }
 
     public void setReturnToCB(ReturnToCallback returnToCB){

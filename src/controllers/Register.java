@@ -6,7 +6,9 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import models.Player;
 import models.SceneCallback.LaunchLobbyFinderCallback;
@@ -15,6 +17,7 @@ import services.AuthService;
 import services.AuthService.RegistrationResult;
 
 public class Register {
+    @FXML private Label errorLabel;
     @FXML private TextField usernameField;
     @FXML private TextField passwordField;
     @FXML private Button registerBtn;
@@ -31,6 +34,8 @@ public class Register {
         root.getStylesheets().add(getClass().getResource("/styles/register.css").toExternalForm());
 
         this.registerBtn.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
+        errorLabel.setTextFill(Color.RED);
+        errorLabel.setVisible(false);
     }
 
     @FXML protected void returnButtonClicked(ActionEvent e){
@@ -50,6 +55,8 @@ public class Register {
                             public void run() {
                                 switch(result){
                                     case PASSWORD_FAILS_REQUIREMENTS:
+                                        errorLabel.setText("ERROR: Password fails requirements.");
+                                        errorLabel.setVisible(true);
                                         break;
                                     case SUCCESS:
                                         Register.this.injectOnlineCB.accept(true);
@@ -57,8 +64,12 @@ public class Register {
                                         Register.this.launchLobbyFinderCB.launchLobbyFinder();
                                         break;
                                     case UNKNOWN_ERROR:
+                                        errorLabel.setText("ERROR: Something went wrong. Try again later.");
+                                        errorLabel.setVisible(true);
                                         break;
                                     case USERNAME_ALREADY_EXISTS:
+                                        errorLabel.setText("ERROR: Username already exists.");
+                                        errorLabel.setVisible(true);;
                                         break;
                                     default:
                                         break;

@@ -104,6 +104,11 @@ public class GameBoard{
         } else{
             boardController.setDisable();
         }
+
+        if(gameState.getOnline()){
+            this.playerOneTF.setDisable(true);
+            this.playerTwoTF.setDisable(true);
+        }
     }
 
     //Loads data from launchGame
@@ -186,13 +191,17 @@ public class GameBoard{
     @FXML //Allows playerone to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerOneShapeAction(ActionEvent event) {
         GameState gameState = GameStateService.getInstance().getGameState();
-        this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue0());
+        if(!gameState.getOnline()){
+            this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue0());
+        }
     }
 
     @FXML //Allows playertwo to pick a new shape/image to use for the board by pressig the shape button
     private void onPlayerTwoShapeAction(ActionEvent event) {
         GameState gameState = GameStateService.getInstance().getGameState();
-        this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue1());
+        if(!gameState.getOnline()){
+            this.shapePickerCB.launchShapePicker(gameState.getPlayers().getValue1());
+        }
     }
 
     @FXML //Allows playerone to use the options menu by pressing the gear button
