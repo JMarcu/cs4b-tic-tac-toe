@@ -87,6 +87,19 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             AuthService.getInstance().start();
             LobbyService.getInstance().start();
 
+            AuthService.getInstance().setInjectPlayerCB(new Consumer<Player>(){
+                @Override
+                public void accept(Player player) {
+                    Platform.runLater(new Runnable(){
+                        @Override
+                        public void run() {
+                            App.this.playerOne.setMarker(player.getShape(), player.getColor());
+                            App.this.playerOne.setName(player.getName());
+                        }
+                    });
+                }
+            });
+
             music = new MusicPlayer();            
             playerOne = new Player(Color.BLACK, UUID.randomUUID(), "Player 1", MarkerShape.X);
             playerTwo = new Ai(Color.BLACK, "Player 2", MarkerShape.O);

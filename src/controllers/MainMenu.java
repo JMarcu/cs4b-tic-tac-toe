@@ -32,6 +32,7 @@ import models.SceneCallback.LaunchGameCallback;
 import models.SceneCallback.LaunchLobbyFinderCallback;
 import models.SceneCallback.LaunchOptionsMenuCallback;
 import models.SceneCallback.LaunchShapePickerCallback;
+import services.AuthService;
 import services.GameStateService;
 
 import org.javatuples.Pair;

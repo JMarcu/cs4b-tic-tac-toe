@@ -10,7 +10,9 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import models.Lobby;
+import models.MarkerShape;
 import models.Player;
+import models.SerializeableColor;
 import models.ServerMessage.AuthenticationResultMessageBody;
 import models.ServerMessage.LoginMessageBody;
 import models.ServerMessage.LoginSuccessMessageBody;
@@ -19,6 +21,8 @@ import models.ServerMessage.Message;
 import models.ServerMessage.MessageType;
 import models.ServerMessage.RegisterMessageBody;
 import models.ServerMessage.RegistrationResultMessageBody;
+import models.ServerMessage.UpdatePlayerMessageBody;
+import models.ServerMessage.UpdatePlayerSuccessMessageBody;
 import models.ServerMessage.RequestPlayerMessageBody;
 import models.ServerMessage.RequestedPlayerMessageBody;
 
@@ -61,6 +65,8 @@ public class AuthService extends AbstractWebsocketService {
     /** JWT which authenticates the user and provides proof of their claims. */
     private String jwt = null;
 
+    private Consumer<Player> injectPlayerCB = null;
+
     /** A local instance representing the currently logged in player. */
     private Player player = null;
 
@@ -77,6 +83,8 @@ public class AuthService extends AbstractWebsocketService {
 
     /** A callback that is set when the user attempts to register and invoked when registration completes or fails. */
     private BiConsumer<RegistrationResult, Player> onRegistrationCallback = null;
+
+    private Consumer<Player> onUpdateCallback = null;
 
     /** The singleton */
     private static AuthService instance = null;
@@ -181,6 +189,20 @@ public class AuthService extends AbstractWebsocketService {
 
     public Player getPlayer(){
         return this.player;
+    }
+
+    public void setInjectPlayerCB(Consumer<Player> injectPlayerCB){
+        this.injectPlayerCB = injectPlayerCB;
+    }
+
+    public void updatePlayer(String name, SerializeableColor color, MarkerShape shape, Consumer<Player> callback){
+        UpdatePlayerMessageBody body = new UpdatePlayerMessageBody(color, jwt, name, shape);
+        this.onUpdateCallback = callback;
+        try {
+            this.send(new Message(body, MessageType.UPDATE_PLAYER));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /*==========================================================================================================
@@ -347,6 +369,14 @@ public class AuthService extends AbstractWebsocketService {
         }
     }
 
+    private void invokeUpdateCallback(Player player){
+        if(this.onUpdateCallback != null){
+            Consumer<Player> tempUpdateCB = this.onUpdateCallback;
+            this.onUpdateCallback = null;
+            tempUpdateCB.accept(player);
+        }
+    }
+    
     /** 
      * 
      * @param 
@@ -419,6 +449,10 @@ public class AuthService extends AbstractWebsocketService {
                     new Consumer<ArrayList<Lobby>>(){
                         @Override
                         public void accept(ArrayList<Lobby> t) {
+                            if(AuthService.this.injectPlayerCB != null){
+                                AuthService.this.injectPlayerCB.accept(AuthService.this.player);
+                            }
+
                             //Invoke the callback.
                             invokeLoginCallback(loginSuccessBody.getPlayer());
                         }
@@ -445,8 +479,36 @@ public class AuthService extends AbstractWebsocketService {
                 //Deserialize the message body.
                 RegistrationResultMessageBody regResultBody = GSON.fromJson(message.getBody(), RegistrationResultMessageBody.class);
 
-                //Invoke the callback.
-                invokeRegisterCallback(regResultBody.getResult(), regResultBody.getPlayer());
+                if(regResultBody.getResult() == RegistrationResult.SUCCESS){
+                    this.jwt = regResultBody.getJwt();
+                    this.player = regResultBody.getPlayer();
+                    this.refreshToken = regResultBody.getRefreshToken();
+
+                    LobbyService.getInstance().connect(
+                        jwt, 
+                        regResultBody.getPlayer(),
+                        new Consumer<ArrayList<Lobby>>(){
+                            @Override
+                            public void accept(ArrayList<Lobby> t) {
+                                if(AuthService.this.injectPlayerCB != null){
+                                    AuthService.this.injectPlayerCB.accept(AuthService.this.player);
+                                }
+
+                                //Invoke the callback.
+                                invokeRegisterCallback(regResultBody.getResult(), regResultBody.getPlayer());
+                            }
+                        }
+                    );
+                }else {
+                    //Invoke the callback.
+                    invokeRegisterCallback(regResultBody.getResult(), regResultBody.getPlayer());
+                }
+                break;
+            case UPDATE_PLAYER_SUCCESS:
+                UpdatePlayerSuccessMessageBody updatePlayerSuccBody = GSON.fromJson(message.getBody(), UpdatePlayerSuccessMessageBody.class);
+                this.jwt = updatePlayerSuccBody.getJwt();
+                LobbyService.getInstance().setJwt(jwt);
+                invokeUpdateCallback(updatePlayerSuccBody.getPlayer());
                 break;
             case REQUEST_PLAYER:
                 RequestPlayerMessageBody requestPlayerBody = gson.fromJson(message.getBody(), RequestPlayerMessageBody.class);
