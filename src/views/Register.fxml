@@ -26,6 +26,7 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
                   <Label layoutX="185.0" layoutY="99.0" text="New Account Registration" GridPane.columnSpan="2" GridPane.halignment="CENTER">
@@ -49,12 +50,12 @@
                      </font>
                   </Label>
                   <TextField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Button fx:id="returnBtn" mnemonicParsing="false" onAction="#returnButtonClicked" prefWidth="94.0" styleClass="arcade-font" text="Go Back" GridPane.rowIndex="4">
+                  <Button fx:id="returnBtn" focusTraversable="false" mnemonicParsing="false" onAction="#returnButtonClicked" prefWidth="94.0" styleClass="arcade-font" text="Go Back" GridPane.rowIndex="5">
                      <HBox.margin>
                         <Insets top="10.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="registerBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#registerButtonClicked" prefWidth="94.0" styleClass="arcade-font" text="Register" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4">
+                  <Button fx:id="registerBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#registerButtonClicked" prefWidth="94.0" styleClass="arcade-font" text="Register" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5">
                      <HBox.margin>
                         <Insets top="10.0" />
                      </HBox.margin>
@@ -63,6 +64,12 @@
                      <font>
                         <Font size="16.0" />
                      </font></Label>
+                  <Label focusTraversable="false" styleClass="arcade-font" text="Confirm:" GridPane.rowIndex="4">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="confirmField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                </children>
             </GridPane>
          </center>
