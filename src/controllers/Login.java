@@ -1,6 +1,7 @@
 package controllers;
 
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 
 import java.util.function.Consumer;
 
@@ -8,6 +9,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import models.Player;
 import models.SceneCallback.LaunchLobbyFinderCallback;
@@ -17,6 +19,7 @@ import services.AuthService;
 
 public class Login {
 
+    @FXML private Label errorLabel;
     @FXML private TextField usernameField;
     @FXML private TextField passwordField;
     @FXML private Button loginBtn;
@@ -35,6 +38,8 @@ public class Login {
         root.getStylesheets().add(getClass().getResource("/styles/login.css").toExternalForm());
         
         loginBtn.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
+        errorLabel.setTextFill(Color.RED);
+        errorLabel.setVisible(false);
     }
 
     public ScrollPane getRoot(){ return this.root; }
@@ -79,6 +84,7 @@ public class Login {
                                     Login.this.injectPlayerCB.accept(player);
                                     Login.this.launchLobbyFinderCB.launchLobbyFinder();
                                 }
+                                errorLabel.setVisible(true);
                             }
                         });
                     }

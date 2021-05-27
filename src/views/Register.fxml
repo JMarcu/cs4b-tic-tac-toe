@@ -61,7 +61,8 @@
                      </HBox.margin>
                   </Button>
                </children>
-            </GridPane>
+
+            </GridPane><Label fx:id="errorLabel" alignment="CENTER" prefHeight="18.0" prefWidth="273.0" text="Error message here" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="8" />
          </center>
          <left>
             <Separator opacity="0.0" prefWidth="50.0" BorderPane.alignment="CENTER" />
