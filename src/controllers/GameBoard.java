@@ -111,38 +111,42 @@ public class GameBoard{
 
     //Loads data from launchGame
     public void onGameState(){
-        GameState gameState = GameStateService.getInstance().getGameState();
+        try{
+            GameState gameState = GameStateService.getInstance().getGameState();
 
-        if(gameStatePatchSubscription != null){ gameStatePatchSubscription.cancel(); }
-        
-        gameState.subscribe(new Subscriber<GameState.Patch>(){
-			@Override public void onSubscribe(Subscription subscription) { 
-                gameStatePatchSubscription = subscription; 
-                gameStatePatchSubscription.request(1);
+            if(gameStatePatchSubscription != null){ gameStatePatchSubscription.cancel(); }
+            
+            gameState.subscribe(new Subscriber<GameState.Patch>(){
+                @Override public void onSubscribe(Subscription subscription) { 
+                    gameStatePatchSubscription = subscription; 
+                    gameStatePatchSubscription.request(1);
+                }
+                @Override public void onNext(GameState.Patch item) { 
+                    onGameStatePatch(item); 
+                    gameStatePatchSubscription.request(1);
+                }
+                @Override public void onError(Throwable throwable) { }
+                @Override public void onComplete() { }
+            });
+
+            this.subscribeToPlayers();
+
+            if(!read){ 
+                gameHistory.remove(gameHistory.lastElement());
+                gameHistory.add(gameState); read = true;
             }
-			@Override public void onNext(GameState.Patch item) { 
-                onGameStatePatch(item); 
-                gameStatePatchSubscription.request(1);
-            }
-			@Override public void onError(Throwable throwable) { }
-			@Override public void onComplete() { }
-        });
 
-        this.subscribeToPlayers();
-
-        if(!read){ 
-            gameHistory.remove(gameHistory.lastElement());
             gameHistory.add(gameState); read = true;
-        }
+            
+            if(viewInit){
+                finallyInitialize();
+                read = false;
+            }
 
-        gameHistory.add(gameState); read = true;
-        
-        if(viewInit){
-            finallyInitialize();
-            read = false;
+            setBoardStatus();
+        } catch(Exception ex){
+            ex.printStackTrace();
         }
-
-        setBoardStatus();
     }
 
     /************************************************************************************************************
