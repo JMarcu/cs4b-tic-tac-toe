@@ -319,6 +319,7 @@ public class AuthService extends AbstractWebsocketService {
      * @param loginResult Whether or not the login succeeded.
      */
     private void invokeLoginCallback(Player player){
+        System.out.println("invokeLoginCallback");
         if(this.onLoginCallback != null){
             /* Store a local-scoped copy of the callback, then set the instance-scoped reference to null.
             The callback might invoke the 'login' method, which will throw an exception if our 
@@ -449,6 +450,7 @@ public class AuthService extends AbstractWebsocketService {
                     new Consumer<ArrayList<Lobby>>(){
                         @Override
                         public void accept(ArrayList<Lobby> t) {
+                            System.out.println("Accept Lobby Connection");
                             if(AuthService.this.injectPlayerCB != null){
                                 AuthService.this.injectPlayerCB.accept(AuthService.this.player);
                             }

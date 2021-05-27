@@ -113,38 +113,42 @@ public class GameBoard{
 
     //Loads data from launchGame
     public void onGameState(){
-        GameState gameState = GameStateService.getInstance().getGameState();
+        try{
+            GameState gameState = GameStateService.getInstance().getGameState();
 
-        if(gameStatePatchSubscription != null){ gameStatePatchSubscription.cancel(); }
-        
-        gameState.subscribe(new Subscriber<GameState.Patch>(){
-			@Override public void onSubscribe(Subscription subscription) { 
-                gameStatePatchSubscription = subscription; 
-                gameStatePatchSubscription.request(1);
+            if(gameStatePatchSubscription != null){ gameStatePatchSubscription.cancel(); }
+            
+            gameState.subscribe(new Subscriber<GameState.Patch>(){
+                @Override public void onSubscribe(Subscription subscription) { 
+                    gameStatePatchSubscription = subscription; 
+                    gameStatePatchSubscription.request(1);
+                }
+                @Override public void onNext(GameState.Patch item) { 
+                    onGameStatePatch(item); 
+                    gameStatePatchSubscription.request(1);
+                }
+                @Override public void onError(Throwable throwable) { }
+                @Override public void onComplete() { }
+            });
+
+            this.subscribeToPlayers();
+
+            if(!read){ 
+                gameHistory.remove(gameHistory.lastElement());
+                gameHistory.add(gameState); read = true;
             }
-			@Override public void onNext(GameState.Patch item) { 
-                onGameStatePatch(item); 
-                gameStatePatchSubscription.request(1);
-            }
-			@Override public void onError(Throwable throwable) { }
-			@Override public void onComplete() { }
-        });
 
-        this.subscribeToPlayers();
-
-        if(!read){ 
-            gameHistory.remove(gameHistory.lastElement());
             gameHistory.add(gameState); read = true;
-        }
+            
+            if(viewInit){
+                finallyInitialize();
+                read = false;
+            }
 
-        gameHistory.add(gameState); read = true;
-        
-        if(viewInit){
-            finallyInitialize();
-            read = false;
+            setBoardStatus();
+        } catch(Exception ex){
+            ex.printStackTrace();
         }
-
-        setBoardStatus();
     }
 
     /************************************************************************************************************
@@ -160,13 +164,15 @@ public class GameBoard{
 
     //Checks whetheer or not the image is already in use or null and sets it if both ar false
     private void updateImage(ImageView iv, Player player){
-        final String newUrl = player != null
+        String newUrl = player != null
             ? ASSETS_DIRECTORY.concat(player.getShape().getFilename())
             : ASSETS_DIRECTORY.concat("empty.png");
         if(iv.getImage() == null || !iv.getImage().getUrl().equals(newUrl)){
             final Image newImage = new Image(newUrl);
             iv.setImage(newImage);
         }
+        System.out.println("iv.getImage(): " + iv.getImage());
+        System.out.println("!iv.getImage().getUrl().equals(newUrl): " + !iv.getImage().getUrl().equals(newUrl));
         if(player != null){
             ColorScheme.adjustImageColor(iv, player.getColor());
         }
@@ -328,17 +334,22 @@ public class GameBoard{
         }
     }
 
-    private void updatePlayerViews(){        
+    private void updatePlayerViews(){
+        System.out.println("updatePlayerViews");
+
         GameState gameState = GameStateService.getInstance().getGameState();
+        
+        System.out.println("Setting playerOneTF.text to " + (gameState.getPlayers().getValue0() != null ? gameState.getPlayers().getValue0().getName() : ""));
         playerOneTF.setText(
             gameState.getPlayers().getValue0() != null
             ? gameState.getPlayers().getValue0().getName()
-            : ""
+            : ". . ."
         );
+        System.out.println("Setting playerTwoTF.text to " + (gameState.getPlayers().getValue1() != null ? gameState.getPlayers().getValue1().getName() : ""));
         playerTwoTF.setText(
             gameState.getPlayers().getValue1() != null
             ? gameState.getPlayers().getValue1().getName()
-            : ""
+            : ". . ."
         );
 
         updateImage(playerOneShapeIV, gameState.getPlayers().getValue0());

@@ -247,6 +247,9 @@ public class LobbyService extends AbstractWebsocketService {
                     if(authResultBody.getSuccess()){
                         this.authenticated = true;
                         send(new Message("", MessageType.AUTHENTICATION_ACKNOWLEDGED));
+                        final Consumer<ArrayList<Lobby>> temp = this.onConnectCallback;
+                        this.onConnectCallback = null;
+                        temp.accept(null);
                     } else {
                         this.authenticated = false;
                     }
