@@ -17,6 +17,7 @@ import services.AuthService;
 import services.AuthService.RegistrationResult;
 
 public class Register {
+    @FXML private TextField confirmField;
     @FXML private Label errorLabel;
     @FXML private TextField usernameField;
     @FXML private TextField passwordField;
@@ -33,7 +34,12 @@ public class Register {
         root.getStylesheets().add(getClass().getResource("/styles/color-theme.css").toExternalForm());
         root.getStylesheets().add(getClass().getResource("/styles/register.css").toExternalForm());
 
-        this.registerBtn.disableProperty().bind(usernameField.textProperty().isEmpty().or(passwordField.textProperty().isEmpty()));
+        this.registerBtn.disableProperty().bind(
+            usernameField.textProperty().isEmpty()
+            .or(passwordField.textProperty().isEmpty())
+            .or(confirmField.textProperty().isEmpty())
+            .or(passwordField.textProperty().isNotEqualTo(confirmField.textProperty()))
+        );
         errorLabel.setTextFill(Color.RED);
         errorLabel.setVisible(false);
     }
