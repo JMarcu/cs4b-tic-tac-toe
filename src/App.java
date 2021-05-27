@@ -266,6 +266,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
         if(online){
             try {
                 LobbyService.getInstance().leaveLobby();
+                this.playerOne = AuthService.getInstance().getPlayer();
             } catch (Exception e) {
                 e.printStackTrace();
             }
