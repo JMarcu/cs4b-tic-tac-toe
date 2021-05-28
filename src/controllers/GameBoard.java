@@ -214,16 +214,19 @@ public class GameBoard{
     private void onOption(ActionEvent event){
         this.optionsMenuCB.launchOptionsMenu("Game");
     }
-
+/*
     @FXML //Allows playerone to access the scoreboard by pressing the scoreboard button
     private void onScoreBoard(ActionEvent event){
+        
         this.gameHistoryCB.launchScoreBoard(TTTScene.GAME_BOARD, gameHistory);
         
         for(int i=0; i<gameHistory.size(); i++)    
             this.gameHistory.remove(i);
         GameState none = new GameState();
         this.gameHistory.add(none);
+        
     }
+    */
 
     /************************************************************************************************************
      * SUBSCRIPTION HANDLERS

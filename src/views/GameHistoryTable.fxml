@@ -8,13 +8,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="603.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.GameHistoryController">
+<ScrollPane fx:id="root" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="603.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.GameHistoryController">
   <content>
       <VBox prefHeight="444.0" prefWidth="603.0">
          <children>
-          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="603.0">
+          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="603.0" VBox.vgrow="ALWAYS">
                <children>
-                  <TableView fx:id="Table" layoutY="43.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="475.0" prefWidth="603.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="-118.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="43.0">
+                  <TableView fx:id="Table" layoutY="43.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="475.0" prefWidth="603.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="43.0">
                     <columns>
                       <TableColumn fx:id="GameId" prefWidth="67.0" text="GameId" />
                       <TableColumn fx:id="CreatedBy" prefWidth="67.0" text="Created By" />
@@ -27,7 +27,7 @@
                         <TableColumn fx:id="EndTime" prefWidth="67.0" text="End" />
                     </columns>
                   </TableView>
-                  <Button fx:id="ReturnButton" layoutX="501.0" mnemonicParsing="false" onAction="#ReturnButtonClicked" text="Return">
+                  <Button fx:id="ReturnButton" mnemonicParsing="false" onAction="#ReturnButtonClicked" prefHeight="44.0" prefWidth="110.0" styleClass="arcade-font" text="Return">
                      <font>
                         <Font size="20.0" />
                      </font>

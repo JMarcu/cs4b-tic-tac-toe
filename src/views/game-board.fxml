@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="root" fitToHeight="true" fitToWidth="true" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.GameBoard">
+<ScrollPane fx:id="root" fitToHeight="true" fitToWidth="true" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.GameBoard">
    <content>
       <AnchorPane fx:id="AnchorPaneBackground" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
          <children>
@@ -75,19 +75,8 @@
                   </Button>
                </children>
             </HBox>
-            <VBox layoutY="76.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="64.0" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="434.0" AnchorPane.topAnchor="76.0">
-               <children>
-                  <Button fx:id="scoreButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" minHeight="100.0" mnemonicParsing="false" onAction="#onScoreBoard" prefHeight="802.0" prefWidth="22.0" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
-                     <font>
-                        <Font size="12.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="10.0" />
-                     </VBox.margin>
-                  </Button>
-               </children>
-            </VBox>
-            <AnchorPane fx:id="AnchorPaneForeground" layoutX="64.0" layoutY="76.0" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="64.0" AnchorPane.rightAnchor="34.0" AnchorPane.topAnchor="76.0">
+            <VBox layoutY="76.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="19.0" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="434.0" AnchorPane.topAnchor="76.0" />
+            <AnchorPane fx:id="AnchorPaneForeground" layoutX="34.0" layoutY="76.0" prefHeight="400.0" prefWidth="430.0" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="34.0" AnchorPane.topAnchor="76.0">
                <children>
                   <fx:include fx:id="board" source="Board.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>

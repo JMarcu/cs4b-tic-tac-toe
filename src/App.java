@@ -31,6 +31,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import models.Game;
+import models.GameForTable;
 import models.Ai;
 import models.GameState;
 import models.MarkerShape;
@@ -54,7 +55,7 @@ import models.MusicPlayer.Track;
 import models.MusicPlayer;
 
 public class App extends Application implements LaunchGameCallback, LaunchMainMenuCallback, LaunchOptionsMenuCallback,
-        LaunchShapePickerCallback, LaunchScoreBoardCallback, LaunchGameHistoryCallback, LaunchLobbyFinderCallback, LaunchLoginCallback, 
+        LaunchShapePickerCallback, LaunchGameHistoryCallback, LaunchLobbyFinderCallback, LaunchLoginCallback, 
         LaunchRegisterCallback, LaunchCreateLobbyCallback {
 
     private FXMLLoader   createLobbyFXML;
@@ -253,6 +254,7 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             joinLobby.setLaunchGameCB(this);
             joinLobby.setLaunchMainMenuCB(this);
             joinLobby.setLaunchOptionsMenuCB(this);
+            joinLobby.setGameHistoryCB(this);
             joinLobby.loadLobbies();
 
             launchScene(joinLobby.getRoot());
@@ -339,53 +341,18 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
     }
 
     @Override
-    public void launchScoreBoard(TTTScene returnTo, Vector<GameState> gameHistory1){
+    public void launchGameHistory(List<Game> gameHistory){
         try{
 
             //test code
-            List<Game> gameHistory = new ArrayList<Game>();
-
-            Game testGame1 = new Game();
-            List<Pair<Integer,Integer>> allMoves = new ArrayList<Pair<Integer,Integer>>();
-            allMoves.add(new Pair(0,0));
-            allMoves.add(new Pair(1,1));
-            allMoves.add(new Pair(2,2));
-            allMoves.add(new Pair(0,2));
-            allMoves.add(new Pair(2,0));
-            allMoves.add(new Pair(2,1));
-            allMoves.add(new Pair(1,0));
-            testGame1.setAllMoves(allMoves);
-
-            List<UUID> allSpectators = new ArrayList<UUID>();
-            allSpectators.add(UUID.randomUUID());
-            allSpectators.add(UUID.randomUUID());
-            allSpectators.add(UUID.randomUUID());
-            testGame1.setAllSpectators(allSpectators);
-
-            UUID playerOne = UUID.randomUUID();
-            UUID creator = playerOne;
-            UUID winner = playerOne;
-            UUID playerTwo = UUID.randomUUID();
-            testGame1.setPlayers(new Pair(playerOne, playerTwo));
-            testGame1.setCreator(creator);
-            testGame1.setWinner(winner);
-            testGame1.setEndManually(9000);
-            testGame1.setStart(5000);
-            testGame1.setGameId(1);
-
-            List<Long> moveTimes = new ArrayList<Long>();
-            moveTimes.add(Long.valueOf(1));
-            moveTimes.add(Long.valueOf(2));
-            moveTimes.add(Long.valueOf(3));
-            moveTimes.add(Long.valueOf(4));
-            moveTimes.add(Long.valueOf(5));
-            moveTimes.add(Long.valueOf(6));
-            moveTimes.add(Long.valueOf(7));
-            testGame1.setMoveTimes(moveTimes);
-
-            gameHistory.add(testGame1);
+            
 
             //end test code
+            List<GameForTable> gamesForTable = new ArrayList<GameForTable>();
+
+            for (int i = 0; i < gameHistory.size(); i++){
+                gamesForTable.add(new GameForTable(gameHistory.get(i)));
+            }
 
 
 
@@ -400,8 +367,10 @@ public class App extends Application implements LaunchGameCallback, LaunchMainMe
             //    scoreboard.addPlayer(gameHistory.get(i));
             //scoreboard.setReturnCB(() -> {closeMenu(scoreboard.getRoot());});
             //openMenu(scoreboard.getRoot());
-            for(int i=0; i<gameHistory.size(); i++)
-                gameHistoryTable.addGame(gameHistory.get(i));
+            //for(int i=0; i<gameHistory.size(); i++)
+            //    gameHistoryTable.addGame(gameHistory.get(i));
+
+            gameHistoryTable.addGames(gamesForTable);
             gameHistoryTable.setReturnCB(() -> {closeMenu(gameHistoryTable.getRoot());});
             openMenu(gameHistoryTable.getRoot());
 
